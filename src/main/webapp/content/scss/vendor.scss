@@ -10,3 +10,31 @@ eg $input-color: red;
 @import '~bootstrap/scss/bootstrap';
 
 /* jhipster-needle-scss-add-vendor JHipster will add new css style */
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import './purple-scss/variables';
+@import '~compass-mixins/lib/compass';
+@import '~compass-mixins/lib/animate';
+@import '~bootstrap/scss/bootstrap';
+@import './purple-scss/fonts';
+@import './purple-scss/functions';
+
+/* === Icon fonts === */
+@import '~ti-icons/css/themify-icons.css';
+@import '~@mdi/font/scss/materialdesignicons';
+@import '~font-awesome/scss/font-awesome';
+@import '~flag-icon-css/sass/flag-icon';
+@import '~simple-line-icons/scss/simple-line-icons';
+
+/* === Template mixins === */
+@import './purple-scss/mixins/animation';
+@import './purple-scss/mixins/badges';
+@import './purple-scss/mixins/buttons';
+@import './purple-scss/mixins/misc';
+@import './purple-scss/mixins/color-functions';
+@import './purple-scss/mixins/cards';
+@import './purple-scss/mixins/blockqoute';
+@import './purple-scss/mixins/popovers';
+@import './purple-scss/mixins/tooltips';
+@import './purple-scss/mixins/no-ui-slider';
