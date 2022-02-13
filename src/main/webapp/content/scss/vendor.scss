@@ -38,3 +38,87 @@ eg $input-color: red;
 @import './purple-scss/mixins/popovers';
 @import './purple-scss/mixins/tooltips';
 @import './purple-scss/mixins/no-ui-slider';
+
+/* === Core Styles === */
+@import './purple-scss/background';
+@import './purple-scss/typography';
+@import './purple-scss/reset';
+@import './purple-scss/responsive';
+@import './purple-scss/misc';
+@import './purple-scss/utilities';
+@import './purple-scss/demo';
+@import './purple-scss/spinner';
+
+/* === Components === */
+@import './purple-scss/components/forms';
+@import './purple-scss/components/checkbox-radio';
+@import './purple-scss/components/icons';
+@import './purple-scss/components/tables';
+@import './purple-scss/components/accordions';
+@import './purple-scss/components/buttons';
+@import './purple-scss/components/breadcrumbs';
+@import './purple-scss/components/badges';
+@import './purple-scss/components/cards';
+@import './purple-scss/components/preview';
+@import './purple-scss/components/tooltips';
+@import './purple-scss/components/popovers';
+@import './purple-scss/components/lists';
+@import './purple-scss/components/bootstrap-progress';
+@import './purple-scss/components/bootstrap-alerts';
+@import './purple-scss/components/tabs';
+@import './purple-scss/components/dropdowns';
+@import './purple-scss/components/pagination';
+@import './purple-scss/components/loaders/loaders';
+@import './purple-scss/components/timeline';
+@import './purple-scss/components/portfolio';
+@import './purple-scss/components/pricing-table';
+@import './purple-scss/components/email/mail-list-container';
+@import './purple-scss/components/email/mail-sidebar';
+@import './purple-scss/components/email/message-content';
+@import './purple-scss/components/todo-list';
+@import './purple-scss/components/date-picker';
+
+@import './purple-scss/components/landing-screens/auth';
+
+/* === Plugin styles === */
+@import '~morris.js/morris.css';
+@import '~chartist/dist/chartist.min.css';
+@import '~dragula/dist/dragula.min.css';
+@import '~nouislider/distribute/nouislider.min.css';
+@import '~ngx-owl-carousel-o/lib/styles/scss/owl.carousel';
+@import '~ngx-owl-carousel-o/lib/styles/scss/owl.theme.default';
+@import '~select2/dist/css/select2.min.css';
+@import '~ngx-bar-rating/themes/br-default-theme';
+@import '~ngx-bar-rating/themes/br-bootstrap-theme';
+@import '~ngx-bar-rating/themes/br-fontawesome-theme';
+@import '~ngx-bar-rating/themes/br-fontawesome-o-theme';
+@import '~ngx-bar-rating/themes/br-horizontal-theme';
+@import '~ngx-bar-rating/themes/br-vertical-theme';
+@import '~ngx-bar-rating/themes/br-stars-theme';
+@import '~ngx-bar-rating/themes/br-movie-theme';
+@import '~ngx-bar-rating/themes/br-square-theme';
+@import '~summernote/dist/summernote-lite.css';
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/dracula.css';
+@import '~datatables.net-dt/css/jquery.dataTables.css';
+@import '~ngx-toastr/toastr-bs4-alert';
+@import '~@fullcalendar/core/main.min.css';
+@import '~@ng-select/ng-select/themes/default.theme.css';
+
+/* === Plugin Overrides === */
+@import './purple-scss/components/plugin-overrides/contex-menu';
+@import './purple-scss/components/plugin-overrides/no-ui-slider';
+@import './purple-scss/components/plugin-overrides/owl-carousel';
+@import './purple-scss/components/plugin-overrides/select2';
+@import './purple-scss/components/plugin-overrides/rating';
+@import './purple-scss/components/plugin-overrides/dropzone';
+@import './purple-scss/components/plugin-overrides/date-picker';
+@import './purple-scss/components/plugin-overrides/ngx-chips';
+@import './purple-scss/components/plugin-overrides/wizard';
+@import './purple-scss/components/plugin-overrides/data-table';
+@import './purple-scss/components/plugin-overrides/sweet-alert';
+@import './purple-scss/components/plugin-overrides/toast';
+@import './purple-scss/components/plugin-overrides/full-calendar';
+
+/* === Layout === */
+@import './purple-scss/layout';
