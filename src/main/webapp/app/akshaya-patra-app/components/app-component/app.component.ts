@@ -11,60 +11,28 @@ export class AppComponent implements OnInit {
   title = 'demo1';
 
   showSidebar: boolean = true;
-  showNavbar: boolean = true;
   showFooter: boolean = true;
   showSettings: boolean = true;
-  isLoading: boolean = false;
+  isLoading: boolean;
 
   constructor(private router: Router, translate: TranslateService) {
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages
     router.events.forEach(event => {
       if (event instanceof NavigationStart) {
-        if (
-          event['url'] === '/user-pages/login' ||
-          event['url'] === '/user-pages/login-2' ||
-          event['url'] === '/user-pages/register' ||
-          event['url'] === '/user-pages/register-2' ||
-          event['url'] === '/user-pages/lock-screen' ||
-          event['url'] === '/error-pages/404' ||
-          event['url'] === '/error-pages/500'
-        ) {
-          this.showSidebar = false;
-          this.showNavbar = false;
-          this.showFooter = false;
-          this.showSettings = false;
-
-          // @ts-ignore
-          document.querySelector('.main-panel').classList.add('w-100');
-          // document.querySelector('.page-body-wrapper').classList.add('full-page-wrapper');
-          if (event['url'] === '/user-pages/login-2' || event['url'] === '/user-pages/register-2') {
-            // @ts-ignore
-            document.querySelector('.content-wrapper').classList.add('auth', 'auth-img-bg');
-          } else if (event['url'] === '/user-pages/lock-screen') {
-            // @ts-ignore
-            document.querySelector('.content-wrapper').classList.add('auth', 'lock-full-bg');
+        translate.use('en');
+        if (this.isNoSidebarPage(event)) {
+          this.hideMainUserInterface();
+          if (this.isLockScreenEvent(event)) {
+            this.addLockScreenCss();
           } else {
-            // @ts-ignore
-            document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
-            // @ts-ignore
-            document.querySelector('.content-wrapper').classList.remove('auth', 'lock-full-bg');
+            this.removeCss();
           }
-          if (event['url'] === '/error-pages/404' || event['url'] === '/error-pages/500') {
-            // document.querySelector('.content-wrapper').classList.add('p-0');
+          if (this.isErrorPageEvent(event)) {
+            this.addErrorPageCss();
           }
         } else {
-          this.showSidebar = true;
-          this.showNavbar = true;
-          this.showFooter = true;
-          this.showSettings = true;
-          // @ts-ignore
-          document.querySelector('.main-panel').classList.remove('w-100');
-          // @ts-ignore
-          document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
-          // @ts-ignore
-          document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
-          // @ts-ignore
-          document.querySelector('.content-wrapper').classList.remove('p-0');
+          this.showMainUserInterface();
+          // /Users/dylanrasch/PersonalProjects/ocdShieldNew/
         }
       }
     });
@@ -79,7 +47,69 @@ export class AppComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  private isNoSidebarPage(event: NavigationStart): boolean {
+    // return event['url'] == `/${RoutePathsEnum.LOGIN}` ||
+    //   event['url'].includes('key') ||
+    //   event['url'] == `/${RoutePathsEnum.RESET_PASSWORD}` ||
+    //   event['url'] == `/${RoutePathsEnum.NEW_PASSWORD}` ||
+    //   event['url'] == '/' ||
+    //   event['url'] == '/404' ||
+    //   event['url'] == `/${RoutePathsEnum.REGISTER}` ||
+    //   event['url'] == '/user-pages/lock-screen' ||
+    //   event['url'] == '/error-pages/404' ||
+    //   event['url'] == '/error-pages/500';
+    return false;
+  }
+
+  private isLockScreenEvent(event: NavigationStart) {
+    return event['url'] == '/user-pages/lock-screen';
+  }
+
+  private hideMainUserInterface() {
+    this.showSidebar = false;
+    this.showFooter = false;
+    this.showSettings = false;
+    document.querySelector('.main-panel').classList.add('w-100');
+    document.querySelector('.page-body-wrapper').classList.add('full-page-wrapper');
+  }
+
+  private isErrorPageEvent(event: NavigationStart) {
+    return event['url'] == '/404' || event['url'] == '/error-pages/500';
+  }
+
+  private removeCss() {
+    document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
+    document.querySelector('.content-wrapper').classList.remove('auth', 'lock-full-bg');
+  }
+
+  private showMainUserInterface() {
+    this.showSidebar = true;
+    this.showFooter = true;
+    this.showSettings = true;
+    document.querySelector('.main-panel').classList.remove('w-100');
+    document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
+    document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
+    document.querySelector('.content-wrapper').classList.remove('p-0');
+  }
+
+  private addErrorPageCss() {
+    document.querySelector('.content-wrapper').classList.add('p-0');
+  }
+
+  private addLockScreenCss() {
+    document.querySelector('.content-wrapper').classList.add('auth', 'lock-full-bg');
+  }
+
+  private addLogin2OrRegister2Css() {
+    document.querySelector('.content-wrapper').classList.add('auth', 'auth-img-bg');
+  }
+
+  // toggle sidebar in small devices
+  toggleOffcanvas() {
+    document.querySelector('.sidebar-offcanvas').classList.toggle('active');
+  }
+
+  ngOnInit() {
     // Scroll to top after route change
     this.router.events.subscribe(evt => {
       if (!(evt instanceof NavigationEnd)) {
@@ -87,5 +117,7 @@ export class AppComponent implements OnInit {
       }
       window.scrollTo(0, 0);
     });
+    // for later
+    // this.router.navigate(['/user-pages/login'])
   }
 }

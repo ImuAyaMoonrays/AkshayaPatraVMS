@@ -1,5 +1,12 @@
 <div class="container-scroller">
-  <app-navbar *ngIf="showNavbar"></app-navbar>
+  <button
+    style="font-size: 30px; color: dimgray"
+    class="navbar-toggler navbar-toggler-right d-lg-none pull-right"
+    type="button"
+    (click)="toggleOffcanvas()"
+  >
+    <span class="mdi mdi-menu"></span>
+  </button>
   <div class="container-fluid page-body-wrapper">
     <app-settings-panel *ngIf="showSettings"></app-settings-panel>
     <app-sidebar *ngIf="showSidebar"></app-sidebar>

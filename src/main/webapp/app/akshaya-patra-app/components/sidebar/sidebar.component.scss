@@ -2,7 +2,7 @@
 
 @import '../../../../content/scss/vendor';
 .sidebar {
-  min-height: calc(100vh - #{$navbar-height});
+  min-height: calc(#{$navbar-height});
   background: $sidebar-light-bg;
   font-family: $type1-regular;
   padding: 0;
@@ -549,10 +549,10 @@
   @media (min-width: 992px) {
     .sidebar {
       position: fixed;
-      max-height: auto;
+      //max-height: auto;
 
       .nav {
-        max-height: calc(100vh - #{$navbar-height});
+        //max-height: calc(100vh - #{$navbar-height});
         overflow: auto;
         position: relative;
 
@@ -601,16 +601,21 @@
 @media screen and (max-width: 991px) {
   .sidebar-offcanvas {
     position: fixed;
-    max-height: calc(100vh - #{$navbar-height});
-    top: $navbar-height;
+    //max-height: calc(100vh - #{$navbar-height});
+    //top: $navbar-height;
     bottom: 0;
     overflow: auto;
-    right: -$sidebar-width-lg;
+    left: -$sidebar-width-lg;
     -webkit-transition: all 0.25s ease-out;
     -o-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
+
+    .sm-sidebar-toggler-hide {
+      display: none;
+    }
+
     &.active {
-      right: 0;
+      left: 0;
     }
   }
 }
