@@ -25,6 +25,9 @@ import { SidebarComponent } from './akshaya-patra-app/components/sidebar/sidebar
 import { FooterComponent } from './akshaya-patra-app/components/footer/footer.component';
 import { SettingsPanelComponent } from './akshaya-patra-app/components/settings-panel/settings-panel.component';
 import { SpinnerComponent } from './akshaya-patra-app/components/spinner/spinner.component';
+import { HomeScreenComponent } from './akshaya-patra-app/components/home-screen/home-screen.component';
+import { LoginComponent } from './akshaya-patra-app/components/login/login.component';
+import { RegisterComponent } from './akshaya-patra-app/components/register/register.component';
 
 @NgModule({
   imports: [
@@ -46,7 +49,17 @@ import { SpinnerComponent } from './akshaya-patra-app/components/spinner/spinner
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
     httpInterceptorProviders,
   ],
-  declarations: [AppComponent, NavbarComponent, SidebarComponent, FooterComponent, SettingsPanelComponent, SpinnerComponent],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    SidebarComponent,
+    FooterComponent,
+    SettingsPanelComponent,
+    SpinnerComponent,
+    HomeScreenComponent,
+    LoginComponent,
+    RegisterComponent,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

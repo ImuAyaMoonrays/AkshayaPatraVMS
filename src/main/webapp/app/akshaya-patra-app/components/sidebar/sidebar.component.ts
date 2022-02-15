@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,17 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class SidebarComponent implements OnInit {
   public parentId = '';
 
-  clickedMenu(event) {
-    var target = event.currentTarget;
-    let parentId = target.id;
-    if (parentId == this.parentId) {
-      this.parentId = '';
-    } else {
-      this.parentId = target.id;
-    }
-  }
-
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     const body = document.querySelector('body');
@@ -36,5 +27,19 @@ export class SidebarComponent implements OnInit {
         }
       });
     });
+  }
+
+  logout(): void {
+    this.router.navigate(['/login']);
+  }
+
+  clickedMenu(event) {
+    var target = event.currentTarget;
+    let parentId = target.id;
+    if (parentId == this.parentId) {
+      this.parentId = '';
+    } else {
+      this.parentId = target.id;
+    }
   }
 }

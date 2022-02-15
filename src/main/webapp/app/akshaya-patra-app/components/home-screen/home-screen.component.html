@@ -1,0 +1,26 @@
+<div class="container-scroller">
+  <button
+    style="font-size: 30px; color: dimgray"
+    class="navbar-toggler navbar-toggler-right d-lg-none pull-right"
+    type="button"
+    (click)="toggleOffcanvas()"
+  >
+    <span class="mdi mdi-menu"></span>
+  </button>
+  <div class="container-fluid page-body-wrapper">
+    <app-settings-panel></app-settings-panel>
+    <app-sidebar></app-sidebar>
+    <div class="main-panel" [ngClass]="'main-panel-only'">
+      <div class="content-wrapper">
+        <app-spinner *ngIf="isLoading"></app-spinner>
+        <!--        <div contentAnimate *ngIf="!isLoading" class="h-100">-->
+        <!--          <router-outlet></router-outlet>-->
+        <!--        </div>-->
+      </div>
+      <app-footer></app-footer>
+      <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  <!--  page-body-wrapper ends-->
+</div>

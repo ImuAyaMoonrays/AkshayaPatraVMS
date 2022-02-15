@@ -14,7 +14,7 @@
         <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
       </a>
     </li>
-    <li class="nav-item" [ngClass]="{ active: invoice.isActive || pricing.isActive || orders.isActive }">
+    <li class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -23,13 +23,10 @@
       <div class="collapse" id="e-commerce" [ngbCollapse]="parentId !== 'nav-link-12'">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link" routerLink="ecommerce/invoice" routerLinkActive="active" #invoice="routerLinkActive">Invoice</a>
+            <a class="nav-link" routerLink="ecommerce/invoice" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="ecommerce/pricing" routerLinkActive="active" #pricing="routerLinkActive">Pricing Table</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="ecommerce/orders" routerLinkActive="active" #orders="routerLinkActive">Orders</a>
+            <a class="nav-link" routerLink="ecommerce/pricing" routerLinkActive="active" #completedEvents="routerLinkActive">Completed </a>
           </li>
         </ul>
       </div>
@@ -38,6 +35,12 @@
       <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
         <span class="menu-title">Settings</span>
         <i class="mdi mdi-calendar-today menu-icon"></i>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" (click)="logout()">
+        <span class="menu-title" style="color: orangered">Logout</span>
+        <i class="mdi mdi-logout menu-icon" style="color: orangered"></i>
       </a>
     </li>
   </ul>
