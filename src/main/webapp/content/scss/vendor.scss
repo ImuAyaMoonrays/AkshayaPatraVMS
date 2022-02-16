@@ -122,3 +122,8 @@ eg $input-color: red;
 
 /* === Layout === */
 @import './purple-scss/layout';
+
+.block-display-centered {
+  display: block;
+  margin: auto
+}

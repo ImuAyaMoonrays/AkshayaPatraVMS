@@ -28,6 +28,7 @@ import { SpinnerComponent } from './akshaya-patra-app/components/spinner/spinner
 import { HomeScreenComponent } from './akshaya-patra-app/components/home-screen/home-screen.component';
 import { LoginComponent } from './akshaya-patra-app/components/login/login.component';
 import { RegisterComponent } from './akshaya-patra-app/components/register/register.component';
+import { ResetPasswordComponent } from "./akshaya-patra-app/components/reset-password/reset-password.component";
 
 @NgModule({
   imports: [
@@ -59,6 +60,7 @@ import { RegisterComponent } from './akshaya-patra-app/components/register/regis
     HomeScreenComponent,
     LoginComponent,
     RegisterComponent,
+    ResetPasswordComponent
   ],
   bootstrap: [AppComponent],
 })

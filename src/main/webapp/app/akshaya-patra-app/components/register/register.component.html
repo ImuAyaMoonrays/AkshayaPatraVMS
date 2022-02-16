@@ -1,27 +1,26 @@
 <div class="d-flex align-items-center auth px-0">
   <div class="row w-100 mx-0">
-    <div class="col-lg-4 mx-auto" style="position: fixed; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%)">
+    <div class="col-lg-4 mx-auto block-display-centered">
       <div class="auth-form-light text-left py-5 px-4 px-sm-5">
         <div class="brand-logo">
-          <img style="display: block; margin: auto" src="content/images/akshaya-patra-logo.png" alt="logo" />
+          <img class="logo-display" src="content/images/akshaya-patra-logo.png" alt="logo" />
         </div>
         <h4>New here?</h4>
         <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
         <div class="form-group">
-          <input formControlName="login" type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Name" />
+          <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Name" />
         </div>
         <div class="form-group">
-          <input formControlName="dateOfBirth" type="text" class="form-control form-control-lg" id="dob" placeholder="Date of Birth" />
+          <input type="text" class="form-control form-control-lg" id="dob" placeholder="Date of Birth" />
         </div>
         <div class="form-group">
-          <input formControlName="location" type="text" class="form-control form-control-lg" id="location" placeholder="Location" />
+          <input type="text" class="form-control form-control-lg" id="location" placeholder="Location" />
         </div>
         <div class="form-group">
-          <input formControlName="email" type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" />
+          <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" />
         </div>
         <div class="form-group">
           <input
-            formControlName="password"
             type="password"
             class="form-control form-control-lg"
             id="exampleInputPassword1"
@@ -30,7 +29,6 @@
         </div>
         <div class="form-group">
           <input
-            formControlName="confirmPassword"
             type="password"
             class="form-control form-control-lg"
             id="confirmPassword"
@@ -40,7 +38,7 @@
         <div class="mb-4">
           <div class="form-check">
             <label class="form-check-label text-muted">
-              <input formControlName="termsAndConditions" type="checkbox" class="form-check-input" />
+              <input type="checkbox" class="form-check-input" />
               <i class="input-helper"></i>
               I agree to all Terms & Conditions
             </label>
