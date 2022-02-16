@@ -12,9 +12,9 @@
     <app-sidebar></app-sidebar>
     <div class="main-panel" [ngClass]="'main-panel-only'">
       <div class="content-wrapper">
-        <app-spinner *ngIf="isLoading"></app-spinner>
+        <!--        <app-spinner *ngIf="isLoading"></app-spinner>-->
         <!--        <div contentAnimate *ngIf="!isLoading" class="h-100">-->
-        <!--          <router-outlet></router-outlet>-->
+        <router-outlet></router-outlet>
         <!--        </div>-->
       </div>
       <app-footer></app-footer>
