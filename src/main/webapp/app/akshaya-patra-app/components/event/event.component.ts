@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PrototypeService } from '../../services/prototype/prototype.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'jhi-event',
@@ -6,32 +8,31 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./event.component.scss'],
 })
 export class EventComponent implements OnInit {
-  readonly signUpText: string = 'Sing Up';
-  buttonText: string = this.signUpText;
-  volunteerAmount: number = 11;
-  registered: boolean = false;
+  jaipurStatus$: BehaviorSubject<{ isRegistered: boolean; numberRegistered: number }>;
+  isRegistered: boolean;
 
-  constructor() {}
+  constructor(private prototypeService: PrototypeService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.jaipurStatus$ = this.prototypeService.jaipurFoodDriveEventStatus$;
+    this.jaipurStatus$.subscribe(status => {
+      this.isRegistered = status.isRegistered;
+    });
+  }
 
   registrationButtonClick() {
-    if (this.buttonText === this.signUpText) {
-      this.signUpForEvent();
-    } else {
+    if (this.isRegistered) {
       this.unregisterForEvent();
+    } else {
+      this.signUpForEvent();
     }
   }
 
   signUpForEvent(): void {
-    this.buttonText = 'Unregister';
-    this.volunteerAmount += 1;
-    this.registered = true;
+    this.prototypeService.registerForFoodDrive();
   }
 
   unregisterForEvent(): void {
-    this.buttonText = this.signUpText;
-    this.volunteerAmount -= 1;
-    this.registered = false;
+    this.prototypeService.unregisterForFoodDrive();
   }
 }
