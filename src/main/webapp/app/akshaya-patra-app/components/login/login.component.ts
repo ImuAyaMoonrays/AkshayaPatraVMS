@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { PrototypeService } from '../../services/prototype/prototype.service';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +8,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private prototypeService: PrototypeService) {}
 
   login(): void {
+    const username = (<HTMLInputElement>document.getElementById('username')).value;
+    if (username === 'admin') {
+      this.prototypeService.adminLogin();
+    }
     this.router.navigate(['/home']);
   }
 

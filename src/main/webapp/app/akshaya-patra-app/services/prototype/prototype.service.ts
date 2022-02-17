@@ -8,6 +8,8 @@ export class PrototypeService implements OnInit {
   jaipurFoodDriveEventStatus = { isRegistered: false, numberRegistered: 11 };
   jaipurFoodDriveEventStatus$ = new BehaviorSubject<{ isRegistered: boolean; numberRegistered: number }>(this.jaipurFoodDriveEventStatus);
 
+  isAdminAccount$ = new BehaviorSubject<boolean>(false);
+
   constructor() {}
 
   ngOnInit() {
@@ -28,5 +30,13 @@ export class PrototypeService implements OnInit {
 
   private emitJaipurFoodDriveEventStatus(): void {
     this.jaipurFoodDriveEventStatus$.next(this.jaipurFoodDriveEventStatus);
+  }
+
+  adminLogin(): void {
+    this.isAdminAccount$.next(true);
+  }
+
+  logout(): void {
+    this.isAdminAccount$.next(false);
   }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { PrototypeService } from '../../services/prototype/prototype.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,11 +9,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit {
-  public parentId = '';
+  parentId = '';
+  isAdminLogin$: BehaviorSubject<boolean>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private prototypeService: PrototypeService) {}
 
   ngOnInit() {
+    this.isAdminLogin$ = this.prototypeService.isAdminAccount$;
     const body = document.querySelector('body');
 
     // add class 'hover-open' to sidebar navitem while hover in sidebar-icon-only menu
@@ -30,6 +34,7 @@ export class SidebarComponent implements OnInit {
   }
 
   logout(): void {
+    this.prototypeService.logout();
     this.router.navigate(['/login']);
   }
 

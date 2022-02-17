@@ -39,6 +39,12 @@
         <i class="mdi mdi-calendar-today menu-icon"></i>
       </a>
     </li>
+    <li *ngIf="isAdminLogin$ | async" class="nav-item" [ngClass]="{ active: calendar.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
+        <span class="menu-title">ADMIN ONLY</span>
+        <i class="mdi mdi-calendar-today menu-icon"></i>
+      </a>
+    </li>
     <li class="nav-item">
       <a class="nav-link" (click)="logout()">
         <span class="menu-title" style="color: orangered">Logout</span>
