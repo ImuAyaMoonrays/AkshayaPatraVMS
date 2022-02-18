@@ -16,12 +16,16 @@ export class PrototypeService implements OnInit {
   ngOnInit() {}
 
   register(registeredEvent: EventModel): void {
-    this.events.find(event => event.isEqual(registeredEvent)).currentVolunteerCount += 1;
+    const event = this.events.find(event => event.isEqual(registeredEvent));
+    event.currentVolunteerCount += 1;
+    event.isRegistered = true;
     this.emitEvents();
   }
 
   deregister(deregisteredEvent: EventModel): void {
-    this.events.find(event => event.isEqual(deregisteredEvent)).currentVolunteerCount -= 1;
+    const event = this.events.find(event => event.isEqual(deregisteredEvent));
+    event.currentVolunteerCount -= 1;
+    event.isRegistered = false;
     this.emitEvents();
   }
 

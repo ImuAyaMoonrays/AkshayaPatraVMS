@@ -15,7 +15,6 @@ export class EventComponent implements OnInit {
   @Input() hideRegistration: boolean = false;
   eventIcon: 'mdi-school' | 'mdi-food-apple' | 'mdi-water' | 'mdi-flower';
   eventColor: 'bg-gradient-danger' | 'bg-gradient-primary' | 'bg-gradient-success' | 'bg-gradient-info';
-  isRegistered: boolean;
 
   constructor(private prototypeService: PrototypeService) {}
 
@@ -46,7 +45,7 @@ export class EventComponent implements OnInit {
   }
 
   registrationButtonClicked(): void {
-    if (this.isRegistered) {
+    if (this.event.isRegistered) {
       this.deregister();
     } else {
       this.register();

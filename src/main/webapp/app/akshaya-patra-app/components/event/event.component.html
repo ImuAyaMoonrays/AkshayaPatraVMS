@@ -1,7 +1,12 @@
 <div class="col-md-12 stretch-card grid-margin">
   <div class="card {{ eventColor }} card-img-holder text-white">
     <div class="card-body">
-      <img src="content/images/purple-template-images/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+      <img
+        *ngIf="hideRegistration"
+        src="content/images/purple-template-images/images/dashboard/circle.svg"
+        class="card-img-absolute"
+        alt="circle-image"
+      />
       <h6 class="font-weight-normal mb-3">
         {{ event.currentVolunteerCount }}/{{ event.volunteerMax }} volunteers<i class="mdi mdi {{ eventIcon }} mdi-24px float-right"></i>
       </h6>
@@ -13,27 +18,27 @@
         (click)="registrationButtonClicked()"
         role="button"
         class="float-right btn btn-outline-light text-light btn-fw"
-        >{{ isRegistered ? 'Unregister' : 'Sign Up' }}</a
+        >{{ this.event.isRegistered ? 'Unregister' : 'Sign Up' }}</a
       >
     </div>
   </div>
 </div>
 
-<div *ngIf="isPrototypeEvent" class="col-md-12 stretch-card grid-margin">
-  <div class="card bg-gradient-success card-img-holder text-white">
-    <div class="card-body">
-      <h6 class="font-weight-normal mb-3">
-        {{ (jaipurStatus$ | async)?.numberRegistered + '/15 volunteers' }}<i class="mdi mdi-food-apple mdi-24px float-right"></i>
-      </h6>
-      <h1 class="mb-3">
-        Food Drive
-        {{ (jaipurStatus$ | async)?.isRegistered ? '(REGISTERED)' : '' }}
-      </h1>
-      <h5 class="card-text">Jaipur, India</h5>
-      <h6 class="card-text">12 May, 2022</h6>
-      <a (click)="registrationButtonClick()" role="button" class="float-right btn btn-outline-light text-light btn-fw">{{
-        isRegistered ? 'Unregister' : 'Sign Up'
-      }}</a>
-    </div>
-  </div>
-</div>
+<!--<div *ngIf="isPrototypeEvent" class="col-md-12 stretch-card grid-margin">-->
+<!--  <div class="card bg-gradient-success card-img-holder text-white">-->
+<!--    <div class="card-body">-->
+<!--      <h6 class="font-weight-normal mb-3">-->
+<!--        {{ (jaipurStatus$ | async)?.numberRegistered + '/15 volunteers' }}<i class="mdi mdi-food-apple mdi-24px float-right"></i>-->
+<!--      </h6>-->
+<!--      <h1 class="mb-3">-->
+<!--        Food Drive-->
+<!--        {{ (jaipurStatus$ | async)?.isRegistered ? '(REGISTERED)' : '' }}-->
+<!--      </h1>-->
+<!--      <h5 class="card-text">Jaipur, India</h5>-->
+<!--      <h6 class="card-text">12 May, 2022</h6>-->
+<!--      <a (click)="registrationButtonClick()" role="button" class="float-right btn btn-outline-light text-light btn-fw">{{-->
+<!--        isRegistered ? 'Unregister' : 'Sign Up'-->
+<!--      }}</a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
