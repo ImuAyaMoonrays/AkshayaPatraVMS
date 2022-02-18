@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PrototypeService } from '../../services/prototype/prototype.service';
 import { Subject } from 'rxjs';
+import { PrototypeConstants } from '../../constants/prototype.constants';
+import { EventModel } from '../../models/event.model';
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -9,13 +11,11 @@ import { Subject } from 'rxjs';
   styleUrls: ['./events-dashboard.component.scss'],
 })
 export class EventsDashboardComponent implements OnInit {
-  jaipurEventStatus$: Subject<{ isRegistered: boolean; numberRegistered: number }>;
+  EVENTS: EventModel[] = PrototypeConstants.EVENTS;
 
   constructor(private router: Router, private prototypeService: PrototypeService) {}
 
-  ngOnInit(): void {
-    this.jaipurEventStatus$ = this.prototypeService.jaipurFoodDriveEventStatus$;
-  }
+  ngOnInit(): void {}
 
   navigateToEvent(eventId: string): void {
     this.router.navigate([`/home/event/${eventId}`]);

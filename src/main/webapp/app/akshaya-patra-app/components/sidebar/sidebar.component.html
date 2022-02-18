@@ -14,7 +14,7 @@
         <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
       </a>
     </li>
-    <li class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
+    <li *ngIf="!(isAdminLogin$ | async)" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -33,15 +33,35 @@
         </ul>
       </div>
     </li>
+    <li
+      *ngIf="isAdminLogin$ | async"
+      class="nav-item"
+      [ngClass]="{ active: upcomingEvents.isActive || createEvent.isActive || completedEvents.isActive }"
+    >
+      <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-admin-evens">
+        <span class="menu-title">Events</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-shopping menu-icon"></i>
+      </a>
+      <div class="collapse" id="admin-events" [ngbCollapse]="parentId !== 'nav-link-admin-evens'">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="createEvent" routerLinkActive="active" #createEvent="routerLinkActive">Create Event </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="events" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="completedEventForPrototype" routerLinkActive="active" #completedEvents="routerLinkActive"
+              >Completed
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
     <li class="nav-item" [ngClass]="{ active: calendar.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
         <span class="menu-title">Settings</span>
-        <i class="mdi mdi-calendar-today menu-icon"></i>
-      </a>
-    </li>
-    <li *ngIf="isAdminLogin$ | async" class="nav-item" [ngClass]="{ active: calendar.isActive }">
-      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
-        <span class="menu-title">ADMIN ONLY</span>
         <i class="mdi mdi-calendar-today menu-icon"></i>
       </a>
     </li>

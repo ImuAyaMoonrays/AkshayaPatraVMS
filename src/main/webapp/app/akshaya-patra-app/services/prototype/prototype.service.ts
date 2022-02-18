@@ -1,35 +1,32 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { EventModel } from '../../models/event.model';
+import { PrototypeConstants } from '../../constants/prototype.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PrototypeService implements OnInit {
-  jaipurFoodDriveEventStatus = { isRegistered: false, numberRegistered: 11 };
-  jaipurFoodDriveEventStatus$ = new BehaviorSubject<{ isRegistered: boolean; numberRegistered: number }>(this.jaipurFoodDriveEventStatus);
-
+  events: EventModel[] = PrototypeConstants.EVENTS;
   isAdminAccount$ = new BehaviorSubject<boolean>(false);
+  event$ = new BehaviorSubject<EventModel[]>(this.events);
 
   constructor() {}
 
-  ngOnInit() {
-    this.emitJaipurFoodDriveEventStatus();
+  ngOnInit() {}
+
+  register(registeredEvent: EventModel): void {
+    this.events.find(event => event.isEqual(registeredEvent)).currentVolunteerCount += 1;
+    this.emitEvents();
   }
 
-  registerForFoodDrive(): void {
-    this.jaipurFoodDriveEventStatus.isRegistered = true;
-    this.jaipurFoodDriveEventStatus.numberRegistered += 1;
-    this.emitJaipurFoodDriveEventStatus();
+  deregister(deregisteredEvent: EventModel): void {
+    this.events.find(event => event.isEqual(deregisteredEvent)).currentVolunteerCount -= 1;
+    this.emitEvents();
   }
 
-  unregisterForFoodDrive(): void {
-    this.jaipurFoodDriveEventStatus.isRegistered = false;
-    this.jaipurFoodDriveEventStatus.numberRegistered -= 1;
-    this.emitJaipurFoodDriveEventStatus();
-  }
-
-  private emitJaipurFoodDriveEventStatus(): void {
-    this.jaipurFoodDriveEventStatus$.next(this.jaipurFoodDriveEventStatus);
+  private emitEvents(): void {
+    this.event$.next(this.events);
   }
 
   adminLogin(): void {
