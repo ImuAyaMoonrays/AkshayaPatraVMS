@@ -15,6 +15,7 @@ export class HomeScreenComponent implements OnInit {
   constructor(private router: Router, translate: TranslateService) {}
 
   ngOnInit() {
+    document.querySelector('.sidebar-offcanvas').classList.toggle('active');
     document.querySelector('.main-panel').classList.remove('w-100');
     document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
     document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
