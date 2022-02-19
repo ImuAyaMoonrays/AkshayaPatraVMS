@@ -12,17 +12,31 @@ import { PrototypeConstants } from '../../constants/prototype.constants';
 export class EventComponent implements OnInit {
   @Input() event: EventModel;
   @Input() isPrototypeEvent: boolean = false;
-  @Input() hideRegistration: boolean = false;
+  @Input() hideButton: boolean = false;
+  isCompleted: boolean;
   eventIcon: 'mdi-school' | 'mdi-food-apple' | 'mdi-water' | 'mdi-flower';
   eventColor: 'bg-gradient-danger' | 'bg-gradient-primary' | 'bg-gradient-success' | 'bg-gradient-info';
+  isAdmin$: BehaviorSubject<boolean>;
 
   constructor(private prototypeService: PrototypeService) {}
 
   ngOnInit(): void {
+    this.isAdmin$ = this.prototypeService.isAdminAccount$;
     if (!this.event) {
       // temporary hack, should get id from router
       const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
-      this.event = PrototypeConstants.EVENTS.find(event => event.eventId.toString() === eventId);
+      this.prototypeService.event$
+        .subscribe(events => {
+          const upcomingEvent = events.find(event => event.eventId.toString() === eventId);
+          if (upcomingEvent) {
+            this.event = upcomingEvent;
+            this.isCompleted = false;
+          } else {
+            this.event = PrototypeConstants.COMPLETED_EVENTS.find(event => event.eventId.toString() === eventId);
+            this.isCompleted = true;
+          }
+        })
+        .unsubscribe();
     }
     switch (this.event.cause) {
       case 'Education':

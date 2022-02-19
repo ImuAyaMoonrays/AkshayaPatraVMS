@@ -32,6 +32,7 @@ import { ResetPasswordComponent } from './akshaya-patra-app/components/reset-pas
 import { EventsDashboardComponent } from './akshaya-patra-app/components/events-dashboard/events-dashboard.component';
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
+import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/compone
     EventsDashboardComponent,
     EventComponent,
     CompletedEventForPrototypeComponent,
+    CreateEventComponent,
   ],
   bootstrap: [AppComponent],
 })

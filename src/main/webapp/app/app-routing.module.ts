@@ -7,6 +7,7 @@ import { ResetPasswordComponent } from './akshaya-patra-app/components/reset-pas
 import { EventsDashboardComponent } from './akshaya-patra-app/components/events-dashboard/events-dashboard.component';
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
+import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
 
 // http://127.0.0.1:8080/account/activate?key=YFF7j4pQQkGHR14J5keQ
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
     children: [
       { path: 'events', component: EventsDashboardComponent },
       { path: 'event/:id', component: EventComponent },
+      { path: 'createEvent', component: CreateEventComponent },
       //prototype only
       { path: 'completedEventForPrototype', component: CompletedEventForPrototypeComponent },
     ],

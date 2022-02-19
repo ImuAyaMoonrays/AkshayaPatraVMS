@@ -18,7 +18,7 @@
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
-        <i class="mdi mdi-shopping menu-icon"></i>
+        <i class="mdi mdi-calendar menu-icon"></i>
       </a>
       <div class="collapse" id="e-commerce" [ngbCollapse]="parentId !== 'nav-link-12'">
         <ul class="nav flex-column sub-menu">
@@ -41,7 +41,7 @@
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-admin-evens">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
-        <i class="mdi mdi-shopping menu-icon"></i>
+        <i class="mdi mdi-calendar menu-icon"></i>
       </a>
       <div class="collapse" id="admin-events" [ngbCollapse]="parentId !== 'nav-link-admin-evens'">
         <ul class="nav flex-column sub-menu">
@@ -62,7 +62,7 @@
     <li class="nav-item" [ngClass]="{ active: calendar.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
         <span class="menu-title">Settings</span>
-        <i class="mdi mdi-calendar-today menu-icon"></i>
+        <i class="mdi mdi-wrench menu-icon"></i>
       </a>
     </li>
     <li class="nav-item">

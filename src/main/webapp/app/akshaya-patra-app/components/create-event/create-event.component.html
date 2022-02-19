@@ -1,0 +1,33 @@
+<div class="col-md-7 mx-auto grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Create Event</h4>
+      <form [formGroup]="createEventForm" (ngSubmit)="createEvent()" class="forms-sample">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Cause</label>
+          <select class="form-control form-control-lg" id="exampleFormControlSelect1" formControlName="cause">
+            <option>Education</option>
+            <option>Food Drive</option>
+            <option>Water Collection</option>
+            <option>Environmental Work</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Volunteers Needed</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" formControlName="volunteersNeeded" />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Location</label>
+          <input class="form-control" id="exampleInputPassword1" formControlName="location" />
+        </div>
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input id="date" class="form-control" placeholder="dd/mm/yyyy" formControlName="date" />
+        </div>
+        <div class="row justify-content-center mt-4">
+          <button type="submit" class="btn btn-gradient-primary mx-auto">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

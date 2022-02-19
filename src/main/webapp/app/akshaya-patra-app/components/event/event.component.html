@@ -2,7 +2,7 @@
   <div class="card {{ eventColor }} card-img-holder text-white">
     <div class="card-body">
       <img
-        *ngIf="hideRegistration"
+        *ngIf="hideButton"
         src="content/images/purple-template-images/images/dashboard/circle.svg"
         class="card-img-absolute"
         alt="circle-image"
@@ -10,16 +10,21 @@
       <h6 class="font-weight-normal mb-3">
         {{ event.currentVolunteerCount }}/{{ event.volunteerMax }} volunteers<i class="mdi mdi {{ eventIcon }} mdi-24px float-right"></i>
       </h6>
-      <h1 class="mb-3">{{ event.cause }}</h1>
+      <h1 class="mb-3">{{ event.cause + ' ' + (event.isRegistered && !(isAdmin$ | async) ? '(REGISTERED)' : '') }}</h1>
       <h5 class="card-text">{{ event.location }}</h5>
       <h6 class="card-text">{{ event.date }}</h6>
       <a
-        *ngIf="!hideRegistration"
+        *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
         (click)="registrationButtonClicked()"
         role="button"
         class="float-right btn btn-outline-light text-light btn-fw"
         >{{ this.event.isRegistered ? 'Unregister' : 'Sign Up' }}</a
       >
+      <div *ngIf="!hideButton && (isAdmin$ | async)">
+        <br />
+        <h3>Atendees (This is a static value for the prototype, does not reflect data):</h3>
+        <h5>Bob, Venkat, Harshith, Ben, Fausto, Aish, Dylan</h5>
+      </div>
     </div>
   </div>
 </div>

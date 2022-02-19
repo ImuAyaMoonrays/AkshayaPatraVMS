@@ -1,8 +1,8 @@
 <jhi-event
   style="cursor: pointer"
-  *ngFor="let event of EVENTS"
+  *ngFor="let event of events$ | async"
   [event]="event"
-  [hideRegistration]="true"
+  [hideButton]="true"
   (click)="navigateToEvent(event.eventId)"
 ></jhi-event>
 
