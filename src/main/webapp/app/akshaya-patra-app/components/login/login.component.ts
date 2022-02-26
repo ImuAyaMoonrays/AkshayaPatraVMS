@@ -25,4 +25,8 @@ export class LoginComponent {
   resetPassword(): void {
     this.router.navigate(['/resetPassword']);
   }
+
+  navigateSwagger(): void {
+    this.router.navigate(['/swagger']);
+  }
 }

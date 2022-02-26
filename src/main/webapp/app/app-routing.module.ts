@@ -8,6 +8,7 @@ import { EventsDashboardComponent } from './akshaya-patra-app/components/events-
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
+import { DocsComponent } from './akshaya-patra-app/components/docs/docs.component';
 
 // http://127.0.0.1:8080/account/activate?key=YFF7j4pQQkGHR14J5keQ
 const routes: Routes = [
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'resetPassword', component: ResetPasswordComponent },
+  { path: 'swagger', component: DocsComponent },
 ];
 
 @NgModule({
