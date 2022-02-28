@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 
 // TODO: add organization subgroups
 @Entity
@@ -22,7 +24,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     private Location location;
 
@@ -35,6 +37,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
+    @Nullable
     private User eventCreator;
 
     @Column(name = "start_date_and_time")
@@ -44,7 +47,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Instant endDateAndTime;
 
     // double check that this works
-    @OneToMany
+    // double check CascadeType persist
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cause_id", referencedColumnName = "id")
     private Set<Cause> causes = new HashSet<>();
 

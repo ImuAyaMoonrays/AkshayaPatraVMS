@@ -3,6 +3,7 @@ package com.akshayapatravms.c4g.domain;
 import com.akshayapatravms.c4g.enums.PresenceModality;
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -44,8 +45,7 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @Column(name = "locality", length = 200)
     private String locality;
 
-    @Size(max = 50)
-    @Column(name = "pincode", length = 50)
+    @Column(name = "pincode")
     private Long pincode;
 
     public Long getId() {
