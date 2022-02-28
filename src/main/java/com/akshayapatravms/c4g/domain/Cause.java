@@ -19,7 +19,7 @@ public class Cause extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @Size(max = 100)
-    @Column(name = "cause_name", length = 100, nullable = false)
+    @Column(name = "cause_name", length = 100, nullable = false, unique = true)
     private String causeName;
 
     public Long getId() {

@@ -9,6 +9,7 @@ import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.MailService;
 import com.akshayapatravms.c4g.service.UserService;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
+import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.PasswordChangeDTO;
 import com.akshayapatravms.c4g.web.rest.errors.*;
 import com.akshayapatravms.c4g.web.rest.vm.KeyAndPasswordVM;
@@ -42,8 +43,8 @@ public class EventResource {
         this.eventService = eventService;
     }
 
-    @PostMapping("/events")
-    public Event createEvent() throws URISyntaxException {
-        return eventService.createEvent();
+    @PostMapping("/createEvent")
+    public Event createEvent(EventDTO eventDTO) throws URISyntaxException {
+        return eventService.createEvent(eventDTO);
     }
 }

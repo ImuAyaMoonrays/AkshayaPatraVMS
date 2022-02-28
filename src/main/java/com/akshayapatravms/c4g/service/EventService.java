@@ -1,29 +1,22 @@
 package com.akshayapatravms.c4g.service;
 
-import com.akshayapatravms.c4g.config.Constants;
-import com.akshayapatravms.c4g.domain.*;
+import com.akshayapatravms.c4g.domain.Cause;
+import com.akshayapatravms.c4g.domain.Event;
+import com.akshayapatravms.c4g.domain.Location;
+import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.enums.PresenceModality;
-import com.akshayapatravms.c4g.repository.AuthorityRepository;
+import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
-import com.akshayapatravms.c4g.repository.UserRepository;
-import com.akshayapatravms.c4g.security.AuthoritiesConstants;
-import com.akshayapatravms.c4g.security.SecurityUtils;
-import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
-import com.akshayapatravms.c4g.service.dto.UserDTO;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.LocationDTO;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tech.jhipster.security.RandomUtil;
 
 /**
  * Service class for managing users.
@@ -36,75 +29,75 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+    private final CauseRepository causeRepository;
+
     private final UserService userService;
 
     private final CacheManager cacheManager;
 
-    public EventService(EventRepository eventRepository, CacheManager cacheManager, UserService userService) {
+    public EventService(
+        EventRepository eventRepository,
+        CacheManager cacheManager,
+        UserService userService,
+        CauseRepository causeRepository
+    ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
+        this.causeRepository = causeRepository;
     }
 
-    public Event createEvent() {
+    public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
+        Set<Cause> causes = eventDTO
+            .getCauseNames()
+            .stream()
+            .map(String::toUpperCase)
+            .map(causeName -> {
+                Optional<Cause> existingCause = causeRepository.findOneByCauseName(causeName);
+                if (existingCause.isPresent()) {
+                    return existingCause.get();
+                } else {
+                    Cause causeForPersistence = new Cause();
+                    causeForPersistence.setCauseName(causeName);
+                    return causeRepository.save(causeForPersistence);
+                }
+            })
+            .collect(Collectors.toSet());
+        event.setCauses(causes);
+
+        PresenceModality presenceModality = eventDTO.getLocation().getPresenceModality();
         Location location = new Location();
-        location.setPresenceModality(PresenceModality.VIRTUAL);
-        location.setVirtualMeetingAddress("www.googlemeet.com");
+        location.setPresenceModality(presenceModality);
+        if (presenceModality == PresenceModality.VIRTUAL) {
+            location.setVirtualMeetingAddress(eventDTO.getLocation().getVirtualMeetingAddress());
+        } else if (presenceModality == PresenceModality.IN_PERSON) {
+            LocationDTO locationDTO = eventDTO.getLocation();
+            location.setAddress(locationDTO.getAddress());
+            location.setState(locationDTO.getState());
+            location.setCity(locationDTO.getCity());
+            location.setLocality(locationDTO.getLocality());
+            location.setPincode(locationDTO.getPincode());
+        } else {
+            throw new RuntimeException();
+        }
         event.setLocation(location);
 
-        event.setDescription("Test desc");
-        event.setVolunteersNeededAmount(75);
+        event.setDescription(eventDTO.getDescription());
+        event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
 
-        User user = userService.getUserWithAuthorities().orElse(null);
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
         event.setEventCreator(user);
 
-        event.setStartDateAndTime(Instant.now());
-        event.setEndDateAndTime(Instant.now());
+        event.setStartDateAndTime(eventDTO.getStartDateAndTime());
+        event.setEndDateAndTime(eventDTO.getEndDateAndTime());
 
-        Cause cause = new Cause();
-        cause.setCauseName("hunger");
-        event.setCauses(Collections.singleton(cause));
+        event.setContactName(eventDTO.getContactName());
+        event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
+        event.setContactEmail(eventDTO.getContactEmail());
 
-        event.setContactName("Dylan");
-        event.setContactPhoneNumber("123123123");
-        event.setContactEmail("d@gmail.com");
-
-        eventRepository.save(event);
-        return event;
-        //        User user = new User();
-        //        user.setLogin(userDTO.getLogin().toLowerCase());
-        //        user.setFirstName(userDTO.getFirstName());
-        //        user.setLastName(userDTO.getLastName());
-        //        if (userDTO.getEmail() != null) {
-        //            user.setEmail(userDTO.getEmail().toLowerCase());
-        //        }
-        //        user.setImageUrl(userDTO.getImageUrl());
-        //        if (userDTO.getLangKey() == null) {
-        //            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
-        //        } else {
-        //            user.setLangKey(userDTO.getLangKey());
-        //        }
-        //        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        //        user.setPassword(encryptedPassword);
-        //        user.setResetKey(RandomUtil.generateResetKey());
-        //        user.setResetDate(Instant.now());
-        //        user.setActivated(true);
-        //        if (userDTO.getAuthorities() != null) {
-        //            Set<Authority> authorities = userDTO
-        //                .getAuthorities()
-        //                .stream()
-        //                .map(authorityRepository::findById)
-        //                .filter(Optional::isPresent)
-        //                .map(Optional::get)
-        //                .collect(Collectors.toSet());
-        //            user.setAuthorities(authorities);
-        //        }
-        //        userRepository.save(user);
-        //        this.clearUserCaches(user);
-        //        log.debug("Created Information for User: {}", user);
-        //        return user;
+        return eventRepository.save(event);
     }
     //    @Transactional(readOnly = true)
     //    public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable) {

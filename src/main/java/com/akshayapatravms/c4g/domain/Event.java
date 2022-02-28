@@ -24,6 +24,17 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    // double check that this works
+    // double check CascadeType persist
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "event_cause", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "cause_id"))
+    private Set<Cause> causes = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
+    @Nullable
+    private User eventCreator;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     private Location location;
@@ -35,22 +46,11 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "volunteers_needed_amount")
     private Integer volunteersNeededAmount;
 
-    @OneToOne
-    @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
-    @Nullable
-    private User eventCreator;
-
     @Column(name = "start_date_and_time")
     private Instant startDateAndTime;
 
     @Column(name = "end_date_and_time")
     private Instant endDateAndTime;
-
-    // double check that this works
-    // double check CascadeType persist
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "cause_id", referencedColumnName = "id")
-    private Set<Cause> causes = new HashSet<>();
 
     @Size(max = 100)
     @Column(name = "contact_name", length = 100)
