@@ -97,6 +97,8 @@ public class EventService {
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
 
+        event.setEmailBody(eventDTO.getEmailBody());
+
         return eventRepository.save(event);
     }
     //    @Transactional(readOnly = true)

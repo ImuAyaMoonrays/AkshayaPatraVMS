@@ -25,6 +25,8 @@ public class EventDTO {
 
     private String contactEmail;
 
+    private String emailBody;
+
     public EventDTO() {}
 
     public Set<String> getCauseNames() {
@@ -57,6 +59,14 @@ public class EventDTO {
 
     public void setVolunteersNeededAmount(Integer volunteersNeededAmount) {
         this.volunteersNeededAmount = volunteersNeededAmount;
+    }
+
+    public String getEmailBody() {
+        return emailBody;
+    }
+
+    public void setEmailBody(String emailBody) {
+        this.emailBody = emailBody;
     }
 
     public Instant getStartDateAndTime() {

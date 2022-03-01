@@ -64,6 +64,18 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "contact_email", length = 100)
     private String contactEmail;
 
+    @Size(max = 5000)
+    @Column(name = "email_body", length = 5000)
+    private String emailBody;
+
+    public String getEmailBody() {
+        return emailBody;
+    }
+
+    public void setEmailBody(String emailBody) {
+        this.emailBody = emailBody;
+    }
+
     public Long getId() {
         return id;
     }
