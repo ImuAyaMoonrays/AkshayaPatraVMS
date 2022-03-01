@@ -10,9 +10,20 @@
   },
   "description": "test description",
   "volunteersNeededAmount": 97,
-  "startDateAndTime": "2020-02-22T16:37:23Z",
+  "startDateAndTime": "2020-02-22T14:37:00Z",
   "endDateAndTime": "2021-02-22T14:37:20Z",
   "contactName": "bob",
   "contactPhoneNumber": "+1 82 99 1900",
-  "contactEmail": "bob@gmail.com"
+  "contactEmail": "bob@gmail.com",
+  "emailBody": "this is a test email body, testing, testing testing /n /n",
+  "corporateSubgroups": [
+    {
+      "subgroupName": "Google",
+      "subgroupEmailPatterns": ["@gmail.com", "@google.com"]
+    },
+    {
+      "subgroupName": "Apple",
+      "subgroupEmailPatterns": ["@apple.com"]
+    }
+  ]
 }

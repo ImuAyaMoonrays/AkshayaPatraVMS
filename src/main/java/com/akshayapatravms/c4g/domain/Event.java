@@ -11,7 +11,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 
-// TODO: add organization subgroups
+// todo: add activity name
 @Entity
 @Table(name = "event")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -24,17 +24,26 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    // double check that this works
     // double check CascadeType persist
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "event_cause", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "cause_id"))
     private Set<Cause> causes = new HashSet<>();
+
+    // double check CascadeType persist
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+        name = "event_corporate_subgroup",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "corporate_subgroup_id")
+    )
+    private Set<CorporateSubgroup> corporateSubgroups = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
     @Nullable
     private User eventCreator;
 
+    //    use element collection or keep as its own table for autofill?
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     private Location location;
@@ -74,6 +83,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setEmailBody(String emailBody) {
         this.emailBody = emailBody;
+    }
+
+    public Set<CorporateSubgroup> getCorporateSubgroups() {
+        return corporateSubgroups;
+    }
+
+    public void setCorporateSubgroups(Set<CorporateSubgroup> corporateSubgroups) {
+        this.corporateSubgroups = corporateSubgroups;
     }
 
     public Long getId() {

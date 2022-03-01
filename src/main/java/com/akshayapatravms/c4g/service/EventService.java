@@ -1,11 +1,9 @@
 package com.akshayapatravms.c4g.service;
 
-import com.akshayapatravms.c4g.domain.Cause;
-import com.akshayapatravms.c4g.domain.Event;
-import com.akshayapatravms.c4g.domain.Location;
-import com.akshayapatravms.c4g.domain.User;
+import com.akshayapatravms.c4g.domain.*;
 import com.akshayapatravms.c4g.enums.PresenceModality;
 import com.akshayapatravms.c4g.repository.CauseRepository;
+import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.LocationDTO;
@@ -31,6 +29,8 @@ public class EventService {
 
     private final CauseRepository causeRepository;
 
+    private final CorporateSubgroupRepository corporateSubgroupRepository;
+
     private final UserService userService;
 
     private final CacheManager cacheManager;
@@ -39,17 +39,20 @@ public class EventService {
         EventRepository eventRepository,
         CacheManager cacheManager,
         UserService userService,
-        CauseRepository causeRepository
+        CauseRepository causeRepository,
+        CorporateSubgroupRepository corporateSubgroupRepository
     ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
         this.causeRepository = causeRepository;
+        this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
+        //        find by ID rather than uppercase name
         Set<Cause> causes = eventDTO
             .getCauseNames()
             .stream()
@@ -66,6 +69,27 @@ public class EventService {
             })
             .collect(Collectors.toSet());
         event.setCauses(causes);
+
+        //        find by ID rather than uppercase name
+        //        might want to seperate corporate subgroup creation from event creation
+        Set<CorporateSubgroup> corporateSubgroups = eventDTO
+            .getCorporateSubgroups()
+            .stream()
+            .map(corporateSubgroupDTO -> {
+                Optional<CorporateSubgroup> existingSubgroup = corporateSubgroupRepository.findOneBySubgroupName(
+                    corporateSubgroupDTO.getUppercaseSubgroupName()
+                );
+                if (existingSubgroup.isPresent()) {
+                    return existingSubgroup.get();
+                } else {
+                    CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
+                    corporateSubgroup.setSubgroupName(corporateSubgroupDTO.getUppercaseSubgroupName());
+                    corporateSubgroup.setSubgroupEmailPatterns(corporateSubgroupDTO.getSubgroupEmailPatterns());
+                    return corporateSubgroupRepository.save(corporateSubgroup);
+                }
+            })
+            .collect(Collectors.toSet());
+        event.setCorporateSubgroups(corporateSubgroups);
 
         PresenceModality presenceModality = eventDTO.getLocation().getPresenceModality();
         Location location = new Location();

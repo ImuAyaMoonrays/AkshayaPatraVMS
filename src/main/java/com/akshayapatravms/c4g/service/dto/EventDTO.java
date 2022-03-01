@@ -27,7 +27,17 @@ public class EventDTO {
 
     private String emailBody;
 
+    private Set<CorporateSubgroupDTO> corporateSubgroups;
+
     public EventDTO() {}
+
+    public Set<CorporateSubgroupDTO> getCorporateSubgroups() {
+        return corporateSubgroups;
+    }
+
+    public void setCorporateSubgroups(Set<CorporateSubgroupDTO> corporateSubgroups) {
+        this.corporateSubgroups = corporateSubgroups;
+    }
 
     public Set<String> getCauseNames() {
         return causeNames;
