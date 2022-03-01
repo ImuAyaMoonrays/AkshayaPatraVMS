@@ -1,0 +1,18 @@
+{
+  "causeNames": ["hunger", "education", "environment"],
+  "location": {
+    "presenceModality": "IN_PERSON",
+    "address": "1000 test street",
+    "state": "Test State",
+    "city": "test city",
+    "locality": "test locality",
+    "pincode": 555666881
+  },
+  "description": "test description",
+  "volunteersNeededAmount": 97,
+  "startDateAndTime": "2020-02-22T16:37:23Z",
+  "endDateAndTime": "2021-02-22T14:37:20Z",
+  "contactName": "bob",
+  "contactPhoneNumber": "+1 82 99 1900",
+  "contactEmail": "bob@gmail.com"
+}

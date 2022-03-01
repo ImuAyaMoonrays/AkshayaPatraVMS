@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class EventDTO {
 
+    private Long id;
+
     private Set<String> causeNames;
 
     private LocationDTO location;

@@ -44,7 +44,7 @@ public class EventResource {
     }
 
     @PostMapping("/createEvent")
-    public Event createEvent(EventDTO eventDTO) throws URISyntaxException {
+    public Event createEvent(@RequestBody EventDTO eventDTO) throws URISyntaxException {
         return eventService.createEvent(eventDTO);
     }
 }
