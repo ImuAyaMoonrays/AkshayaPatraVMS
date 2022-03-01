@@ -24,7 +24,7 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
     @Column(name = "subgroup_name", nullable = false)
     private String subgroupName;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "subgroup_email_pattern", joinColumns = @JoinColumn(name = "corporate_subgroup_id"))
     private Set<String> subgroupEmailPatterns;
 
