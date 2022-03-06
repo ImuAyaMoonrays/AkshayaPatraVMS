@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CorporateSubgroupRepository extends JpaRepository<CorporateSubgroup, Long> {
     Optional<CorporateSubgroup> findOneBySubgroupName(String subgroupName);
+
+    Optional<CorporateSubgroup> findOneById(Long id);
 }

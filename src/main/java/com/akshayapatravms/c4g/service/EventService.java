@@ -52,41 +52,36 @@ public class EventService {
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
-        //        find by ID rather than uppercase name
         Set<Cause> causes = eventDTO
-            .getCauseNames()
+            .getCauses()
             .stream()
-            .map(String::toUpperCase)
-            .map(causeName -> {
-                Optional<Cause> existingCause = causeRepository.findOneByCauseName(causeName);
-                if (existingCause.isPresent()) {
-                    return existingCause.get();
+            .map(causeDTO -> {
+                if (causeDTO.getId() != null) {
+                    return causeRepository
+                        .findOneById(causeDTO.getId())
+                        .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
                 } else {
-                    Cause causeForPersistence = new Cause();
-                    causeForPersistence.setCauseName(causeName);
-                    return causeRepository.save(causeForPersistence);
+                    if (causeRepository.findOneByCauseName(causeDTO.getName().toUpperCase()).isPresent()) {
+                        throw new RuntimeException(
+                            "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
+                        );
+                    } else {
+                        Cause cause = new Cause();
+                        cause.setCauseName(causeDTO.getName().toUpperCase());
+                        return causeRepository.save(cause);
+                    }
                 }
             })
             .collect(Collectors.toSet());
         event.setCauses(causes);
 
-        //        find by ID rather than uppercase name
-        //        might want to seperate corporate subgroup creation from event creation
         Set<CorporateSubgroup> corporateSubgroups = eventDTO
-            .getCorporateSubgroups()
+            .getCorporateSubgroupIds()
             .stream()
-            .map(corporateSubgroupDTO -> {
-                Optional<CorporateSubgroup> existingSubgroup = corporateSubgroupRepository.findOneBySubgroupName(
-                    corporateSubgroupDTO.getUppercaseSubgroupName()
-                );
-                if (existingSubgroup.isPresent()) {
-                    return existingSubgroup.get();
-                } else {
-                    CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
-                    corporateSubgroup.setSubgroupName(corporateSubgroupDTO.getUppercaseSubgroupName());
-                    corporateSubgroup.setSubgroupEmailPatterns(corporateSubgroupDTO.getSubgroupEmailPatterns());
-                    return corporateSubgroupRepository.save(corporateSubgroup);
-                }
+            .map(corporateSubgroupId -> {
+                return corporateSubgroupRepository
+                    .findOneById(corporateSubgroupId)
+                    .orElseThrow(() -> new RuntimeException("inexistant subgroup by id"));
             })
             .collect(Collectors.toSet());
         event.setCorporateSubgroups(corporateSubgroups);
@@ -125,15 +120,4 @@ public class EventService {
 
         return eventRepository.save(event);
     }
-    //    @Transactional(readOnly = true)
-    //    public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable) {
-    //        return userRepository.findAll(pageable).map(AdminUserDTO::new);
-    //    }
-
-    //    private void clearUserCaches(User user) {
-    //        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
-    //        if (user.getEmail() != null) {
-    //            Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
-    //        }
-    //    }
 }

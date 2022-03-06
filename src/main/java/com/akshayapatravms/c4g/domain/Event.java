@@ -14,7 +14,6 @@ import org.hibernate.annotations.Cascade;
 // todo: add activity name
 @Entity
 @Table(name = "event")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Event extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

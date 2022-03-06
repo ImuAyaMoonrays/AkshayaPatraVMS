@@ -9,7 +9,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "corporate_subgroup")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class CorporateSubgroup extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,8 +39,8 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
         return subgroupName;
     }
 
-    public void setSubgroupName(String subgroup_name) {
-        this.subgroupName = subgroup_name;
+    public void setSubgroupName(String subgroupName) {
+        this.subgroupName = subgroupName;
     }
 
     public Set<String> getSubgroupEmailPatterns() {

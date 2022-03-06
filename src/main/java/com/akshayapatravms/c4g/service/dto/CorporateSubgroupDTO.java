@@ -4,12 +4,18 @@ import java.util.Set;
 
 public class CorporateSubgroupDTO {
 
+    private Long id;
+
     private String subgroupName;
 
     private Set<String> subgroupEmailPatterns;
 
-    public String getUppercaseSubgroupName() {
-        return subgroupName.toUpperCase();
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSubgroupName() {

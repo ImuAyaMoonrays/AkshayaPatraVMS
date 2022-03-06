@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CauseRepository extends JpaRepository<Cause, Long> {
     Optional<Cause> findOneByCauseName(String causeName);
+
+    Optional<Cause> findOneById(Long causeId);
 }

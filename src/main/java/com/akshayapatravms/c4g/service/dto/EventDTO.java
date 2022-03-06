@@ -7,7 +7,9 @@ public class EventDTO {
 
     private Long id;
 
-    private Set<String> causeNames;
+    private Set<CauseDTO> causes;
+
+    private Set<Long> corporateSubgroupIds;
 
     private LocationDTO location;
 
@@ -27,24 +29,30 @@ public class EventDTO {
 
     private String emailBody;
 
-    private Set<CorporateSubgroupDTO> corporateSubgroups;
-
     public EventDTO() {}
 
-    public Set<CorporateSubgroupDTO> getCorporateSubgroups() {
-        return corporateSubgroups;
+    public Set<Long> getCorporateSubgroupIds() {
+        return corporateSubgroupIds;
     }
 
-    public void setCorporateSubgroups(Set<CorporateSubgroupDTO> corporateSubgroups) {
-        this.corporateSubgroups = corporateSubgroups;
+    public void setCorporateSubgroupIds(Set<Long> corporateSubgroupIds) {
+        this.corporateSubgroupIds = corporateSubgroupIds;
     }
 
-    public Set<String> getCauseNames() {
-        return causeNames;
+    public Long getId() {
+        return id;
     }
 
-    public void setCauseNames(Set<String> causeNames) {
-        this.causeNames = causeNames;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Set<CauseDTO> getCauses() {
+        return causes;
+    }
+
+    public void setCauses(Set<CauseDTO> causes) {
+        this.causes = causes;
     }
 
     public LocationDTO getLocation() {
