@@ -44,7 +44,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     @Size(max = 100)
     @Column(name = "eventName", length = 100)
-    private String eventNAme;
+    private String eventName;
 
     @Size(max = 1000)
     @Column(name = "description", length = 1000)
@@ -103,12 +103,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         return location;
     }
 
-    public String getEventNAme() {
-        return eventNAme;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setEventNAme(String eventNAme) {
-        this.eventNAme = eventNAme;
+    public void setEventName(String eventNAme) {
+        this.eventName = eventNAme;
     }
 
     public void setLocation(Location location) {

@@ -99,7 +99,7 @@ public class EventService {
         }
         event.setLocation(location);
 
-        event.setEventNAme(eventDTO.getEventName());
+        event.setEventName(eventDTO.getEventName());
         event.setDescription(eventDTO.getDescription());
         event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
 
