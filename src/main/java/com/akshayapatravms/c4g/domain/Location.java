@@ -3,12 +3,8 @@ package com.akshayapatravms.c4g.domain;
 import com.akshayapatravms.c4g.enums.PresenceModality;
 import java.io.Serializable;
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-// TODO: consider better design pattern for location
 @Entity
 @Table(name = "location")
 public class Location extends AbstractAuditingEntity implements Serializable {
@@ -109,11 +105,5 @@ public class Location extends AbstractAuditingEntity implements Serializable {
 
     public void setPincode(Long pincode) {
         this.pincode = pincode;
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
     }
 }

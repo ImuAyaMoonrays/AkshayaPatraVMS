@@ -1,5 +1,6 @@
 {
-  "causeNames": ["hunger", "education", "environment"],
+  "causes": [],
+  "eventName": "charity",
   "location": {
     "presenceModality": "IN_PERSON",
     "address": "1000 test street",
@@ -15,15 +16,6 @@
   "contactName": "bob",
   "contactPhoneNumber": "+1 82 99 1900",
   "contactEmail": "bob@gmail.com",
-  "emailBody": "this is a test email body, testing, testing testing /n /n",
-  "corporateSubgroups": [
-    {
-      "subgroupName": "Google",
-      "subgroupEmailPatterns": ["@gmail.com", "@google.com"]
-    },
-    {
-      "subgroupName": "Apple",
-      "subgroupEmailPatterns": ["@apple.com"]
-    }
-  ]
+  "emailBody": "thiis is a test email body, testing, testing testing /n /n",
+  "corporateSubgroupIds": []
 }

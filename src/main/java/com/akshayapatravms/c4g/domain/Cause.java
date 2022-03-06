@@ -3,8 +3,6 @@ package com.akshayapatravms.c4g.domain;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "cause")

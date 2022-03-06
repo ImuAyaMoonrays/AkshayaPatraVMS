@@ -28,9 +28,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 
-/**
- * REST controller for managing the current user's account.
- */
 @RestController
 @RequestMapping("/events")
 public class EventResource {

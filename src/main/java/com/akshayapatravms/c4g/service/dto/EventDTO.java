@@ -11,6 +11,8 @@ public class EventDTO {
 
     private Set<Long> corporateSubgroupIds;
 
+    private String eventName;
+
     private LocationDTO location;
 
     private String description;
@@ -30,6 +32,14 @@ public class EventDTO {
     private String emailBody;
 
     public EventDTO() {}
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
     public Set<Long> getCorporateSubgroupIds() {
         return corporateSubgroupIds;

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "corporate_subgroup")
@@ -18,9 +16,8 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    //    todo: add unique = true and then gen liquibase changelog
     @Size(max = 100)
-    @Column(name = "subgroup_name", nullable = false)
+    @Column(name = "subgroup_name", nullable = false, unique = true)
     private String subgroupName;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -49,11 +46,5 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
 
     public void setSubgroupEmailPatterns(Set<String> subgroupEmailPatterns) {
         this.subgroupEmailPatterns = subgroupEmailPatterns;
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
     }
 }

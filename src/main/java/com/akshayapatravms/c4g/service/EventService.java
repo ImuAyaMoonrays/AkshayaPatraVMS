@@ -7,7 +7,6 @@ import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.LocationDTO;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -16,9 +15,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service class for managing users.
- */
 @Service
 @Transactional
 public class EventService {
@@ -103,6 +99,7 @@ public class EventService {
         }
         event.setLocation(location);
 
+        event.setEventNAme(eventDTO.getEventName());
         event.setDescription(eventDTO.getDescription());
         event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
 

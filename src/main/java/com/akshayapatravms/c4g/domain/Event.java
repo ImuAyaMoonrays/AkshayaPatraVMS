@@ -7,11 +7,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 
-// todo: add activity name
 @Entity
 @Table(name = "event")
 public class Event extends AbstractAuditingEntity implements Serializable {
@@ -42,10 +38,13 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Nullable
     private User eventCreator;
 
-    //    use element collection or keep as its own table for autofill?
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
     private Location location;
+
+    @Size(max = 100)
+    @Column(name = "eventName", length = 100)
+    private String eventNAme;
 
     @Size(max = 1000)
     @Column(name = "description", length = 1000)
@@ -102,6 +101,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public Location getLocation() {
         return location;
+    }
+
+    public String getEventNAme() {
+        return eventNAme;
+    }
+
+    public void setEventNAme(String eventNAme) {
+        this.eventNAme = eventNAme;
     }
 
     public void setLocation(Location location) {
@@ -179,36 +186,4 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
     }
-    //    @Override
-    //    public boolean equals(Object o) {
-    //        if (this == o) {
-    //            return true;
-    //        }
-    //        if (!(o instanceof User)) {
-    //            return false;
-    //        }
-    //        return id != null && id.equals(((User) o).id);
-    //    }
-
-    //    @Override
-    //    public int hashCode() {
-    //        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-    //        return getClass().hashCode();
-    //    }
-
-    //    // prettier-ignore
-    //    @Override
-    //    public String toString() {
-    //        return "User{" +
-    //            "login='" + login + '\'' +
-    //            ", firstName='" + firstName + '\'' +
-    //            ", lastName='" + lastName + '\'' +
-    //            ", email='" + email + '\'' +
-    //            ", imageUrl='" + imageUrl + '\'' +
-    //            ", activated='" + activated + '\'' +
-    //            ", langKey='" + langKey + '\'' +
-    //            ", activationKey='" + activationKey + '\'' +
-    //            "}";
-    //    }
-
 }
