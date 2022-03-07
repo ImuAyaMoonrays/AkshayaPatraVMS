@@ -80,6 +80,7 @@ public class EventService {
             })
             .collect(Collectors.toSet());
     }
+
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
@@ -113,6 +114,9 @@ public class EventService {
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
         event.setEmailBody(eventDTO.getEmailBody());
+
+        event.setIsVirtual(eventDTO.getVirtual());
+        log.info("virtual is" + eventDTO.getVirtual());
 
         return eventRepository.save(event);
     }

@@ -43,6 +43,9 @@ public class EventResource {
     @PostMapping("/createEvent")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public Event createEvent(@RequestBody EventDTO eventDTO) throws URISyntaxException {
+        log.info("event DTO Name " +  eventDTO.getEventName());
+        log.info("event DTO virtual "  + eventDTO.getVirtual());
+        log.info("input DTO " + eventDTO);
         return eventService.createEvent(eventDTO);
     }
 }

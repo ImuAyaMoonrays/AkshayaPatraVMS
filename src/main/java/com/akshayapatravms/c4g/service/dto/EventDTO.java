@@ -31,6 +31,8 @@ public class EventDTO {
 
     private String emailBody;
 
+    private Boolean isVirtual;
+
     public EventDTO() {}
 
     public String getEventName() {
@@ -135,5 +137,13 @@ public class EventDTO {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
+    }
+
+    public Boolean getVirtual() {
+        return isVirtual;
+    }
+
+    public void setIsVirtual(Boolean isVirtual) {
+        this.isVirtual = isVirtual;
     }
 }

@@ -194,7 +194,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         return isVirtual;
     }
 
-    public void setVirtual(Boolean virtual) {
-        isVirtual = virtual;
+    public void setIsVirtual(Boolean virtual) {
+        this.isVirtual = virtual;
     }
 }
