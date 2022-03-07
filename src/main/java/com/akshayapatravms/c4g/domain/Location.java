@@ -16,14 +16,6 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "presence_modality", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PresenceModality presenceModality;
-
-    @Size(max = 300)
-    @Column(name = "virtual_meeting_address", length = 300)
-    private String virtualMeetingAddress;
-
     @Size(max = 500)
     @Column(name = "address", length = 500)
     private String address;
@@ -40,31 +32,12 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @Column(name = "locality", length = 200)
     private String locality;
 
-    @Column(name = "pincode")
-    private Long pincode;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public PresenceModality getPresenceModality() {
-        return presenceModality;
-    }
-
-    public void setPresenceModality(PresenceModality presenceModality) {
-        this.presenceModality = presenceModality;
-    }
-
-    public String getVirtualMeetingAddress() {
-        return virtualMeetingAddress;
-    }
-
-    public void setVirtualMeetingAddress(String virtualMeetingAddress) {
-        this.virtualMeetingAddress = virtualMeetingAddress;
     }
 
     public String getAddress() {
@@ -97,13 +70,5 @@ public class Location extends AbstractAuditingEntity implements Serializable {
 
     public void setLocality(String locality) {
         this.locality = locality;
-    }
-
-    public Long getPincode() {
-        return pincode;
-    }
-
-    public void setPincode(Long pincode) {
-        this.pincode = pincode;
     }
 }

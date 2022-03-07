@@ -84,19 +84,13 @@ public class EventService {
 
         PresenceModality presenceModality = eventDTO.getLocation().getPresenceModality();
         Location location = new Location();
-        location.setPresenceModality(presenceModality);
-        if (presenceModality == PresenceModality.VIRTUAL) {
-            location.setVirtualMeetingAddress(eventDTO.getLocation().getVirtualMeetingAddress());
-        } else if (presenceModality == PresenceModality.IN_PERSON) {
-            LocationDTO locationDTO = eventDTO.getLocation();
-            location.setAddress(locationDTO.getAddress());
-            location.setState(locationDTO.getState());
-            location.setCity(locationDTO.getCity());
-            location.setLocality(locationDTO.getLocality());
-            location.setPincode(locationDTO.getPincode());
-        } else {
-            throw new RuntimeException();
-        }
+
+        LocationDTO locationDTO = eventDTO.getLocation();
+        location.setAddress(locationDTO.getAddress());
+        location.setState(locationDTO.getState());
+        location.setCity(locationDTO.getCity());
+        location.setLocality(locationDTO.getLocality());
+
         event.setLocation(location);
 
         event.setEventName(eventDTO.getEventName());

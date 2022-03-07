@@ -50,6 +50,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "description", length = 1000)
     private String description;
 
+    @Column(name = "is_virtual")
+    private Boolean isVirtual;
+
     @Column(name = "volunteers_needed_amount")
     private Integer volunteersNeededAmount;
 
@@ -185,5 +188,13 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
+    }
+
+    public Boolean getVirtual() {
+        return isVirtual;
+    }
+
+    public void setVirtual(Boolean virtual) {
+        isVirtual = virtual;
     }
 }
