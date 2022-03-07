@@ -45,10 +45,8 @@ public class EventService {
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
-    public Event createEvent(EventDTO eventDTO) {
-        Event event = new Event();
-
-        Set<Cause> causes = eventDTO
+    private Set<Cause> getCausesFromEvent(EventDTO eventDTO) throws RuntimeException {
+        return eventDTO
             .getCauses()
             .stream()
             .map(causeDTO -> {
@@ -69,9 +67,10 @@ public class EventService {
                 }
             })
             .collect(Collectors.toSet());
-        event.setCauses(causes);
+    }
 
-        Set<CorporateSubgroup> corporateSubgroups = eventDTO
+    private Set<CorporateSubgroup> getCorpSubGroupsFromEvent(EventDTO eventDTO) {
+        return eventDTO
             .getCorporateSubgroupIds()
             .stream()
             .map(corporateSubgroupId -> {
@@ -80,6 +79,14 @@ public class EventService {
                     .orElseThrow(() -> new RuntimeException("inexistant subgroup by id"));
             })
             .collect(Collectors.toSet());
+    }
+    public Event createEvent(EventDTO eventDTO) {
+        Event event = new Event();
+
+        Set<Cause> causes = getCausesFromEvent(eventDTO);
+        event.setCauses(causes);
+
+        Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
         event.setCorporateSubgroups(corporateSubgroups);
 
         PresenceModality presenceModality = eventDTO.getLocation().getPresenceModality();
@@ -102,11 +109,9 @@ public class EventService {
 
         event.setStartDateAndTime(eventDTO.getStartDateAndTime());
         event.setEndDateAndTime(eventDTO.getEndDateAndTime());
-
         event.setContactName(eventDTO.getContactName());
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
-
         event.setEmailBody(eventDTO.getEmailBody());
 
         return eventRepository.save(event);
