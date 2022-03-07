@@ -34,6 +34,15 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @Column(name = "locality", length = 200)
     private String locality;
 
+
+    @Size(max = 200)
+    @Column(name = "region", length = 200)
+    private String region;
+
+    @Size(max = 200)
+    @Column(name = "country", length = 200)
+    private String country;
+
     public  Location(){
     }
 
@@ -42,6 +51,8 @@ public class Location extends AbstractAuditingEntity implements Serializable {
         this.setCity(locationDTO.getCity());
         this.setLocality(locationDTO.getLocality());
         this.setState(locationDTO.getState());
+        this.setRegion(locationDTO.getRegion());
+        this.setCountry(locationDTO.getCountry());
     }
 
     public Long getId() {
@@ -82,5 +93,21 @@ public class Location extends AbstractAuditingEntity implements Serializable {
 
     public void setLocality(String locality) {
         this.locality = locality;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

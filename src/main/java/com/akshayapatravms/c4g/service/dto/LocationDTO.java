@@ -4,10 +4,6 @@ import com.akshayapatravms.c4g.enums.PresenceModality;
 
 public class LocationDTO {
 
-    private PresenceModality presenceModality;
-
-    private String virtualMeetingAddress;
-
     private String address;
 
     private String state;
@@ -16,26 +12,12 @@ public class LocationDTO {
 
     private String locality;
 
-    private Long pincode;
+    private String region;
+
+    private String country;
 
     public LocationDTO() {
         // Empty constructor needed for Jackson.
-    }
-
-    public PresenceModality getPresenceModality() {
-        return presenceModality;
-    }
-
-    public void setPresenceModality(PresenceModality presenceModality) {
-        this.presenceModality = presenceModality;
-    }
-
-    public String getVirtualMeetingAddress() {
-        return virtualMeetingAddress;
-    }
-
-    public void setVirtualMeetingAddress(String virtualMeetingAddress) {
-        this.virtualMeetingAddress = virtualMeetingAddress;
     }
 
     public String getAddress() {
@@ -70,11 +52,20 @@ public class LocationDTO {
         this.locality = locality;
     }
 
-    public Long getPincode() {
-        return pincode;
+    public String getCountry() {
+        return country;
     }
 
-    public void setPincode(Long pincode) {
-        this.pincode = pincode;
+    public void setCountry(String country) {
+        this.country = country;
     }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
 }
