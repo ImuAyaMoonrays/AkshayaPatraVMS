@@ -45,6 +45,7 @@ public class EventService {
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
+    //saves new causes to db
     private Set<Cause> getCausesFromEvent(EventDTO eventDTO) throws RuntimeException {
         return eventDTO
             .getCauses()
@@ -55,6 +56,7 @@ public class EventService {
                         .findOneById(causeDTO.getId())
                         .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
                 } else {
+                    //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
                     if (causeRepository.findOneByCauseName(causeDTO.getName().toUpperCase()).isPresent()) {
                         throw new RuntimeException(
                             "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
@@ -84,39 +86,27 @@ public class EventService {
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
+        event.setEventCreator(user);
+
         Set<Cause> causes = getCausesFromEvent(eventDTO);
         event.setCauses(causes);
 
         Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
         event.setCorporateSubgroups(corporateSubgroups);
 
-        PresenceModality presenceModality = eventDTO.getLocation().getPresenceModality();
-        Location location = new Location();
-
-        LocationDTO locationDTO = eventDTO.getLocation();
-        location.setAddress(locationDTO.getAddress());
-        location.setState(locationDTO.getState());
-        location.setCity(locationDTO.getCity());
-        location.setLocality(locationDTO.getLocality());
-
-        event.setLocation(location);
+        event.setLocation(new Location(eventDTO.getLocation()));
 
         event.setEventName(eventDTO.getEventName());
         event.setDescription(eventDTO.getDescription());
         event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-
-        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
-        event.setEventCreator(user);
-
         event.setStartDateAndTime(eventDTO.getStartDateAndTime());
         event.setEndDateAndTime(eventDTO.getEndDateAndTime());
         event.setContactName(eventDTO.getContactName());
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
         event.setEmailBody(eventDTO.getEmailBody());
-
         event.setIsVirtual(eventDTO.getVirtual());
-        log.info("virtual is" + eventDTO.getVirtual());
 
         return eventRepository.save(event);
     }

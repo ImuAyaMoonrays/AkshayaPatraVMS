@@ -1,6 +1,8 @@
 package com.akshayapatravms.c4g.domain;
 
 import com.akshayapatravms.c4g.enums.PresenceModality;
+import com.akshayapatravms.c4g.service.dto.LocationDTO;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -31,6 +33,16 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @Size(max = 200)
     @Column(name = "locality", length = 200)
     private String locality;
+
+    public  Location(){
+    }
+
+    public  Location(LocationDTO locationDTO) {
+        this.setAddress(locationDTO.getAddress());
+        this.setCity(locationDTO.getCity());
+        this.setLocality(locationDTO.getLocality());
+        this.setState(locationDTO.getState());
+    }
 
     public Long getId() {
         return id;
