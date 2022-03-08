@@ -28,6 +28,7 @@ import { ApplicationConfigService } from './akshaya-patra-app/services/applicati
 import { SharedModule } from './akshaya-patra-app/modules/shared.module';
 import { httpInterceptorProviders } from './akshaya-patra-app/interceptors/interceptor';
 import { fontAwesomeIcons } from './akshaya-patra-app/configs/font-awesome-icons';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { fontAwesomeIcons } from './akshaya-patra-app/configs/font-awesome-icons
     // Set this to true to enable service worker (PWA)
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: true }),
     HttpClientModule,
+    NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
   ],
   providers: [NgbModule, Title, { provide: LOCALE_ID, useValue: 'en' }, httpInterceptorProviders],
   declarations: [

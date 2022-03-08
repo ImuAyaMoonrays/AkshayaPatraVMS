@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { PrototypeService } from '../../services/prototype/prototype.service';
+import { LoginService } from '../../services/login/login.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,7 +13,7 @@ export class SidebarComponent implements OnInit {
   parentId = '';
   isAdminLogin$: BehaviorSubject<boolean>;
 
-  constructor(private router: Router, private prototypeService: PrototypeService) {}
+  constructor(private router: Router, private prototypeService: PrototypeService, private loginService: LoginService) {}
 
   ngOnInit() {
     this.isAdminLogin$ = this.prototypeService.isAdminAccount$;
@@ -34,7 +35,7 @@ export class SidebarComponent implements OnInit {
   }
 
   logout(): void {
-    this.prototypeService.logout();
+    this.loginService.logout();
     this.router.navigate(['/login']);
   }
 

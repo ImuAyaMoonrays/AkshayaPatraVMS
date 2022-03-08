@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { SessionStorageService } from 'ngx-webstorage';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { catchError, shareReplay, tap } from 'rxjs/operators';
 
 import { Account } from './account.model';
 import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../application-config/application-config.service';
+import { SessionStorageService } from 'ngx-webstorage';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {

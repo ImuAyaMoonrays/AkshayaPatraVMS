@@ -9,12 +9,14 @@ import { EventComponent } from './akshaya-patra-app/components/event/event.compo
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
 import { DocsComponent } from './akshaya-patra-app/components/docs/docs.component';
+import { UserRouteAccessService } from './akshaya-patra-app/services/auth/user-route-access.service';
 
 // http://127.0.0.1:8080/account/activate?key=YFF7j4pQQkGHR14J5keQ
 const routes: Routes = [
   {
     path: 'home',
     component: HomeScreenComponent,
+    canActivate: [UserRouteAccessService],
     children: [
       { path: 'events', component: EventsDashboardComponent },
       { path: 'event/:id', component: EventComponent },
