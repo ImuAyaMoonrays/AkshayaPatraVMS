@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, RouteConfigLoadEnd, RouteConfigLoadStart, Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-home-screen',
@@ -12,7 +11,7 @@ export class HomeScreenComponent implements OnInit {
 
   isLoading: boolean;
 
-  constructor(private router: Router, translate: TranslateService) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');

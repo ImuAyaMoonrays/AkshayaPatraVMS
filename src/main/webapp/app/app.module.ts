@@ -5,20 +5,11 @@ import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { NgxWebstorageModule } from 'ngx-webstorage';
-import dayjs from 'dayjs/esm';
-import { NgbDateAdapter, NgbDatepickerConfig, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { ApplicationConfigService } from 'app/jhipster-app/core/config/application-config.service';
-import './jhipster-app/config/dayjs';
-import { SharedModule } from 'app/jhipster-app/shared/shared.module';
-import { TranslationModule } from 'app/jhipster-app/shared/language/translation.module';
+import { NgbDatepickerConfig, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppRoutingModule } from './app-routing.module';
-import { HomeModule } from './jhipster-app/home/home.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
-import { NgbDateDayjsAdapter } from './jhipster-app/config/datepicker-adapter';
-import { fontAwesomeIcons } from './jhipster-app/config/font-awesome-icons';
-import { httpInterceptorProviders } from 'app/jhipster-app/core/interceptor/index';
 import { AppComponent } from './akshaya-patra-app/components/app-component/app.component';
 import { NavbarComponent } from './akshaya-patra-app/components/navbar/navbar.component';
 import { SidebarComponent } from './akshaya-patra-app/components/sidebar/sidebar.component';
@@ -33,27 +24,22 @@ import { EventsDashboardComponent } from './akshaya-patra-app/components/events-
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
+import { ApplicationConfigService } from './akshaya-patra-app/services/application-config/application-config.service';
+import { SharedModule } from './akshaya-patra-app/modules/shared.module';
+import { httpInterceptorProviders } from './akshaya-patra-app/interceptors/interceptor';
+import { fontAwesomeIcons } from './akshaya-patra-app/configs/font-awesome-icons';
 
 @NgModule({
   imports: [
     BrowserModule,
     SharedModule,
-    HomeModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: true }),
     HttpClientModule,
-    NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
-    TranslationModule,
   ],
-  providers: [
-    NgbModule,
-    Title,
-    { provide: LOCALE_ID, useValue: 'en' },
-    { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
-    httpInterceptorProviders,
-  ],
+  providers: [NgbModule, Title, { provide: LOCALE_ID, useValue: 'en' }, httpInterceptorProviders],
   declarations: [
     AppComponent,
     NavbarComponent,
@@ -77,6 +63,5 @@ export class AppModule {
     applicationConfigService.setEndpointPrefix(SERVER_API_URL);
     registerLocaleData(locale);
     iconLibrary.addIcons(...fontAwesomeIcons);
-    dpConfig.minDate = { year: dayjs().subtract(100, 'year').year(), month: 1, day: 1 };
   }
 }

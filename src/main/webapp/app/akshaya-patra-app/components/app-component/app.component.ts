@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-app-root',
