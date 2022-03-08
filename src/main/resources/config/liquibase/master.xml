@@ -16,6 +16,15 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20220306145159_event_and_dependencies_modelling.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220307040430_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220307231434_location_update_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220308015528_adding_profile_table_changelog.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220308053055_changelog.xml" relativeToChangelogFile="false"/>
+
+
+
+
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>
