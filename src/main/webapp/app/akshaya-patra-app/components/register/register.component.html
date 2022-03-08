@@ -1,76 +1,81 @@
 <div class="d-flex align-items-center auth px-0">
   <div class="row w-100 mx-0">
     <div class="col-lg-4 mx-auto mt-5 mb-5">
-      <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-        <div class="brand-logo">
-          <img class="logo-display" src="content/images/akshaya-patra-logo.png" alt="logo" />
-        </div>
-        <h4>New here?</h4>
-        <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
-        <div class="form-group">
-          <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Name" />
-        </div>
-        <div class="form-group">
-          <input type="text" class="form-control form-control-lg" id="dob" placeholder="Date of Birth" />
-        </div>
-        <div class="form-group">
-          <input type="text" class="form-control form-control-lg" id="location" placeholder="Location" />
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email" />
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password" />
-        </div>
-        <div class="form-group">
-          <input type="password" class="form-control form-control-lg" id="confirmPassword" placeholder="Confirm Password" />
-        </div>
-        <div class="mb-4">
-          <div class="form-check">
-            <label class="form-check-label text-muted">
-              <input type="checkbox" class="form-check-input" />
-              <i class="input-helper"></i>
-              I agree to all Terms & Conditions
-            </label>
+      <form class="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm">
+        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+          <div class="brand-logo">
+            <img class="logo-display" src="content/images/akshaya-patra-logo.png" alt="logo"/>
+          </div>
+          <h4>New here?</h4>
+          <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+          <div class="form-group">
+            <input formControlName="login" type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Name"/>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control form-control-lg" id="dob" placeholder="Date of Birth"/>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control form-control-lg" id="location" placeholder="Location"/>
+          </div>
+          <div class="form-group">
+            <input formControlName="email" type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Email"/>
+          </div>
+          <div class="form-group">
+            <input formControlName="password" type="password" class="form-control form-control-lg" id="exampleInputPassword1"
+            placeholder="Password"/>
+          </div>
+          <div class="form-group">
+            <input formControlName="confirmPassword" type="password" class="form-control form-control-lg" id="confirmPassword"
+                   placeholder="Confirm Password"/>
+          </div>
+          <div class="mb-4">
+            <div class="form-check">
+              <label class="form-check-label text-muted">
+                <input type="checkbox" class="form-check-input"/>
+                <i class="input-helper"></i>
+                I agree to all Terms & Conditions
+              </label>
+            </div>
+          </div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">
+              Register
+            </button>
+          </div>
+          <!--          <div *ngIf="success" style="color: green; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              Registration Successful! Please confirm your account via the activation email!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <!--          <div *ngIf="doNotMatch" style="color: red; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              Please make sure both passwords match!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <!--          <div *ngIf="showTermsAndConditionsNeedsToBeAcceptedMessage" style="color: red; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              You must accept the terms and conditions in order to register!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <!--          <div *ngIf="errorEmailExists" style="color: red; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              Sorry! That email iis already being used by another account! Please use a different email!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <!--          <div *ngIf="errorUserExists" style="color: red; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              Sorry! That username is already being used by another account! Please use a different username!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <!--          <div *ngIf="error" style="color: red; text-align: center" class="mt-3">-->
+          <!--            <p>-->
+          <!--              Sorry! Unknown error! Please submit an email so that I can look into this defect!-->
+          <!--            </p>-->
+          <!--          </div>-->
+          <div class="text-center mt-4 font-weight-light">Already have an account? <a routerLink="/login" class="text-primary">Login</a>
           </div>
         </div>
-        <div class="mt-3">
-          <button (click)="register()" type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">
-            Register
-          </button>
-        </div>
-        <!--          <div *ngIf="success" style="color: green; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              Registration Successful! Please confirm your account via the activation email!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <!--          <div *ngIf="doNotMatch" style="color: red; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              Please make sure both passwords match!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <!--          <div *ngIf="showTermsAndConditionsNeedsToBeAcceptedMessage" style="color: red; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              You must accept the terms and conditions in order to register!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <!--          <div *ngIf="errorEmailExists" style="color: red; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              Sorry! That email iis already being used by another account! Please use a different email!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <!--          <div *ngIf="errorUserExists" style="color: red; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              Sorry! That username is already being used by another account! Please use a different username!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <!--          <div *ngIf="error" style="color: red; text-align: center" class="mt-3">-->
-        <!--            <p>-->
-        <!--              Sorry! Unknown error! Please submit an email so that I can look into this defect!-->
-        <!--            </p>-->
-        <!--          </div>-->
-        <div class="text-center mt-4 font-weight-light">Already have an account? <a routerLink="/login" class="text-primary">Login</a></div>
-      </div>
+      </form>
     </div>
   </div>
 </div>

@@ -45,17 +45,23 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtp.gmail.com
+    port: 587
+    username: akshayapatra8811@gmail.com
+    password: mTE76GkDHQJK.QoFzXkNNptX
+    protocol: smtp
+    tls: true
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp.gmail.com
   thymeleaf:
     cache: true
   sleuth:
     sampler:
       probability: 1 # report 100% of traces
   zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
-    base-url: http://localhost:9411
+    base-url: http://Akshaya-patra-vms.herokuapp.com
     enabled: false
     locator:
       discovery:
@@ -115,7 +121,7 @@ jhipster:
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://my-server-url-to-change # Modify according to your server's URL
+    base-url: https://akshaya-patra-vms.herokuapp.com/ # Modify according to your server's URL
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
