@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AccountService } from '../../services/auth/account.service';
 import { LoginService } from '../../services/login/login.service';
+import { ActivateService } from '../../services/activate-account/activate.service';
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,19 @@ export class LoginComponent implements OnInit {
     private accountService: AccountService,
     private loginService: LoginService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private activateAccountService: ActivateService
   ) {}
 
   ngOnInit(): void {
+    const url = window.location.href;
+    console.log(url);
+    if (url.includes('key=')) {
+      const keyEqualsIndex = url.lastIndexOf('=');
+      const activationKey = url.slice(keyEqualsIndex + 1);
+      console.log(activationKey);
+      this.activateAccountService.get(activationKey).subscribe();
+    }
     // if already authenticated then navigate to home page
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/router';
 import { AccountService } from '../../services/auth/account.service';
-import { ActivateService } from "../../services/activate-account/activate.service";
-import { mergeMap, of } from "rxjs";
+import { ActivateService } from '../../services/activate-account/activate.service';
+import { mergeMap, of } from 'rxjs';
 
 @Component({
   selector: 'jhi-app-root',
@@ -10,9 +10,7 @@ import { mergeMap, of } from "rxjs";
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private router: Router,
-              private accountService: AccountService,
-              private activateAccountService: ActivateService) {}
+  constructor(private router: Router, private accountService: AccountService, private activateAccountService: ActivateService) {}
 
   ngOnInit() {
     // Scroll to top after route change
@@ -23,23 +21,16 @@ export class AppComponent implements OnInit {
       window.scrollTo(0, 0);
     });
 
-
-    const url = window.location.href;
-    if (url.includes('key=')) {
-      const keyEqualsIndex = url.lastIndexOf('key=');
-      const activationKey =  url.slice(keyEqualsIndex + 1);
-      console.log(activationKey);
-      return this.activateAccountService.get(activationKey);
-    }
-
-    this.accountService.identity().pipe(
-    ).subscribe(() => {
-      if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/home']);
-      } else {
-        console.log(window.location.href);
-        this.router.navigate(['/login']);
-      }
-    });
+    this.accountService
+      .identity()
+      .pipe()
+      .subscribe(() => {
+        if (this.accountService.isAuthenticated()) {
+          this.router.navigate(['/home']);
+        } else {
+          console.log(window.location.href);
+          this.router.navigate(['/login']);
+        }
+      });
   }
 }

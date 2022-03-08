@@ -26,6 +26,7 @@ const routes: Routes = [
     ],
   },
   { path: 'login', component: LoginComponent },
+  { path: 'account/activate', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'resetPassword', component: ResetPasswordComponent },
   { path: 'swagger', component: DocsComponent },
