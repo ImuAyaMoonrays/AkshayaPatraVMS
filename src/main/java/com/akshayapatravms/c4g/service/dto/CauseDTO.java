@@ -1,5 +1,7 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.Cause;
+
 public class CauseDTO {
 
     //    if payload contains id, will find existing cause by this id
@@ -21,5 +23,12 @@ public class CauseDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public CauseDTO() {}
+
+    public CauseDTO(Cause cause) {
+        this.id = cause.getId();
+        this.name = cause.getCauseName();
     }
 }

@@ -1,5 +1,6 @@
 package com.akshayapatravms.c4g.domain;
 
+import com.akshayapatravms.c4g.service.dto.CauseDTO;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -25,6 +26,13 @@ public class Cause extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Cause() {}
+
+    public Cause(CauseDTO causeDTO) {
+        this.causeName = causeDTO.getName();
+        this.id = causeDTO.getId();
     }
 
     public String getCauseName() {

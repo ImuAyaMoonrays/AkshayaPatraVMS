@@ -11,4 +11,6 @@ public interface CauseRepository extends JpaRepository<Cause, Long> {
     Optional<Cause> findOneByCauseName(String causeName);
 
     Optional<Cause> findOneById(Long causeId);
+
+    Iterable<Cause> findAllByOrderByCauseName();
 }
