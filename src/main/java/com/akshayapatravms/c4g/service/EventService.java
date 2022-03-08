@@ -1,12 +1,14 @@
 package com.akshayapatravms.c4g.service;
 
 import com.akshayapatravms.c4g.domain.*;
-import com.akshayapatravms.c4g.enums.PresenceModality;
 import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
+import com.akshayapatravms.c4g.repository.ProfileRepository;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.LocationDTO;
+import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
+
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ public class EventService {
 
     private final CauseRepository causeRepository;
 
+    private final ProfileRepository profileRepository;
+
     private final CorporateSubgroupRepository corporateSubgroupRepository;
 
     private final UserService userService;
@@ -36,13 +40,15 @@ public class EventService {
         CacheManager cacheManager,
         UserService userService,
         CauseRepository causeRepository,
-        CorporateSubgroupRepository corporateSubgroupRepository
+        CorporateSubgroupRepository corporateSubgroupRepository,
+        ProfileRepository profileRepository
     ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
         this.causeRepository = causeRepository;
         this.corporateSubgroupRepository = corporateSubgroupRepository;
+        this.profileRepository = profileRepository;
     }
 
     //saves new causes to db
@@ -109,5 +115,18 @@ public class EventService {
         event.setIsVirtual(eventDTO.getVirtual());
 
         return eventRepository.save(event);
+    }
+
+    public void signUpForEvent(ProfileEventDTO profileEventDTO) {
+        //update so there's validation that the user signing up is same as user.
+
+        Optional<Profile> profile = profileRepository.getProfileById(profileEventDTO.getUserID());
+        Optional<Event>  event = eventRepository.getEventById(profileEventDTO.getEventID());
+        if (profile.isPresent() & event.isPresent()){
+            profile.get().getEvents().add(event.get());
+            profileRepository.save(profile.get());
+        } else{
+            //error!
+        }
     }
 }

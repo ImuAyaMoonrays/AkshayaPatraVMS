@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="bhale (generated)" id="1646704552209-2">
+        <createTable tableName="profile">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profilePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP"/>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="accepted_tos" type="BOOLEAN"/>
+            <column name="age" type="INT"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="phone_number" type="VARCHAR(100)"/>
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1646704552209-3">
+        <createTable tableName="profile_event">
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="evemt_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1646704552209-4">
+        <addUniqueConstraint columnNames="evemt_id" constraintName="UK_gv6loo49bnl78xca4ssqkbm7b" tableName="profile_event"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1646704552209-5">
+        <addForeignKeyConstraint baseColumnNames="evemt_id" baseTableName="profile_event" constraintName="FK7btkm15s58ooa0umyws2jbrrc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1646704552209-6">
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="profile_event" constraintName="FK81f4n9hexlr20w6x1ny3euibq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1646704552209-7">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="profile" constraintName="FKla9kopl4kgeg1jr3iq5t9ii0t" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

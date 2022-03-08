@@ -1,6 +1,5 @@
 package com.akshayapatravms.c4g.domain;
 
-import com.akshayapatravms.c4g.enums.PresenceModality;
 import com.akshayapatravms.c4g.service.dto.LocationDTO;
 
 import java.io.Serializable;

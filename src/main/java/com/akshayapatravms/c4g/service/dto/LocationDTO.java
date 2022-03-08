@@ -1,7 +1,5 @@
 package com.akshayapatravms.c4g.service.dto;
 
-import com.akshayapatravms.c4g.enums.PresenceModality;
-
 public class LocationDTO {
 
     private String address;

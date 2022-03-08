@@ -1,7 +1,6 @@
 package com.akshayapatravms.c4g.service;
 
 import com.akshayapatravms.c4g.domain.*;
-import com.akshayapatravms.c4g.enums.PresenceModality;
 import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;

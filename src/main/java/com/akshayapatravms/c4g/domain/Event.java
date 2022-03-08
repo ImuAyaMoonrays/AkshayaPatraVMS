@@ -33,6 +33,13 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     )
     private Set<CorporateSubgroup> corporateSubgroups = new HashSet<>();
 
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+        name = "profile_event",
+        joinColumns = @JoinColumn(name = "profile_id"),
+        inverseJoinColumns = @JoinColumn(name = "evemt_id"))
+    private Set<Profile> volunteers = new HashSet<>();
+
     @OneToOne
     @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
     @Nullable
