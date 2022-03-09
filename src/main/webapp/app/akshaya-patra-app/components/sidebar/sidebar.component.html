@@ -3,18 +3,17 @@
     <li class="nav-item nav-profile">
       <a href="javascript:;" class="nav-link">
         <div class="nav-profile-image">
-          <img src="content/images/purple-template-images/images/faces/face1.jpg" alt="profile" />
+          <img src="content/images/akshaya-patra-images/Sample_User_Icon.png" alt="profile" />
           <span class="login-status online"></span>
           <!--change to offline or busy as needed-->
         </div>
         <div class="nav-profile-text">
-          <span class="font-weight-bold mb-2">Nara</span>
+          <span class="font-weight-bold mb-2">{{ username$ | async }}</span>
           <span class="text-secondary text-small">Volunteer</span>
         </div>
-        <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
       </a>
     </li>
-    <li *ngIf="!(isAdminLogin$ | async)" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
+    <li *ngIf="!isAdminLogin" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -34,7 +33,7 @@
       </div>
     </li>
     <li
-      *ngIf="isAdminLogin$ | async"
+      *ngIf="isAdminLogin"
       class="nav-item"
       [ngClass]="{ active: upcomingEvents.isActive || createEvent.isActive || completedEvents.isActive }"
     >
