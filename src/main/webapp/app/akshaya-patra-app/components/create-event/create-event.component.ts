@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { PrototypeService } from '../../services/prototype/prototype.service';
 import { EventModel } from '../../models/event.model';
 import { Router } from '@angular/router';
@@ -10,22 +10,55 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-event.component.scss'],
 })
 export class CreateEventComponent implements OnInit {
+  selectedCauses;
+  causes = [
+    {
+      name: 'Hunger',
+    },
+    {
+      name: 'education',
+    },
+  ];
+  newCause: FormControl = new FormControl('');
+  causesFormControl: FormControl = new FormControl(null);
   createEventForm = this.fb.group({
-    cause: [null, Validators.required],
-    volunteersNeeded: [null, [Validators.pattern('^[0-9]*$'), Validators.required]],
-    location: [null, Validators.required],
-    date: [
-      null,
-      [
-        Validators.pattern(
-          '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$'
-        ),
-        Validators.required,
-      ],
-    ],
+    causes: this.fb.array([this.fb.control('')]),
+    eventName: ['', Validators.required],
+    location: this.fb.group({
+      address: ['', Validators.required],
+      state: [''],
+      city: [''],
+      locality: [''],
+      region: [''],
+      country: [''],
+    }),
+    description: [''],
+    volunteersNeededAmount: [null, [Validators.pattern('^[0-9]*$'), Validators.required]],
+    startDateAndTime: [null],
+    endDateAndTime: [null],
+    contactName: [''],
+    contactPhoneNumber: [''],
+    contactEmail: [Validators.email],
+    emailBody: [''],
   });
 
   constructor(private fb: FormBuilder, private router: Router, private prototypeService: PrototypeService) {}
+
+  logModel(): void {
+    console.log('here');
+    console.log(this.selectedCauses);
+  }
+
+  addCause(): void {
+    const newCauseValue = this.newCause.value;
+    if (newCauseValue !== '' && !this.causes.map(cause => cause.name).includes(newCauseValue)) {
+      const newCause = { name: newCauseValue };
+
+      this.causes = this.causes.concat(newCause);
+      this.selectedCauses = this.selectedCauses.concat(newCauseValue);
+    }
+    this.newCause.setValue('');
+  }
 
   ngOnInit(): void {}
 

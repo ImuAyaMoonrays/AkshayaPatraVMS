@@ -2,12 +2,12 @@
   "causes": [],
   "eventName": "charity",
   "location": {
-    "presenceModality": "IN_PERSON",
     "address": "1000 test street",
     "state": "Test State",
     "city": "test city",
     "locality": "test locality",
-    "pincode": 555666881
+    "region": "Jaipur",
+    "country": "india"
   },
   "description": "test description",
   "volunteersNeededAmount": 97,
@@ -17,5 +17,6 @@
   "contactPhoneNumber": "+1 82 99 1900",
   "contactEmail": "bob@gmail.com",
   "emailBody": "thiis is a test email body, testing, testing testing /n /n",
+  "isVirtual": false,
   "corporateSubgroupIds": []
 }

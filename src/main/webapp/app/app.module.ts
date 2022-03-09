@@ -33,6 +33,7 @@ import { EventsDashboardComponent } from './akshaya-patra-app/components/events-
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
 import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import { CreateEventComponent } from './akshaya-patra-app/components/create-even
     HttpClientModule,
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
+    NgSelectModule,
   ],
   providers: [
     NgbModule,
