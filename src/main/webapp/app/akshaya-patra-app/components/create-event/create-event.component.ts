@@ -19,13 +19,13 @@ export class CreateEventComponent implements OnInit {
       name: 'education',
     },
   ];
+
   newCause: FormControl = new FormControl('');
-  causesFormControl: FormControl = new FormControl(null);
+
   createEventForm = this.fb.group({
-    causes: this.fb.array([this.fb.control('')]),
     eventName: ['', Validators.required],
     location: this.fb.group({
-      address: ['', Validators.required],
+      address: [''],
       state: [''],
       city: [''],
       locality: [''],
