@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PrototypeService } from '../../services/prototype/prototype.service';
+import { LoginService } from '../../services/login/login.service';
+import { AccountService } from '../../services/auth/account.service';
+import { map, tap } from 'rxjs/operators';
+import { Account } from '../../services/auth/account.model';
+import { AuthoiritiesEnum } from '../../enums/authoirities.enum';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,9 +17,26 @@ export class SidebarComponent implements OnInit {
   parentId = '';
   isAdminLogin$: BehaviorSubject<boolean>;
 
-  constructor(private router: Router, private prototypeService: PrototypeService) {}
+  constructor(
+    private router: Router,
+    private prototypeService: PrototypeService,
+    private loginService: LoginService,
+    private accountService: AccountService
+  ) {}
+
+  username$: Observable<string>;
+  isAdminLogin: boolean;
 
   ngOnInit() {
+    this.username$ = this.accountService.identity().pipe(
+      tap((account: Account) => {
+        this.isAdminLogin = account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
+      }),
+      map((account: Account) => {
+        return account.login;
+      })
+    );
+
     this.isAdminLogin$ = this.prototypeService.isAdminAccount$;
     const body = document.querySelector('body');
 
@@ -34,7 +56,7 @@ export class SidebarComponent implements OnInit {
   }
 
   logout(): void {
-    this.prototypeService.logout();
+    this.loginService.logout();
     this.router.navigate(['/login']);
   }
 
