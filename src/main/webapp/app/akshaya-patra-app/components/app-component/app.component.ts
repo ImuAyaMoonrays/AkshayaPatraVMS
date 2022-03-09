@@ -20,17 +20,5 @@ export class AppComponent implements OnInit {
       }
       window.scrollTo(0, 0);
     });
-
-    this.accountService
-      .identity()
-      .pipe()
-      .subscribe(() => {
-        if (this.accountService.isAuthenticated()) {
-          this.router.navigate(['/home']);
-        } else {
-          console.log(window.location.href);
-          this.router.navigate(['/login']);
-        }
-      });
   }
 }
