@@ -1,5 +1,5 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -30,6 +30,7 @@ import { httpInterceptorProviders } from './akshaya-patra-app/interceptors/inter
 import { fontAwesomeIcons } from './akshaya-patra-app/configs/font-awesome-icons';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { NewPasswordComponent } from './akshaya-patra-app/components/new-password/new-password.component';
+import { NgSelectModule } from "@ng-select/ng-select";
 
 @NgModule({
   imports: [
@@ -38,9 +39,10 @@ import { NewPasswordComponent } from './akshaya-patra-app/components/new-passwor
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: true }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
     HttpClientModule,
-    NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
+    NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
+    NgSelectModule,
   ],
   providers: [NgbModule, Title, { provide: LOCALE_ID, useValue: 'en' }, httpInterceptorProviders],
   declarations: [
