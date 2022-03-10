@@ -82,6 +82,23 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "accepted_TOS")
+    private Boolean acceptedTOS;
+
+
+
+    @Column(name = "age")
+    private Integer age;
+
+    @Size(max = 100)
+    @Column(name = "phone_number", length = 100)
+    private String phoneNumber;
+
+
+    @ManyToMany(mappedBy = "volunteers",  cascade = CascadeType.PERSIST)
+    private Set<Event> events = new HashSet<>();
+
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -196,6 +213,38 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public Boolean getAcceptedTOS() {
+        return acceptedTOS;
+    }
+
+    public void setAcceptedTOS(Boolean acceptedTOS) {
+        this.acceptedTOS = acceptedTOS;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 
     @Override

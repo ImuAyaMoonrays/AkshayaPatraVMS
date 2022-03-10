@@ -240,3 +240,13 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 [leaflet]: https://leafletjs.com/
 [definitelytyped]: https://definitelytyped.org/
 [angular cli]: https://cli.angular.io/
+
+
+##updating table
+1. Run/Compile the app
+2. stop the app
+3. in a terminal, cd to the app. Then run `mvnw liquibase:diff`
+4. a change log should appear here src/main/resources/config/liquibase/changelog 
+5. take note of the file name
+6. update master.xml with a reference to the previously made change log
+7. run `mvnw clean`?

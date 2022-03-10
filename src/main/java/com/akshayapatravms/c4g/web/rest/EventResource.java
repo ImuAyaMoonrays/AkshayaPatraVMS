@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+//todo: have controllers return response entities
 @RestController
 @RequestMapping("/api/events")
 public class EventResource {
@@ -43,15 +44,26 @@ public class EventResource {
     }
 
 //    need one for admins which contains all registered users and one for normal user which doesn't
-    @GetMapping("/allEvents")
+    @GetMapping("/all")
     public List<Event> allEvents() throws URISyntaxException {
         return this.eventRepository.findAll();
     }
 
-    @PostMapping("/volunteerForEvent")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public void createEvent(@RequestBody ProfileEventDTO profileEventDTO) throws URISyntaxException {
+    @PostMapping("/volunteer")
+    public void volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
+        log.info("volunteerForEvent called");
+        eventService.volunteerForEvent(eventID);
+        return;
     }
 
+    @DeleteMapping("unRegister")
+    public void unRegisterForEvent(@RequestBody Long eventID) {
+        log.info("unregister for event called");
+        eventService.unRegisterForEvent(eventID);
+    }
 
+    @GetMapping("getAll")
+    public List<Event> getAllEvents() {
+        return eventService.getAll();
+    }
 }

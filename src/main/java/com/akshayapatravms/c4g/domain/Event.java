@@ -33,6 +33,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     )
     private Set<CorporateSubgroup> corporateSubgroups = new HashSet<>();
 
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+        name = "user_event",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> volunteers = new HashSet<>();
+
     @OneToOne
     @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
     @Nullable
@@ -231,5 +239,22 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.contactEmail = contactEmail;
     }
 
+    public Set<User> getVolunteers() {
+        return volunteers;
+    }
 
+    public void setVolunteers(Set<User> volunteers) {
+        this.volunteers = volunteers;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Event{" +
+            "EventName='" + eventName + '\'' +
+            ", volunteersNeededAmount='" + volunteersNeededAmount + '\'' +
+            ", ID='" + id + '\'' +
+            ", description='" + description + '\'' +
+            "}";
+    }
 }

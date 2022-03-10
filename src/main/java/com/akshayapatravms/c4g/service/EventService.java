@@ -5,9 +5,13 @@ import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.repository.ProfileRepository;
+import com.akshayapatravms.c4g.security.AuthoritiesConstants;
+import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,16 +127,85 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-//    public void signUpForEvent(ProfileEventDTO profileEventDTO) {
-//        //update so there's validation that the user signing up is same as user.
-//
-//        Optional<Profile> profile = profileRepository.getProfileById(profileEventDTO.getUserID());
-//        Optional<Event>  event = eventRepository.getEventById(profileEventDTO.getEventID());
-//        if (profile.isPresent() & event.isPresent()){
-//            profile.get().getEvents().add(event.get());
-//            profileRepository.save(profile.get());
-//        } else{
-//            //error!
-//        }
-//    }
+    //todo: add validation that the user can be added to event (e.g. corp subgroup check, enough volunteers,
+    // haven't signed up already).
+    //todo: add error handling
+    public void volunteerForEvent(Long eventID) {
+        //update so there's validation that the user signing up is same as user.
+
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            log.error("User is not logged in");
+            //throw exception
+            return;
+        }
+        final User user = isUser.get();
+        log.info("user is " + user.toString());
+
+        Optional<Event>  event = eventRepository.findOneById(eventID);
+
+        if (event.isPresent()){
+            log.info("event" +  event.get());
+            log.info("volunteer count before " + event.get().getVolunteers().size());
+            event.get().getVolunteers().add(isUser.get());
+            log.info("volunteer count after " + event.get().getVolunteers().size());
+            log.info("user id " + user.getId() + " event id " + event.get().getId());
+            eventRepository.save(event.get());
+
+            log.info("num of volunteers " + event.get().getVolunteers().size());
+            log.info("num of events vol for " + user.getEvents().size());
+            log.info("volunteers for event " + event.get().getVolunteers());
+            log.info("events volunteering for " + user.getEvents());
+
+        } else{
+            //throw exception
+            log.error("event not found");
+        }
+
+    }
+
+    public void unRegisterForEvent (Long eventID) {
+
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            log.error("User is not logged in");
+            //throw exception
+            return;
+        }
+        final User user = isUser.get();
+
+        Optional<Event>  event = eventRepository.findOneById(eventID);
+
+        if (event.isPresent()){
+            log.info("event" +  event.get());
+            log.info("volunteer count before " + event.get().getVolunteers().size());
+            event.get().getVolunteers().remove(isUser.get());
+            log.info("volunteer count after " + event.get().getVolunteers().size());
+            log.info("user id " + user.getId() + " event id " + event.get().getId());
+            eventRepository.save(event.get());
+
+            log.info("num of volunteers " + event.get().getVolunteers().size());
+            log.info("num of events vol for " + user.getEvents().size());
+            log.info("volunteers for event " + event.get().getVolunteers());
+            log.info("events volunteering for " + user.getEvents());
+            //join table is emptied, but user is still showing events.
+        } else{
+            //throw exception
+            log.error("event not found");
+        }
+    }
+
+    public List<Event> getAll(){
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            log.error("User is not logged in");
+            //throw exception
+            return Collections.emptyList();
+        }
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
+            return eventRepository.findAllEventsAndVolunteers();
+        } else {
+            return eventRepository.findAll();
+        }
+    }
 }
