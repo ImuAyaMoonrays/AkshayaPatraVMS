@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/causes")
+@RequestMapping("/api/causes")
 public class CauseResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);

@@ -36,4 +36,5 @@ public class EventResource {
     public void createEvent(@RequestBody ProfileEventDTO profileEventDTO) throws URISyntaxException {
     }
 
+
 }

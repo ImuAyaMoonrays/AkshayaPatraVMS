@@ -12,6 +12,7 @@ import { Time } from "@angular/common";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { CauseModel } from "../../models/cause.model";
+import { CauseService } from "../../services/cause/cause.service";
 
 @Component({
   selector: 'jhi-create-event',
@@ -68,10 +69,16 @@ export class CreateEventComponent implements OnInit {
   showPhysicalLocationForm$: Observable<boolean>;
 
 
-  constructor(private fb: FormBuilder, private router: Router, private eventService: EventService) {
+  constructor(private fb: FormBuilder,
+              private router: Router,
+              private eventService: EventService,
+              private causeService: CauseService) {
   }
 
   ngOnInit(): void {
+    this.causeService.allCauses().subscribe((causes) => {
+      causes.forEach(cause => this.causes = this.causes.concat(cause))
+    })
     this.showPhysicalLocationForm$ =
       merge(
         this.locationTypeForm.get('locationType').valueChanges.pipe(
@@ -82,7 +89,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   addCause(): void {
-    const newCauseValue = this.newCause.value;
+    const newCauseValue = (this.newCause.value as string).toUpperCase();
     if (newCauseValue !== '' && !this.causes.map(cause => cause.name).includes(newCauseValue)) {
       const newCause = {name: newCauseValue, id: null};
 
@@ -144,7 +151,6 @@ export class CreateEventComponent implements OnInit {
     return this.locationTypeForm.get('locationType').value === 'physical';
   }
 
-  //need to month - 1 and da
   private dateFromDatePicker(datePickerValue: { year: number, month: number, day: number }): Date {
     return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day - 1);
   }
