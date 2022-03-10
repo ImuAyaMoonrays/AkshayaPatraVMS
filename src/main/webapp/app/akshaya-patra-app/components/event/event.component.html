@@ -28,11 +28,9 @@
       <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
       <!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
       <!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
-      <a
-        *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
+      <a *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
         role="button"
-        class="float-right btn btn-outline-light text-light btn-fw"
-      >{{ false ? 'Unregister' : 'Sign Up' }}</a
+        class="float-right btn btn-outline-light text-light btn-fw" >{{ false ? 'Unregister' : 'Sign Up' }}</a
       >
     </div>
   </div>
