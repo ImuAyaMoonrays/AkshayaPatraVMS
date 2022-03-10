@@ -12,6 +12,6 @@ export class EventService {
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   createEvent(event: CreateEventModel): Observable<CreateEventModel> {
-    return this.http.post<CreateEventModel>(this.applicationConfigService.getEndpointFor('events/createEvent'), event);
+    return this.http.post<CreateEventModel>(this.applicationConfigService.getEndpointFor('/api/events/createEvent'), event);
   }
 }

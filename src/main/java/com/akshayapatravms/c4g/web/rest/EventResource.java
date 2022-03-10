@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class EventResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);

@@ -4,7 +4,7 @@ public class VirtualLocationDTO {
 
     private String url;
 
-    private String passcord;
+    private String passcode;
 
     public VirtualLocationDTO() {
     }
@@ -17,11 +17,11 @@ public class VirtualLocationDTO {
         this.url = url;
     }
 
-    public String getPasscord() {
-        return passcord;
+    public String getPasscode() {
+        return passcode;
     }
 
-    public void setPasscord(String passcord) {
-        this.passcord = passcord;
+    public void setPasscode(String passcode) {
+        this.passcode = passcode;
     }
 }

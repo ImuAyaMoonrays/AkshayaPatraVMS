@@ -128,7 +128,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent(event).subscribe();
+      this.eventService.createEvent(event).subscribe(console.log);
     }
   }
 

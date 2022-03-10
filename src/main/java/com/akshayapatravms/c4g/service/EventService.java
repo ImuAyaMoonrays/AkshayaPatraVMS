@@ -103,21 +103,22 @@ public class EventService {
         if (eventDTO.getPhysicalLocation() != null) {
             event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
         } else if (eventDTO.getVirtualLocation() != null) {
-
+            event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
         }
-
-        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
-        event.setEventCreator(user);
-
 
         event.setDescription(eventDTO.getDescription());
         event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-        event.setStartDateAndTime(eventDTO.getStartDate());
-        event.setEndDateAndTime(eventDTO.getEndDate());
+        event.setStartDate(eventDTO.getStartDate());
+        event.setEndDate(eventDTO.getEndDate());
+        event.setStartTime(new Time(eventDTO.getStartTime()));
+        event.setEndTime(new Time(eventDTO.getEndTime()));
         event.setContactName(eventDTO.getContactName());
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
         event.setEmailBody(eventDTO.getEmailBody());
+
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
+        event.setEventCreator(user);
 
         return eventRepository.save(event);
     }

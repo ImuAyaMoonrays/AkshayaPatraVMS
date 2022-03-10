@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
-    <changeSet author="dylanrasch (generated)" id="1646578409693-2">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-2">
         <createTable tableName="cause">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="causePK"/>
@@ -16,7 +16,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-3">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-3">
         <createTable tableName="corporate_subgroup">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="corporate_subgroupPK"/>
@@ -32,7 +32,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-4">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-4">
         <createTable tableName="event">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="eventPK"/>
@@ -48,19 +48,20 @@
             <column name="contact_phone_number" type="VARCHAR(100)"/>
             <column name="description" type="VARCHAR(1000)"/>
             <column name="email_body" type="VARCHAR(5000)"/>
-            <column name="end_date_and_time" type="TIMESTAMP"/>
+            <column name="end_date" type="TIMESTAMP"/>
             <column name="event_name" type="VARCHAR(100)"/>
-            <column name="start_date_and_time" type="TIMESTAMP"/>
+            <column name="start_date" type="TIMESTAMP"/>
             <column name="volunteers_needed_amount" type="INT"/>
+            <column name="end_time_id" type="BIGINT"/>
             <column name="event_creator_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="location_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
+            <column name="physical_location_id" type="BIGINT"/>
+            <column name="start_time_id" type="BIGINT"/>
+            <column name="virtual_location_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-5">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-5">
         <createTable tableName="event_cause">
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -70,7 +71,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-6">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-6">
         <createTable tableName="event_corporate_subgroup">
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -80,10 +81,10 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-10">
-        <createTable tableName="physicalLocation">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-10">
+        <createTable tableName="physical_location">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="locationPK"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="physical_locationPK"/>
             </column>
             <column name="created_by" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -93,16 +94,41 @@
             <column name="last_modified_date" type="TIMESTAMP"/>
             <column name="address" type="VARCHAR(500)"/>
             <column name="city" type="VARCHAR(200)"/>
+            <column name="country" type="VARCHAR(200)"/>
             <column name="locality" type="VARCHAR(200)"/>
-            <column name="pincode" type="BIGINT"/>
-            <column name="presence_modality" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="region" type="VARCHAR(200)"/>
             <column name="state" type="VARCHAR(100)"/>
-            <column name="virtual_meeting_address" type="VARCHAR(300)"/>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-11">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-11">
+        <createTable tableName="profile">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profilePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP"/>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="accepted_tos" type="BOOLEAN"/>
+            <column name="age" type="INT"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="phone_number" type="VARCHAR(100)"/>
+            <column name="location_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-12">
+        <createTable tableName="profile_event">
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="evemt_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-13">
         <createTable tableName="subgroup_email_pattern">
             <column name="corporate_subgroup_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -110,37 +136,85 @@
             <column name="subgroup_email_patterns" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-12">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-14">
+        <createTable tableName="time">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="timePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP"/>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="hours" type="INT"/>
+            <column name="minutes" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-15">
+        <createTable tableName="virtual_location">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="virtual_locationPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP"/>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="passcode" type="VARCHAR(1000)"/>
+            <column name="url" type="VARCHAR(1000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-16">
         <addUniqueConstraint columnNames="cause_name" constraintName="UC_CAUSECAUSE_NAME_COL" tableName="cause"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-13">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-17">
         <addUniqueConstraint columnNames="subgroup_name" constraintName="UC_CORPORATE_SUBGROUPSUBGROUP_NAME_COL" tableName="corporate_subgroup"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-14">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-18">
         <addUniqueConstraint columnNames="email" constraintName="UC_JHI_USEREMAIL_COL" tableName="jhi_user"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-15">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-19">
         <addUniqueConstraint columnNames="login" constraintName="UC_JHI_USERLOGIN_COL" tableName="jhi_user"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-18">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-22">
+        <addForeignKeyConstraint baseColumnNames="start_time_id" baseTableName="event" constraintName="FK5g2pjjc6kiyymfc0q4jwjrpxn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="time" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-23">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="profile" constraintName="FK6389knllmpv2qy2y9bddjam6g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="physical_location" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-24">
+        <addForeignKeyConstraint baseColumnNames="evemt_id" baseTableName="profile_event" constraintName="FK7btkm15s58ooa0umyws2jbrrc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-25">
+        <addForeignKeyConstraint baseColumnNames="profile_id" baseTableName="profile_event" constraintName="FK81f4n9hexlr20w6x1ny3euibq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="profile" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-26">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_cause" constraintName="FK9q4hmtl4s0onntwnl0h1sbho1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-19">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-27">
         <addForeignKeyConstraint baseColumnNames="cause_id" baseTableName="event_cause" constraintName="FKai4b2u4d71f97f6o44rgj8lus" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="cause" validate="true"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-20">
-        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="event" constraintName="FKbb6c0h5nhs5og47iem617ehrl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="physicalLocation" validate="true"/>
-    </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-21">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-28">
         <addForeignKeyConstraint baseColumnNames="corporate_subgroup_id" baseTableName="subgroup_email_pattern" constraintName="FKcimv6d91wqg7r9nuxyhr7ulr3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="corporate_subgroup" validate="true"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-22">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-29">
+        <addForeignKeyConstraint baseColumnNames="physical_location_id" baseTableName="event" constraintName="FKed4lkv5gqds17urjdrrqxkqes" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="physical_location" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-30">
         <addForeignKeyConstraint baseColumnNames="corporate_subgroup_id" baseTableName="event_corporate_subgroup" constraintName="FKfvr0rfan3x2u6am79lysmvm8y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="corporate_subgroup" validate="true"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-23">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-31">
         <addForeignKeyConstraint baseColumnNames="event_creator_id" baseTableName="event" constraintName="FKmpcqpgfj16dxu4by5q1f89pm1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
     </changeSet>
-    <changeSet author="dylanrasch (generated)" id="1646578409693-24">
+    <changeSet author="dylanrasch (generated)" id="1646917438718-32">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_corporate_subgroup" constraintName="FKmvi9ptrl3qdq8mq9gvhuicwnq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-33">
+        <addForeignKeyConstraint baseColumnNames="virtual_location_id" baseTableName="event" constraintName="FKsijn2r3r6jc9c2ds1o9jy4is4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="virtual_location" validate="true"/>
+    </changeSet>
+    <changeSet author="dylanrasch (generated)" id="1646917438718-34">
+        <addForeignKeyConstraint baseColumnNames="end_time_id" baseTableName="event" constraintName="FKsnieprbtxr80nch0ch0riuj2l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="time" validate="true"/>
     </changeSet>
 </databaseChangeLog>

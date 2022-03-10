@@ -33,13 +33,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     )
     private Set<CorporateSubgroup> corporateSubgroups = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-        name = "profile_event",
-        joinColumns = @JoinColumn(name = "profile_id"),
-        inverseJoinColumns = @JoinColumn(name = "evemt_id"))
-    private Set<Profile> volunteers = new HashSet<>();
-
     @OneToOne
     @JoinColumn(name = "event_creator_id", referencedColumnName = "id", nullable = false)
     @Nullable
@@ -49,6 +42,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name = "physical_location_id", referencedColumnName = "id")
     private PhysicalLocation physicalLocation;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "virtual_location_id", referencedColumnName = "id")
+    private VirtualLocation virtualLocation;
+
     @Size(max = 100)
     @Column(name = "eventName", length = 100)
     private String eventName;
@@ -57,17 +54,22 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "is_virtual")
-    private Boolean isVirtual;
-
     @Column(name = "volunteers_needed_amount")
     private Integer volunteersNeededAmount;
 
-    @Column(name = "start_date_and_time")
-    private Instant startDateAndTime;
+    @Column(name = "start_date")
+    private Instant startDate;
 
-    @Column(name = "end_date_and_time")
-    private Instant endDateAndTime;
+    @Column(name = "end_date")
+    private Instant endDate;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "start_time_id", referencedColumnName = "id")
+    private Time startTime;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "end_time_id", referencedColumnName = "id")
+    private Time endTime;
 
     @Size(max = 100)
     @Column(name = "contact_name", length = 100)
@@ -95,6 +97,38 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public Set<CorporateSubgroup> getCorporateSubgroups() {
         return corporateSubgroups;
+    }
+
+    public PhysicalLocation getPhysicalLocation() {
+        return physicalLocation;
+    }
+
+    public void setPhysicalLocation(PhysicalLocation physicalLocation) {
+        this.physicalLocation = physicalLocation;
+    }
+
+    public VirtualLocation getVirtualLocation() {
+        return virtualLocation;
+    }
+
+    public void setVirtualLocation(VirtualLocation virtualLocation) {
+        this.virtualLocation = virtualLocation;
+    }
+
+    public Time getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+
+    public Time getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
     }
 
     public void setCorporateSubgroups(Set<CorporateSubgroup> corporateSubgroups) {
@@ -149,20 +183,20 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.eventCreator = eventCreator;
     }
 
-    public Instant getStartDateAndTime() {
-        return startDateAndTime;
+    public Instant getStartDate() {
+        return startDate;
     }
 
-    public void setStartDateAndTime(Instant startDateAndTime) {
-        this.startDateAndTime = startDateAndTime;
+    public void setStartDate(Instant startDateAndTime) {
+        this.startDate = startDateAndTime;
     }
 
-    public Instant getEndDateAndTime() {
-        return endDateAndTime;
+    public Instant getEndDate() {
+        return endDate;
     }
 
-    public void setEndDateAndTime(Instant endDateAndTime) {
-        this.endDateAndTime = endDateAndTime;
+    public void setEndDate(Instant endDateAndTime) {
+        this.endDate = endDateAndTime;
     }
 
     public Set<Cause> getCauses() {
@@ -197,11 +231,5 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.contactEmail = contactEmail;
     }
 
-    public Boolean getVirtual() {
-        return isVirtual;
-    }
 
-    public void setIsVirtual(Boolean virtual) {
-        this.isVirtual = virtual;
-    }
 }
