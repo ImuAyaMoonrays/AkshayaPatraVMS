@@ -7,23 +7,27 @@
         class="card-img-absolute"
         alt="circle-image"
       />
-      <h6 class="font-weight-normal mb-3">{{event.eventName}}</h6>
-      <h6 class="font-weight-normal mb-3">{{event.description}}</h6>
-      <h6 class="font-weight-normal mb-3">{{event.volunteersNeededAmount}} </h6>
-      <h6 class="font-weight-normal mb-3">{{event.startDate}} start date</h6>
-      <h6 class="font-weight-normal mb-3">{{event.endDate}} end date</h6>
-      <h6 class="font-weight-normal mb-3">{{event.startTime}} start time</h6>
-      <h6 class="font-weight-normal mb-3">{{event.endTime}} end time</h6>
-      <h6 class="font-weight-normal mb-3">{{event.contactName}} contact name</h6>
-      <h6 class="font-weight-normal mb-3">{{event.contactPhoneNumber}} contact phone number</h6>
-      <h6 class="font-weight-normal mb-3">{{event.contactEmail}} contact email</h6>
-      <h6 class="font-weight-normal mb-3">{{event.emailBody}} email body</h6>
-      <h6 class="font-weight-normal mb-3">{{event.physicalLocation}} physical location</h6>
-      <h6 class="font-weight-normal mb-3">{{event.virtualLocation}} virtual location</h6>
-      <h6 class="font-weight-normal mb-3">{{event.causes}} causes</h6>
-      <h6 class="font-weight-normal mb-3">{{event.corporateSubgroupIds}} subgroups</h6>
-<!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
-<!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
+<!--      temporary hack, will fix later-->
+      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Name: {{event.eventName}}</h6>
+      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Description: {{event.description}}</h6>
+      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Volunteers Needed: {{event.volunteersNeededAmount}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Name: {{event.eventName}}</h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Description: {{event.description}}</h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Volunteers Needed: {{event.volunteersNeededAmount}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Start Date: {{event.startDate}}</h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event End Date:{{event.endDate}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Start Time: {{event.startTime}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event End Time: {{event.endTime}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Name: {{event.contactName}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Phone Number: {{event.contactPhoneNumber}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Email: {{event.contactEmail}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Email Body: {{event.emailBody}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Physical Location: {{event.physicalLocation}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Virtual Location: {{event.virtualLocation}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Causes: {{event.causes}} </h6>
+      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
+      <!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
+      <!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
       <a
         *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
         role="button"

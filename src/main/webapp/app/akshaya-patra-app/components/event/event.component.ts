@@ -19,6 +19,7 @@ export class EventComponent implements OnInit {
 
   @Input() event: CreateEventModel;
   @Input() hideButton: boolean = false;
+  //name this better. Should make isCompactView?
   @Input() isCompactView: boolean;
   isCompleted: boolean;
   isAdmin$: Observable<boolean>;
