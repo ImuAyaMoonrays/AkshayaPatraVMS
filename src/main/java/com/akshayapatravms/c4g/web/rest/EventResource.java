@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,20 +51,32 @@ public class EventResource {
     }
 
     @PostMapping("/volunteer")
-    public void volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
-        log.info("volunteerForEvent called");
-        eventService.volunteerForEvent(eventID);
-        return;
+    public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
+        try{
+            eventService.volunteerForEvent(eventID);
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
 
     @DeleteMapping("unRegister")
-    public void unRegisterForEvent(@RequestBody Long eventID) {
-        log.info("unregister for event called");
-        eventService.unRegisterForEvent(eventID);
+    public ResponseEntity unRegisterForEvent(@RequestBody Long eventID) {
+        try{
+            eventService.unRegisterForEvent(eventID);
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @GetMapping("getAll")
-    public List<Event> getAllEvents() {
-        return eventService.getAll();
+    public ResponseEntity getAllEvents() {
+        try{
+            return ResponseEntity.ok().body(eventService.getAll());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

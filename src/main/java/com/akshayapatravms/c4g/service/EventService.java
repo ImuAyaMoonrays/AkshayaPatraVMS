@@ -130,77 +130,66 @@ public class EventService {
     //todo: add validation that the user can be added to event (e.g. corp subgroup check, enough volunteers,
     // haven't signed up already).
     //todo: add error handling
-    public void volunteerForEvent(Long eventID) {
+    public void volunteerForEvent(Long eventID) throws RuntimeException{
         //update so there's validation that the user signing up is same as user.
 
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if(!isUser.isPresent()) {
-            log.error("User is not logged in");
-            //throw exception
-            return;
+            throw new RuntimeException("unable to find user");
         }
-        final User user = isUser.get();
-        log.info("user is " + user.toString());
 
         Optional<Event>  event = eventRepository.findOneById(eventID);
 
         if (event.isPresent()){
-            log.info("event" +  event.get());
-            log.info("volunteer count before " + event.get().getVolunteers().size());
-            event.get().getVolunteers().add(isUser.get());
-            log.info("volunteer count after " + event.get().getVolunteers().size());
-            log.info("user id " + user.getId() + " event id " + event.get().getId());
-            eventRepository.save(event.get());
-
-            log.info("num of volunteers " + event.get().getVolunteers().size());
-            log.info("num of events vol for " + user.getEvents().size());
-            log.info("volunteers for event " + event.get().getVolunteers());
-            log.info("events volunteering for " + user.getEvents());
+            try{
+                event.get().getVolunteers().add(isUser.get());
+                eventRepository.save(event.get());
+            } catch (Exception e){
+                throw new RuntimeException("unable to save event to db");
+            }
 
         } else{
-            //throw exception
-            log.error("event not found");
+            throw new RuntimeException("unable to find event");
         }
 
     }
 
-    public void unRegisterForEvent (Long eventID) {
+    public void unRegisterForEvent (Long eventID)  throws RuntimeException {
 
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if(!isUser.isPresent()) {
-            log.error("User is not logged in");
-            //throw exception
-            return;
+            throw new RuntimeException("unable to find user");
         }
         final User user = isUser.get();
 
         Optional<Event>  event = eventRepository.findOneById(eventID);
 
         if (event.isPresent()){
-            log.info("event" +  event.get());
-            log.info("volunteer count before " + event.get().getVolunteers().size());
-            event.get().getVolunteers().remove(isUser.get());
-            log.info("volunteer count after " + event.get().getVolunteers().size());
-            log.info("user id " + user.getId() + " event id " + event.get().getId());
-            eventRepository.save(event.get());
+            try {
+                log.info("event" + event.get());
+                log.info("volunteer count before " + event.get().getVolunteers().size());
+                event.get().getVolunteers().remove(isUser.get());
+                log.info("volunteer count after " + event.get().getVolunteers().size());
+                log.info("user id " + user.getId() + " event id " + event.get().getId());
+                eventRepository.save(event.get());
 
-            log.info("num of volunteers " + event.get().getVolunteers().size());
-            log.info("num of events vol for " + user.getEvents().size());
-            log.info("volunteers for event " + event.get().getVolunteers());
-            log.info("events volunteering for " + user.getEvents());
-            //join table is emptied, but user is still showing events.
+                log.info("num of volunteers " + event.get().getVolunteers().size());
+                log.info("num of events vol for " + user.getEvents().size());
+                log.info("volunteers for event " + event.get().getVolunteers());
+                log.info("events volunteering for " + user.getEvents());
+                //join table is emptied, but user is still showing events.
+            } catch (Exception e) {
+                throw new RuntimeException("unable to save event");
+            }
         } else{
-            //throw exception
-            log.error("event not found");
+            throw new RuntimeException("unable to find event");
         }
     }
 
-    public List<Event> getAll(){
+    public List<Event> getAll() throws  RuntimeException{
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if(!isUser.isPresent()) {
-            log.error("User is not logged in");
-            //throw exception
-            return Collections.emptyList();
+            throw new RuntimeException("unable to find user");
         }
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
             return eventRepository.findAllEventsAndVolunteers();
