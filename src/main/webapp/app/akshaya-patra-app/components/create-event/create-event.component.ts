@@ -128,7 +128,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent(event);
+      this.eventService.createEvent(event).subscribe();
     }
   }
 
@@ -144,8 +144,9 @@ export class CreateEventComponent implements OnInit {
     return this.locationTypeForm.get('locationType').value === 'physical';
   }
 
+  //need to month - 1 and da
   private dateFromDatePicker(datePickerValue: { year: number, month: number, day: number }): Date {
-    return new Date(datePickerValue.year, datePickerValue.month, datePickerValue.day);
+    return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day - 1);
   }
 
   private timeFromTimePicker(timePickerValue: { hour: number, minute: number, second: number }): Time {

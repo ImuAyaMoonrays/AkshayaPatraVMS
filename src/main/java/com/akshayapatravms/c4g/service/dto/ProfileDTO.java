@@ -7,7 +7,7 @@ public class ProfileDTO {
     private  Integer age;
     private String name;
     private String phoneNumber;
-    private LocationDTO locationDTO;
+    private PhysicalLocationDTO locationDTO;
     private Set<EventDTO> eventDTOs;
 
     public ProfileDTO(){
@@ -46,11 +46,11 @@ public class ProfileDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocationDTO getLocationDTO() {
+    public PhysicalLocationDTO getLocationDTO() {
         return locationDTO;
     }
 
-    public void setLocationDTO(LocationDTO locationDTO) {
+    public void setLocationDTO(PhysicalLocationDTO locationDTO) {
         this.locationDTO = locationDTO;
     }
 

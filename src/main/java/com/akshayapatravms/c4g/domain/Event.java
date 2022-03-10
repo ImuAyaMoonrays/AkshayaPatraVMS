@@ -46,8 +46,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private User eventCreator;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id", nullable = false)
-    private Location location;
+    @JoinColumn(name = "physical_location_id", referencedColumnName = "id")
+    private PhysicalLocation physicalLocation;
 
     @Size(max = 100)
     @Column(name = "eventName", length = 100)
@@ -109,8 +109,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public Location getLocation() {
-        return location;
+    public PhysicalLocation getLocation() {
+        return physicalLocation;
     }
 
     public String getEventName() {
@@ -121,8 +121,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.eventName = eventNAme;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(PhysicalLocation physicalLocation) {
+        this.physicalLocation = physicalLocation;
     }
 
     public String getDescription() {

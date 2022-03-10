@@ -81,7 +81,7 @@
         </createTable>
     </changeSet>
     <changeSet author="dylanrasch (generated)" id="1646578409693-10">
-        <createTable tableName="location">
+        <createTable tableName="physicalLocation">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="locationPK"/>
             </column>
@@ -129,7 +129,7 @@
         <addForeignKeyConstraint baseColumnNames="cause_id" baseTableName="event_cause" constraintName="FKai4b2u4d71f97f6o44rgj8lus" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="cause" validate="true"/>
     </changeSet>
     <changeSet author="dylanrasch (generated)" id="1646578409693-20">
-        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="event" constraintName="FKbb6c0h5nhs5og47iem617ehrl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="event" constraintName="FKbb6c0h5nhs5og47iem617ehrl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="physicalLocation" validate="true"/>
     </changeSet>
     <changeSet author="dylanrasch (generated)" id="1646578409693-21">
         <addForeignKeyConstraint baseColumnNames="corporate_subgroup_id" baseTableName="subgroup_email_pattern" constraintName="FKcimv6d91wqg7r9nuxyhr7ulr3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="corporate_subgroup" validate="true"/>

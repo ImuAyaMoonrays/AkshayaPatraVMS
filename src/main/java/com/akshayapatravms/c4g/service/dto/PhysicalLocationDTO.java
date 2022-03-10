@@ -1,6 +1,6 @@
 package com.akshayapatravms.c4g.service.dto;
 
-public class LocationDTO {
+public class PhysicalLocationDTO {
 
     private String address;
 
@@ -14,7 +14,7 @@ public class LocationDTO {
 
     private String country;
 
-    public LocationDTO() {
+    public PhysicalLocationDTO() {
         // Empty constructor needed for Jackson.
     }
 

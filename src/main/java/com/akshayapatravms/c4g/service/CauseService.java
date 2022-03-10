@@ -2,21 +2,15 @@ package com.akshayapatravms.c4g.service;
 
 import com.akshayapatravms.c4g.domain.*;
 import com.akshayapatravms.c4g.repository.CauseRepository;
-import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
-import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.service.dto.CauseDTO;
-import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.LocationDTO;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

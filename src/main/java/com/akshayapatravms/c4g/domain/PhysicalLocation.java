@@ -1,14 +1,14 @@
 package com.akshayapatravms.c4g.domain;
 
-import com.akshayapatravms.c4g.service.dto.LocationDTO;
+import com.akshayapatravms.c4g.service.dto.PhysicalLocationDTO;
 
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "location")
-public class Location extends AbstractAuditingEntity implements Serializable {
+@Table(name = "physical_location")
+public class PhysicalLocation extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,16 +42,16 @@ public class Location extends AbstractAuditingEntity implements Serializable {
     @Column(name = "country", length = 200)
     private String country;
 
-    public  Location(){
+    public PhysicalLocation(){
     }
 
-    public  Location(LocationDTO locationDTO) {
-        this.setAddress(locationDTO.getAddress());
-        this.setCity(locationDTO.getCity());
-        this.setLocality(locationDTO.getLocality());
-        this.setState(locationDTO.getState());
-        this.setRegion(locationDTO.getRegion());
-        this.setCountry(locationDTO.getCountry());
+    public PhysicalLocation(PhysicalLocationDTO physicalLocationDTO) {
+        this.setAddress(physicalLocationDTO.getAddress());
+        this.setCity(physicalLocationDTO.getCity());
+        this.setLocality(physicalLocationDTO.getLocality());
+        this.setState(physicalLocationDTO.getState());
+        this.setRegion(physicalLocationDTO.getRegion());
+        this.setCountry(physicalLocationDTO.getCountry());
     }
 
     public Long getId() {

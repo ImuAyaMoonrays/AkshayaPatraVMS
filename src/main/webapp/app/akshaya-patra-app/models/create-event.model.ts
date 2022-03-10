@@ -19,7 +19,7 @@ export class CreateEventModel {
     public physicalLocation: PhysicalLocationModel = null,
     public virtualLocation: VirtualLocationModel = null,
     public causes: CauseModel[] = [],
-    public corporateSubgroupIds: string[] =[],
+    public corporateSubgroupIds: number[] =[],
   ) {
   }
 

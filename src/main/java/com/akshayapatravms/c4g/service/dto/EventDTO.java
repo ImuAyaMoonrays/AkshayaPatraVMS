@@ -13,15 +13,21 @@ public class EventDTO {
 
     private String eventName;
 
-    private LocationDTO location;
+    private PhysicalLocationDTO physicalLocation;
+
+    private VirtualLocationDTO virtualLocation;
 
     private String description;
 
     private Integer volunteersNeededAmount;
 
-    private Instant startDateAndTime;
+    private Instant startDate;
 
-    private Instant endDateAndTime;
+    private Instant endDate;
+
+    private TimeDTO startTime;
+
+    private TimeDTO endTime;
 
     private String contactName;
 
@@ -31,9 +37,32 @@ public class EventDTO {
 
     private String emailBody;
 
-    private Boolean isVirtual;
 
     public EventDTO() {}
+
+    public VirtualLocationDTO getVirtualLocation() {
+        return virtualLocation;
+    }
+
+    public void setVirtualLocation(VirtualLocationDTO virtualLocation) {
+        this.virtualLocation = virtualLocation;
+    }
+
+    public TimeDTO getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(TimeDTO startTime) {
+        this.startTime = startTime;
+    }
+
+    public TimeDTO getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(TimeDTO endTime) {
+        this.endTime = endTime;
+    }
 
     public String getEventName() {
         return eventName;
@@ -67,12 +96,12 @@ public class EventDTO {
         this.causes = causes;
     }
 
-    public LocationDTO getLocation() {
-        return location;
+    public PhysicalLocationDTO getPhysicalLocation() {
+        return physicalLocation;
     }
 
-    public void setLocation(LocationDTO location) {
-        this.location = location;
+    public void setPhysicalLocation(PhysicalLocationDTO physicalLocation) {
+        this.physicalLocation = physicalLocation;
     }
 
     public String getDescription() {
@@ -99,20 +128,20 @@ public class EventDTO {
         this.emailBody = emailBody;
     }
 
-    public Instant getStartDateAndTime() {
-        return startDateAndTime;
+    public Instant getStartDate() {
+        return startDate;
     }
 
-    public void setStartDateAndTime(Instant startDateAndTime) {
-        this.startDateAndTime = startDateAndTime;
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
     }
 
-    public Instant getEndDateAndTime() {
-        return endDateAndTime;
+    public Instant getEndDate() {
+        return endDate;
     }
 
-    public void setEndDateAndTime(Instant endDateAndTime) {
-        this.endDateAndTime = endDateAndTime;
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
     }
 
     public String getContactName() {
@@ -139,11 +168,4 @@ public class EventDTO {
         this.contactEmail = contactEmail;
     }
 
-    public Boolean getVirtual() {
-        return isVirtual;
-    }
-
-    public void setIsVirtual(Boolean isVirtual) {
-        this.isVirtual = isVirtual;
-    }
 }

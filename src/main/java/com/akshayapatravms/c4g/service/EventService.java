@@ -52,7 +52,7 @@ public class EventService {
     }
 
     //saves new causes to db
-    private Set<Cause> getCausesFromEvent(EventDTO eventDTO) throws RuntimeException {
+    private Set<Cause> existingAndNewCauses(EventDTO eventDTO) throws RuntimeException {
         return eventDTO
             .getCauses()
             .stream()
@@ -92,27 +92,32 @@ public class EventService {
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
-        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
-        event.setEventCreator(user);
-
-        Set<Cause> causes = getCausesFromEvent(eventDTO);
+        Set<Cause> causes = existingAndNewCauses(eventDTO);
         event.setCauses(causes);
 
         Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
         event.setCorporateSubgroups(corporateSubgroups);
 
-        event.setLocation(new Location(eventDTO.getLocation()));
-
         event.setEventName(eventDTO.getEventName());
+
+        if (eventDTO.getPhysicalLocation() != null) {
+            event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
+        } else if (eventDTO.getVirtualLocation() != null) {
+
+        }
+
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
+        event.setEventCreator(user);
+
+
         event.setDescription(eventDTO.getDescription());
         event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-        event.setStartDateAndTime(eventDTO.getStartDateAndTime());
-        event.setEndDateAndTime(eventDTO.getEndDateAndTime());
+        event.setStartDateAndTime(eventDTO.getStartDate());
+        event.setEndDateAndTime(eventDTO.getEndDate());
         event.setContactName(eventDTO.getContactName());
         event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
         event.setContactEmail(eventDTO.getContactEmail());
         event.setEmailBody(eventDTO.getEmailBody());
-        event.setIsVirtual(eventDTO.getVirtual());
 
         return eventRepository.save(event);
     }

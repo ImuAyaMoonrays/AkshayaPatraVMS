@@ -3,10 +3,8 @@ package com.akshayapatravms.c4g.domain;
 import com.akshayapatravms.c4g.service.dto.ProfileDTO;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -30,7 +28,7 @@ public class Profile extends AbstractAuditingEntity implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location location;
+    private PhysicalLocation physicalLocation;
 
     @Column(name = "accepted_TOS")
     private Boolean acceptedTOS;
@@ -53,7 +51,7 @@ public class Profile extends AbstractAuditingEntity implements Serializable {
 
     public Profile(ProfileDTO profileDTO){
         this.acceptedTOS = profileDTO.getAcceptedTOS();
-        this.location = new Location(profileDTO.getLocationDTO());
+        this.physicalLocation = new PhysicalLocation(profileDTO.getLocationDTO());
         //todo add events to this and make an event constructor from a DTO
         //this.events = EvenprofileDTO.getEventDTOs();
         this.age = profileDTO.getAge();
@@ -69,12 +67,12 @@ public class Profile extends AbstractAuditingEntity implements Serializable {
         this.events = events;
     }
 
-    public Location getLocation() {
-        return location;
+    public PhysicalLocation getLocation() {
+        return physicalLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(PhysicalLocation physicalLocation) {
+        this.physicalLocation = physicalLocation;
     }
 
     public Boolean getAcceptedTOS() {

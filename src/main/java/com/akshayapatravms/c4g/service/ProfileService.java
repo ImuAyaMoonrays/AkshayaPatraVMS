@@ -5,13 +5,8 @@ import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.repository.ProfileRepository;
-import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.ProfileDTO;
-import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -57,7 +52,7 @@ public class ProfileService {
         Profile p = new Profile();
         p.setAge(profileDTO.getAge());
         p.setName(profileDTO.getName());
-        p.setLocation(new Location(profileDTO.getLocationDTO()));
+        p.setLocation(new PhysicalLocation(profileDTO.getLocationDTO()));
 
 
         //Profile profile = new Profile(profileDTO);
