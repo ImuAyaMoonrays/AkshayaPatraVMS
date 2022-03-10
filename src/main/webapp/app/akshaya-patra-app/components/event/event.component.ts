@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PrototypeService } from '../../services/prototype/prototype.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { EventModel } from '../../models/event.model';
 import { PrototypeConstants } from '../../constants/prototype.constants';
+import { CreateEventModel } from "../../models/create-event.model";
+import { map, tap } from "rxjs/operators";
+import { Account } from "../../services/auth/account.model";
+import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
+import { AccountService } from "../../services/auth/account.service";
+import { EventService } from "../../services/event/event.service";
 
 @Component({
   selector: 'jhi-event',
@@ -10,67 +16,32 @@ import { PrototypeConstants } from '../../constants/prototype.constants';
   styleUrls: ['./event.component.scss'],
 })
 export class EventComponent implements OnInit {
-  @Input() event: EventModel;
-  @Input() isPrototypeEvent: boolean = false;
-  @Input() hideButton: boolean = false;
-  isCompleted: boolean;
-  eventIcon: 'mdi-school' | 'mdi-food-apple' | 'mdi-water' | 'mdi-flower';
-  eventColor: 'bg-gradient-danger' | 'bg-gradient-primary' | 'bg-gradient-success' | 'bg-gradient-info';
-  isAdmin$: BehaviorSubject<boolean>;
 
-  constructor(private prototypeService: PrototypeService) {}
+  @Input() event: CreateEventModel;
+  @Input() hideButton: boolean = false;
+  @Input() isCompactView: boolean;
+  isCompleted: boolean;
+  isAdmin$: Observable<boolean>;
+
+  constructor(private prototypeService: PrototypeService,
+              private eventService: EventService,
+              private accountService: AccountService) {
+  }
 
   ngOnInit(): void {
-    this.isAdmin$ = this.prototypeService.isAdminAccount$;
+    this.isAdmin$ = this.accountService.identity().pipe(
+      map((account: Account) => {
+        return account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
+      }),
+    );
+
     if (!this.event) {
       // temporary hack, should get id from router
       const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
-      this.prototypeService.event$
-        .subscribe(events => {
-          const upcomingEvent = events.find(event => event.eventId.toString() === eventId);
-          if (upcomingEvent) {
-            this.event = upcomingEvent;
-            this.isCompleted = false;
-          } else {
-            this.event = PrototypeConstants.COMPLETED_EVENTS.find(event => event.eventId.toString() === eventId);
-            this.isCompleted = true;
-          }
-        })
-        .unsubscribe();
+      this.eventService.eventById$(Number(eventId))
+        .subscribe(event => {
+          this.event = event;
+        });
     }
-    switch (this.event.cause) {
-      case 'Education':
-        this.eventIcon = 'mdi-school';
-        this.eventColor = 'bg-gradient-primary';
-        break;
-      case 'Environmental Work':
-        this.eventIcon = 'mdi-flower';
-        this.eventColor = 'bg-gradient-danger';
-        break;
-      case 'Food Drive':
-        this.eventIcon = 'mdi-food-apple';
-        this.eventColor = 'bg-gradient-success';
-        break;
-      case 'Water Collection':
-        this.eventIcon = 'mdi-water';
-        this.eventColor = 'bg-gradient-info';
-        break;
-    }
-  }
-
-  registrationButtonClicked(): void {
-    if (this.event.isRegistered) {
-      this.deregister();
-    } else {
-      this.register();
-    }
-  }
-
-  private register(): void {
-    this.prototypeService.register(this.event);
-  }
-
-  private deregister(): void {
-    this.prototypeService.deregister(this.event);
   }
 }

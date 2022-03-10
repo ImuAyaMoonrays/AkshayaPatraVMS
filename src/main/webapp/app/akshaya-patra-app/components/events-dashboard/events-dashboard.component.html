@@ -3,7 +3,8 @@
   *ngFor="let event of events$ | async"
   [event]="event"
   [hideButton]="true"
-  (click)="navigateToEvent(event.eventId)"
+  (click)="navigateToEvent(event.id)"
+  [isCompactView]="true"
 ></jhi-event>
 
 <!--<div *ngIf="false" style="cursor: pointer" (click)="navigateToEvent('0')" class="col-md-12 stretch-card grid-margin">-->

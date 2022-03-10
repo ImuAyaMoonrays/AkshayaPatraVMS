@@ -1,5 +1,5 @@
 <div class="col-md-12 stretch-card grid-margin">
-  <div class="card {{ eventColor }} card-img-holder text-white">
+  <div class="card bg-gradient-primary card-img-holder text-white">
     <div class="card-body">
       <img
         *ngIf="hideButton"
@@ -7,24 +7,29 @@
         class="card-img-absolute"
         alt="circle-image"
       />
-      <h6 class="font-weight-normal mb-3">
-        {{ event.currentVolunteerCount }}/{{ event.volunteerMax }} volunteers<i class="mdi mdi {{ eventIcon }} mdi-24px float-right"></i>
-      </h6>
-      <h1 class="mb-3">{{ event.cause + ' ' + (event.isRegistered && !(isAdmin$ | async) ? '(REGISTERED)' : '') }}</h1>
-      <h5 class="card-text">{{ event.location }}</h5>
-      <h6 class="card-text">{{ event.date }}</h6>
+      <h6 class="font-weight-normal mb-3">{{event.eventName}}</h6>
+      <h6 class="font-weight-normal mb-3">{{event.description}}</h6>
+      <h6 class="font-weight-normal mb-3">{{event.volunteersNeededAmount}} </h6>
+      <h6 class="font-weight-normal mb-3">{{event.startDate}} start date</h6>
+      <h6 class="font-weight-normal mb-3">{{event.endDate}} end date</h6>
+      <h6 class="font-weight-normal mb-3">{{event.startTime}} start time</h6>
+      <h6 class="font-weight-normal mb-3">{{event.endTime}} end time</h6>
+      <h6 class="font-weight-normal mb-3">{{event.contactName}} contact name</h6>
+      <h6 class="font-weight-normal mb-3">{{event.contactPhoneNumber}} contact phone number</h6>
+      <h6 class="font-weight-normal mb-3">{{event.contactEmail}} contact email</h6>
+      <h6 class="font-weight-normal mb-3">{{event.emailBody}} email body</h6>
+      <h6 class="font-weight-normal mb-3">{{event.physicalLocation}} physical location</h6>
+      <h6 class="font-weight-normal mb-3">{{event.virtualLocation}} virtual location</h6>
+      <h6 class="font-weight-normal mb-3">{{event.causes}} causes</h6>
+      <h6 class="font-weight-normal mb-3">{{event.corporateSubgroupIds}} subgroups</h6>
+<!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
+<!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
       <a
         *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
-        (click)="registrationButtonClicked()"
         role="button"
         class="float-right btn btn-outline-light text-light btn-fw"
-        >{{ this.event.isRegistered ? 'Unregister' : 'Sign Up' }}</a
+      >{{ false ? 'Unregister' : 'Sign Up' }}</a
       >
-      <div *ngIf="!hideButton && (isAdmin$ | async)">
-        <br />
-        <h3>Atendees (This is a static value for the prototype, does not reflect data):</h3>
-        <h5>Bob, Venkat, Harshith, Ben, Fausto, Aish, Dylan</h5>
-      </div>
     </div>
   </div>
 </div>

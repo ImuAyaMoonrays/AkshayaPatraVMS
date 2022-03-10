@@ -11,7 +11,15 @@ export class EventService {
 
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  createEvent(event: CreateEventModel): Observable<CreateEventModel> {
+  createEvent$(event: CreateEventModel): Observable<CreateEventModel> {
     return this.http.post<CreateEventModel>(this.applicationConfigService.getEndpointFor('/api/events/createEvent'), event);
+  }
+
+  allEvents$(): Observable<CreateEventModel[]> {
+    return this.http.get<CreateEventModel[]>(this.applicationConfigService.getEndpointFor('/api/events/allEvents'));
+  }
+
+  eventById$(id: number): Observable<CreateEventModel> {
+    return this.http.get<CreateEventModel>(this.applicationConfigService.getEndpointFor(`/api/events/event/${id}`));
   }
 }

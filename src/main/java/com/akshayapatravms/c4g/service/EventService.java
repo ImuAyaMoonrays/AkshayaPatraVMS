@@ -123,16 +123,16 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public void signUpForEvent(ProfileEventDTO profileEventDTO) {
-        //update so there's validation that the user signing up is same as user.
-
-        Optional<Profile> profile = profileRepository.getProfileById(profileEventDTO.getUserID());
-        Optional<Event>  event = eventRepository.getEventById(profileEventDTO.getEventID());
-        if (profile.isPresent() & event.isPresent()){
-            profile.get().getEvents().add(event.get());
-            profileRepository.save(profile.get());
-        } else{
-            //error!
-        }
-    }
+//    public void signUpForEvent(ProfileEventDTO profileEventDTO) {
+//        //update so there's validation that the user signing up is same as user.
+//
+//        Optional<Profile> profile = profileRepository.getProfileById(profileEventDTO.getUserID());
+//        Optional<Event>  event = eventRepository.getEventById(profileEventDTO.getEventID());
+//        if (profile.isPresent() & event.isPresent()){
+//            profile.get().getEvents().add(event.get());
+//            profileRepository.save(profile.get());
+//        } else{
+//            //error!
+//        }
+//    }
 }
