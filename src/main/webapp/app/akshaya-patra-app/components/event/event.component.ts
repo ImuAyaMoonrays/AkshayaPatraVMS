@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
+import { combineLatest, forkJoin, merge, Observable, Subject } from 'rxjs';
 import { EventModel } from "../../models/event.model";
 import { EventService } from "../../services/event/event.service";
 import { Router } from "@angular/router";
@@ -21,6 +21,7 @@ export class EventComponent implements OnInit {
   isAdmin$: Observable<boolean>;
   buttonText: 'Register' | 'Unregister';
   buttonFunction: Function;
+  forceEvent$: Subject<EventModel> = new Subject<EventModel>();
 
   constructor(private router: Router,
               private accountService: AccountService,
@@ -35,11 +36,9 @@ export class EventComponent implements OnInit {
       const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
       this.assignEvent(eventId);
     }
-    this.reassignEventAndAlterButtonFunctionality();
-  }
 
-  private reassignEventAndAlterButtonFunctionality() {
-    this.event$ = forkJoin(this.event$, this.accountService.identity()).pipe(
+    // this is psychotic. Refactor this.
+    this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
       tap((eventAndAccount: [EventModel, Account]) => {
         if (eventAndAccount[0].volunteers.map(volunteer => volunteer.id).includes(eventAndAccount[1].id)) {
           this.buttonText = 'Unregister';
@@ -50,8 +49,9 @@ export class EventComponent implements OnInit {
         }
       }),
       map(eventAndAccount => eventAndAccount[0])
-    )
+    );
   }
+
 
   private assignEvent(eventId: string) {
     this.event$ = this.eventService.eventById$(Number(eventId));
@@ -64,16 +64,16 @@ export class EventComponent implements OnInit {
   public register(eventId: string): void {
     this.eventService.register$(Number(eventId)).pipe(
       tap(() => {
-        this.assignEvent(eventId);
-        this.reassignEventAndAlterButtonFunctionality();
+        // refactor this
+        this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
       })
     ).subscribe();
   }
   public unregister(eventId: string): void {
     this.eventService.unregister$(Number(eventId)).pipe(
       tap(() => {
-        this.assignEvent(eventId);
-        this.reassignEventAndAlterButtonFunctionality();
+        // refactor this
+        this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
       })
     ).subscribe();
   }
