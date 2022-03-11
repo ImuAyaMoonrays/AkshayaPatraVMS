@@ -5,9 +5,13 @@ import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.repository.ProfileRepository;
+import com.akshayapatravms.c4g.security.AuthoritiesConstants;
+import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,16 +127,90 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-//    public void signUpForEvent(ProfileEventDTO profileEventDTO) {
-//        //update so there's validation that the user signing up is same as user.
-//
-//        Optional<Profile> profile = profileRepository.getProfileById(profileEventDTO.getUserID());
-//        Optional<Event>  event = eventRepository.getEventById(profileEventDTO.getEventID());
-//        if (profile.isPresent() & event.isPresent()){
-//            profile.get().getEvents().add(event.get());
-//            profileRepository.save(profile.get());
-//        } else{
-//            //error!
-//        }
-//    }
+
+    public Boolean eligibleToVolunteerForEvent(User user, Event event){
+        //have volunteers spots left
+        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()){
+            log.info("user is NOT eligible for event");
+            return false;
+        }
+
+        //todo: corp subgroup check
+        log.info("user is eligible for event");
+        return true;
+    }
+
+
+    public void volunteerForEvent(Long eventID) throws RuntimeException{
+        //update so there's validation that the user signing up is same as user.
+
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+
+        final User user = isUser.get();
+
+        Optional<Event>  event = eventRepository.findOneById(eventID);
+
+        if (event.isPresent()){
+            try{
+                if (!eligibleToVolunteerForEvent(user,event.get())) {
+                    throw new RuntimeException("user is ineligible for event");
+                }
+                event.get().getVolunteers().add(user);
+                eventRepository.save(event.get());
+            } catch (Exception e){
+                throw new RuntimeException(e.getMessage());
+            }
+
+        } else{
+            throw new RuntimeException("unable to find event");
+        }
+
+    }
+
+    public void unRegisterForEvent (Long eventID)  throws RuntimeException {
+
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        final User user = isUser.get();
+
+        Optional<Event>  event = eventRepository.findOneById(eventID);
+
+        if (event.isPresent()){
+            try {
+                log.info("event" + event.get());
+                log.info("volunteer count before " + event.get().getVolunteers().size());
+                event.get().getVolunteers().remove(isUser.get());
+                log.info("volunteer count after " + event.get().getVolunteers().size());
+                log.info("user id " + user.getId() + " event id " + event.get().getId());
+                eventRepository.save(event.get());
+
+                log.info("num of volunteers " + event.get().getVolunteers().size());
+                log.info("num of events vol for " + user.getEvents().size());
+                log.info("volunteers for event " + event.get().getVolunteers());
+                log.info("events volunteering for " + user.getEvents());
+                //join table is emptied, but user is still showing events.
+            } catch (Exception e) {
+                throw new RuntimeException("unable to save event");
+            }
+        } else{
+            throw new RuntimeException("unable to find event");
+        }
+    }
+
+    public List<Event> getAll() throws  RuntimeException{
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if(!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
+            return eventRepository.findAllEventsAndVolunteers();
+        } else {
+            return eventRepository.findAll();
+        }
+    }
 }

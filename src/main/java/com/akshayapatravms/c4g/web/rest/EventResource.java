@@ -12,9 +12,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+//todo: have controllers return response entities
 @RestController
 @RequestMapping("/api/events")
 public class EventResource {
@@ -43,15 +45,38 @@ public class EventResource {
     }
 
 //    need one for admins which contains all registered users and one for normal user which doesn't
-    @GetMapping("/allEvents")
+    @GetMapping("/all")
     public List<Event> allEvents() throws URISyntaxException {
         return this.eventRepository.findAll();
     }
 
-    @PostMapping("/volunteerForEvent")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public void createEvent(@RequestBody ProfileEventDTO profileEventDTO) throws URISyntaxException {
+    @PostMapping("/volunteer")
+    public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
+        try{
+            eventService.volunteerForEvent(eventID);
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
 
+    @DeleteMapping("unRegister")
+    public ResponseEntity unRegisterForEvent(@RequestBody Long eventID) {
+        try{
+            eventService.unRegisterForEvent(eventID);
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 
+    @GetMapping("getAll")
+    public ResponseEntity getAllEvents() {
+        try{
+            return ResponseEntity.ok().body(eventService.getAll());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

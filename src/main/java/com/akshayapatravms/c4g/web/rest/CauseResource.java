@@ -24,7 +24,6 @@ public class CauseResource {
     }
 
     @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<CauseDTO> getCauses() throws URISyntaxException {
         return causeService.getCauses();
     }
