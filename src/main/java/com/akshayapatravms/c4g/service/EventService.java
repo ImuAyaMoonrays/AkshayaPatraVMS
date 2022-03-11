@@ -127,9 +127,20 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    //todo: add validation that the user can be added to event (e.g. corp subgroup check, enough volunteers,
-    // haven't signed up already).
-    //todo: add error handling
+
+    public Boolean eligibleToVolunteerForEvent(User user, Event event){
+        //have volunteers spots left
+        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()){
+            log.info("user is NOT eligible for event");
+            return false;
+        }
+
+        //todo: corp subgroup check
+        log.info("user is eligible for event");
+        return true;
+    }
+
+
     public void volunteerForEvent(Long eventID) throws RuntimeException{
         //update so there's validation that the user signing up is same as user.
 
@@ -138,14 +149,19 @@ public class EventService {
             throw new RuntimeException("unable to find user");
         }
 
+        final User user = isUser.get();
+
         Optional<Event>  event = eventRepository.findOneById(eventID);
 
         if (event.isPresent()){
             try{
-                event.get().getVolunteers().add(isUser.get());
+                if (!eligibleToVolunteerForEvent(user,event.get())) {
+                    throw new RuntimeException("user is ineligible for event");
+                }
+                event.get().getVolunteers().add(user);
                 eventRepository.save(event.get());
             } catch (Exception e){
-                throw new RuntimeException("unable to save event to db");
+                throw new RuntimeException(e.getMessage());
             }
 
         } else{
