@@ -13,7 +13,7 @@
         </div>
       </a>
     </li>
-    <li *ngIf="!isAdminLogin" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || completedEvents.isActive }">
+    <li *ngIf="!isAdminLogin" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -24,11 +24,11 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="events" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="completedEventForPrototype" routerLinkActive="active" #completedEvents="routerLinkActive"
-              >Completed
-            </a>
-          </li>
+<!--          <li class="nav-item">-->
+<!--            <a class="nav-link" routerLink="completedEventForPrototype" routerLinkActive="active" #completedEvents="routerLinkActive"-->
+<!--              >Completed-->
+<!--            </a>-->
+<!--          </li>-->
         </ul>
       </div>
     </li>
@@ -58,12 +58,12 @@
         </ul>
       </div>
     </li>
-    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">
-      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
-        <span class="menu-title">Settings</span>
-        <i class="mdi mdi-wrench menu-icon"></i>
-      </a>
-    </li>
+<!--    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">-->
+<!--      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">-->
+<!--        <span class="menu-title">Settings</span>-->
+<!--        <i class="mdi mdi-wrench menu-icon"></i>-->
+<!--      </a>-->
+<!--    </li>-->
     <li class="nav-item">
       <a class="nav-link" (click)="logout()">
         <span class="menu-title" style="color: orangered">Logout</span>

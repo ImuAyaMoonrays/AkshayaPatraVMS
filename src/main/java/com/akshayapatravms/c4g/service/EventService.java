@@ -182,17 +182,17 @@ public class EventService {
 
         if (event.isPresent()){
             try {
-                log.info("event" + event.get());
-                log.info("volunteer count before " + event.get().getVolunteers().size());
+//                log.info("event" + event.get());
+//                log.info("volunteer count before " + event.get().getVolunteers().size());
                 event.get().getVolunteers().remove(isUser.get());
-                log.info("volunteer count after " + event.get().getVolunteers().size());
-                log.info("user id " + user.getId() + " event id " + event.get().getId());
+//                log.info("volunteer count after " + event.get().getVolunteers().size());
+//                log.info("user id " + user.getId() + " event id " + event.get().getId());
                 eventRepository.save(event.get());
 
-                log.info("num of volunteers " + event.get().getVolunteers().size());
-                log.info("num of events vol for " + user.getEvents().size());
-                log.info("volunteers for event " + event.get().getVolunteers());
-                log.info("events volunteering for " + user.getEvents());
+//                log.info("num of volunteers " + event.get().getVolunteers().size());
+//                log.info("num of events vol for " + user.getEvents().size());
+//                log.info("volunteers for event " + event.get().getVolunteers());
+//                log.info("events volunteering for " + user.getEvents());
                 //join table is emptied, but user is still showing events.
             } catch (Exception e) {
                 throw new RuntimeException("unable to save event");

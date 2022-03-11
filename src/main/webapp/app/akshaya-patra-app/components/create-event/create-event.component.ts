@@ -137,7 +137,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent$(event).subscribe(console.log);
+      this.eventService.createEvent$(event).subscribe(() => this.router.navigate(['/home/events']));
     }
   }
 
