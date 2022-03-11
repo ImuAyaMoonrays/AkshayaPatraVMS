@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PrototypeService } from '../../services/prototype/prototype.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EventModel } from '../../models/event.model';
 import { Router } from '@angular/router';
-import { map, mergeMap, tap } from "rxjs/operators";
-import { BehaviorSubject, merge, Observable, of } from "rxjs";
+import { map, mergeMap } from "rxjs/operators";
+import { merge, Observable, of } from "rxjs";
 import { EventService } from "../../services/event/event.service";
-import { CreateEventModel } from "../../models/create-event.model";
-import { date } from "ng2-validation/dist/date";
 import { Time } from "@angular/common";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { CauseModel } from "../../models/cause.model";
 import { CauseService } from "../../services/cause/cause.service";
+import { AccountService } from "../../services/auth/account.service";
+import { Account } from "../../services/auth/account.model";
+import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
 
 @Component({
   selector: 'jhi-create-event',
@@ -70,12 +70,14 @@ export class CreateEventComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder,
+              private accountService: AccountService,
               private router: Router,
               private eventService: EventService,
               private causeService: CauseService) {
   }
 
   ngOnInit(): void {
+
     this.causeService.allCauses().subscribe((causes) => {
       causes.forEach(cause => this.causes = this.causes.concat(cause))
     })
@@ -105,7 +107,7 @@ export class CreateEventComponent implements OnInit {
     const virtualLocationForm = this.virtualLocationForm;
 
     if (createEventForm.valid && this.physicalLocationSelectedAndFormValid(physicalLocationForm) || this.virtualLocationSelectedAndFormValid(virtualLocationForm)) {
-      const event = new CreateEventModel(
+      const event = new EventModel(
         createEventForm.get('eventName').value,
         createEventForm.get('description').value,
         Number(createEventForm.get('volunteersNeededAmount').value),

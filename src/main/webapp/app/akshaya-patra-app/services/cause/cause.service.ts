@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ApplicationConfigService } from "../application-config/application-config.service";
-import { CreateEventModel } from "../../models/create-event.model";
+import { EventModel } from "../../models/event.model";
 import { Observable } from "rxjs";
 import { CauseModel } from "../../models/cause.model";
 

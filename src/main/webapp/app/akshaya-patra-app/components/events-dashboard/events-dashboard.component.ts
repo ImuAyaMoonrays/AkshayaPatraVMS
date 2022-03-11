@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PrototypeService } from '../../services/prototype/prototype.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { PrototypeConstants } from '../../constants/prototype.constants';
+import { Observable, of } from 'rxjs';
 import { EventModel } from '../../models/event.model';
 import { map } from 'rxjs/operators';
-import { CreateEventModel } from "../../models/create-event.model";
 import { EventService } from "../../services/event/event.service";
 
 @Component({
@@ -15,16 +12,17 @@ import { EventService } from "../../services/event/event.service";
 })
 export class EventsDashboardComponent implements OnInit {
 
-  events$: Observable<CreateEventModel[]>;
+  events$: Observable<Observable<EventModel>[]>;
 
   constructor(private router: Router,
               private eventService: EventService) {}
 
   ngOnInit(): void {
-    this.events$ = this.eventService.allEvents$();
+    this.events$ = this.eventService.allEvents$().pipe(
+      map((events) => {
+        return events.map(event => of(event));
+      })
+    );
   }
 
-  navigateToEvent(eventId: string): void {
-    this.router.navigate([`/home/event/${eventId}`]);
-  }
 }

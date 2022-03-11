@@ -22,7 +22,6 @@ import { RegisterComponent } from './akshaya-patra-app/components/register/regis
 import { PasswordResetInitComponent } from './akshaya-patra-app/components/reset-password-init/reset-password-init.component';
 import { EventsDashboardComponent } from './akshaya-patra-app/components/events-dashboard/events-dashboard.component';
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
-import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
 import { ApplicationConfigService } from './akshaya-patra-app/services/application-config/application-config.service';
 import { SharedModule } from './akshaya-patra-app/modules/shared.module';
@@ -31,6 +30,8 @@ import { fontAwesomeIcons } from './akshaya-patra-app/configs/font-awesome-icons
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { NewPasswordComponent } from './akshaya-patra-app/components/new-password/new-password.component';
 import { NgSelectModule } from "@ng-select/ng-select";
+import { TimePipe } from "./akshaya-patra-app/pipes/time/time.pipe";
+import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
 
 @NgModule({
   imports: [
@@ -59,8 +60,9 @@ import { NgSelectModule } from "@ng-select/ng-select";
     NewPasswordComponent,
     EventsDashboardComponent,
     EventComponent,
-    CompletedEventForPrototypeComponent,
     CreateEventComponent,
+    TimePipe,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })

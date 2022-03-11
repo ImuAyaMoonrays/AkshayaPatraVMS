@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, ReplaySubject } from 'rxjs';
-import { catchError, shareReplay, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 
 import { Account } from './account.model';
 import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../application-config/application-config.service';
 import { SessionStorageService } from 'ngx-webstorage';
+import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -40,6 +41,14 @@ export class AccountService {
       authorities = [authorities];
     }
     return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+  }
+
+  isAdminLoggedIn$(): Observable<boolean> {
+    return this.identity().pipe(
+      map((account: Account) => {
+        return account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
+      })
+    )
   }
 
   identity(force?: boolean): Observable<Account | null> {

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { PrototypeService } from '../../services/prototype/prototype.service';
 import { LoginService } from '../../services/login/login.service';
 import { AccountService } from '../../services/auth/account.service';
 import { map, tap } from 'rxjs/operators';
@@ -15,11 +14,9 @@ import { AuthoiritiesEnum } from '../../enums/authoirities.enum';
 })
 export class SidebarComponent implements OnInit {
   parentId = '';
-  isAdminLogin$: BehaviorSubject<boolean>;
 
   constructor(
     private router: Router,
-    private prototypeService: PrototypeService,
     private loginService: LoginService,
     private accountService: AccountService
   ) {}
@@ -37,7 +34,6 @@ export class SidebarComponent implements OnInit {
       })
     );
 
-    this.isAdminLogin$ = this.prototypeService.isAdminAccount$;
     const body = document.querySelector('body');
 
     // add class 'hover-open' to sidebar navitem while hover in sidebar-icon-only menu

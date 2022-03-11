@@ -1,37 +1,53 @@
-<div class="col-md-12 stretch-card grid-margin">
-  <div class="card bg-gradient-primary card-img-holder text-white">
+<div *ngIf="event$ | async as event"
+     (click)="!isExpandedView && navigateToEventExpandedView(event.id)"
+     class="col-md-12 stretch-card grid-margin">
+  <div class="card">
     <div class="card-body">
-      <img
-        *ngIf="hideButton"
-        src="content/images/purple-template-images/images/dashboard/circle.svg"
-        class="card-img-absolute"
-        alt="circle-image"
-      />
-<!--      temporary hack, will fix later-->
-      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Name: {{event.eventName}}</h6>
-      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Description: {{event.description}}</h6>
-      <h6 *ngIf="isCompactView" class="font-weight-normal mb-3">Event Volunteers Needed: {{event.volunteersNeededAmount}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Name: {{event.eventName}}</h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Description: {{event.description}}</h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Volunteers Needed: {{event.volunteersNeededAmount}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Start Date: {{event.startDate}}</h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event End Date:{{event.endDate}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Start Time: {{event.startTime}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event End Time: {{event.endTime}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Name: {{event.contactName}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Phone Number: {{event.contactPhoneNumber}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Contact Email: {{event.contactEmail}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Email Body: {{event.emailBody}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Physical Location: {{event.physicalLocation}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Virtual Location: {{event.virtualLocation}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Causes: {{event.causes}} </h6>
-      <h6 *ngIf="!isCompactView" class="font-weight-normal mb-3">Event Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
-      <!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
-      <!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
-      <a *ngIf="!hideButton && !(isAdmin$ | async) && !isCompleted"
-        role="button"
-        class="float-right btn btn-outline-light text-light btn-fw" >{{ false ? 'Unregister' : 'Sign Up' }}</a
-      >
+      <div class="row">
+        <div class="small-screen-center-text {{!isExpandedView ?  'text-center col-md-12' : 'col-md-6'}}">
+          <h2 class="font-weight-normal mb-3">{{event.eventName}}</h2>
+          <h4 class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
+          <h6 *ngIf="isExpandedView" class="card-text mb-3">{{event.description}}</h6>
+          <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
+          <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
+
+          <a *ngIf="isExpandedView && !(isAdmin$ | async)"
+             (click)="buttonFunction(event.id)"
+             role="button"
+             class="btn btn-gradient-primary btn-fw mt-2">{{ buttonText }}</a>
+
+          <h6 *ngIf="event.causes?.length > 0" class="card-text">Causes: {{event.causes}} </h6>
+        </div>
+        <div *ngIf="isExpandedView" class="col-md-6 text-center">
+
+          <h4 class="font-weight-normal mt-2">Contact</h4>
+          <h6 class="card-text">Name: {{event.contactName}} </h6>
+          <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
+          <h6 class="card-text">Email: {{event.contactEmail}} </h6>
+
+
+          <h4 class="font-weight-normal mt-3">Location</h4>
+          <div *ngIf="event.physicalLocation as physicalLocation">
+            <h6 class="card-text">{{physicalLocation.address}}</h6>
+            <h6 class="card-text">{{physicalLocation.state}}</h6>
+            <h6 class="card-text">{{physicalLocation.city}}</h6>
+            <h6 class="card-text">{{physicalLocation.locality}}</h6>
+            <h6 class="card-text">{{physicalLocation.region}}</h6>
+            <h6 class="card-text">{{physicalLocation.country}}</h6>
+          </div>
+
+          <div *ngIf="event.virtualLocation as virtualLocation">
+            <h6 class="card-text">Url: {{virtualLocation.url}}</h6>
+            <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
+          </div>
+
+          <!--          form later-->
+          <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
+          <!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
+          <!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
+
+        </div>
+      </div>
     </div>
   </div>
 </div>

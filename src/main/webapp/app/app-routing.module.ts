@@ -5,7 +5,6 @@ import { LoginComponent } from './akshaya-patra-app/components/login/login.compo
 import { RegisterComponent } from './akshaya-patra-app/components/register/register.component';
 import { EventsDashboardComponent } from './akshaya-patra-app/components/events-dashboard/events-dashboard.component';
 import { EventComponent } from './akshaya-patra-app/components/event/event.component';
-import { CompletedEventForPrototypeComponent } from './akshaya-patra-app/components/completed-event-for-prototype/completed-event-for-prototype.component';
 import { CreateEventComponent } from './akshaya-patra-app/components/create-event/create-event.component';
 import { DocsComponent } from './akshaya-patra-app/components/docs/docs.component';
 import { UserRouteAccessService } from './akshaya-patra-app/services/auth/user-route-access.service';
@@ -23,8 +22,6 @@ const routes: Routes = [
       { path: 'events', component: EventsDashboardComponent },
       { path: 'event/:id', component: EventComponent },
       { path: 'createEvent', component: CreateEventComponent },
-      //prototype only
-      { path: 'completedEventForPrototype', component: CompletedEventForPrototypeComponent },
     ],
   },
   { path: 'login', component: LoginComponent },

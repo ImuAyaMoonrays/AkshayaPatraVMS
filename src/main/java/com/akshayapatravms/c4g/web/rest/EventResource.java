@@ -61,10 +61,10 @@ public class EventResource {
 
     }
 
-    @DeleteMapping("unRegister")
-    public ResponseEntity unRegisterForEvent(@RequestBody Long eventID) {
+    @GetMapping("unregister/{id}")
+    public ResponseEntity unregisterForEvent(@PathVariable Long id) {
         try{
-            eventService.unRegisterForEvent(eventID);
+            eventService.unRegisterForEvent(id);
             return ResponseEntity.ok().build();
         } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());

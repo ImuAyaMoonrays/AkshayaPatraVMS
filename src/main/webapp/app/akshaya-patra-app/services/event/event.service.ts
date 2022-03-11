@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ApplicationConfigService } from "../application-config/application-config.service";
 import { Observable } from "rxjs";
-import { CreateEventModel } from "../../models/create-event.model";
+import { EventModel } from "../../models/event.model";
 
 @Injectable({
   providedIn: 'root'
@@ -11,15 +11,23 @@ export class EventService {
 
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  createEvent$(event: CreateEventModel): Observable<CreateEventModel> {
-    return this.http.post<CreateEventModel>(this.applicationConfigService.getEndpointFor('/api/events/createEvent'), event);
+  createEvent$(event: EventModel): Observable<EventModel> {
+    return this.http.post<EventModel>(this.applicationConfigService.getEndpointFor('/api/events/createEvent'), event);
   }
 
-  allEvents$(): Observable<CreateEventModel[]> {
-    return this.http.get<CreateEventModel[]>(this.applicationConfigService.getEndpointFor('/api/events/allEvents'));
+  allEvents$(): Observable<EventModel[]> {
+    return this.http.get<EventModel[]>(this.applicationConfigService.getEndpointFor('/api/events/all'));
   }
 
-  eventById$(id: number): Observable<CreateEventModel> {
-    return this.http.get<CreateEventModel>(this.applicationConfigService.getEndpointFor(`/api/events/event/${id}`));
+  eventById$(id: number): Observable<EventModel> {
+    return this.http.get<EventModel>(this.applicationConfigService.getEndpointFor(`/api/events/event/${id}`));
+  }
+
+  register$(eventId: number): Observable<string> {
+    return this.http.post<string>(this.applicationConfigService.getEndpointFor(`/api/events/volunteer`), eventId);
+  }
+
+  unregister$(eventId: number): Observable<string> {
+    return this.http.get<string>(this.applicationConfigService.getEndpointFor(`/api/events/unregister/${eventId}`));
   }
 }
