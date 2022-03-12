@@ -58,7 +58,7 @@ export class EventComponent implements OnInit {
   }
 
   navigateToEventExpandedView(eventId: string): void {
-    this.router.navigate([`/home/event/${eventId}`]);
+    this.router.navigate([`/home/events/${eventId}`]);
   }
 
   public register(eventId: string): void {

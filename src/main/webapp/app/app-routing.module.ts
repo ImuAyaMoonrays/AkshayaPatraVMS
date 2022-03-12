@@ -20,7 +20,7 @@ const routes: Routes = [
     canActivate: [UserRouteAccessService],
     children: [
       { path: 'events', component: EventsDashboardComponent },
-      { path: 'event/:id', component: EventComponent },
+      { path: 'events/:id', component: EventComponent },
       { path: 'createEvent', component: CreateEventComponent },
     ],
   },
