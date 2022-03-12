@@ -54,6 +54,8 @@ public class EventResource {
         return this.eventRepository.findAll();
     }
 
+    //eventually might want to change this to register to match unregister. my bad for having them separate names at the start.
+    //update request body to be a request parameter?
     @PostMapping("/volunteer")
     public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
         try{
@@ -65,6 +67,7 @@ public class EventResource {
 
     }
 
+    //should this be a delete? and change @pathVariable to RequestParam?
     @GetMapping("/unregister/{id}")
     public ResponseEntity unregisterForEvent(@PathVariable Long id) {
         try{

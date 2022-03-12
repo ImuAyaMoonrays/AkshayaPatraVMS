@@ -214,10 +214,8 @@ public class EventService {
             throw new RuntimeException("unable to find user");
         }
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
-            log.info("finding with volunteers");
             return eventRepository.findAllEventsAndVolunteers();
         } else {
-            log.info("finding without volunteers");
             return eventRepository.findAll();
         }
     }
