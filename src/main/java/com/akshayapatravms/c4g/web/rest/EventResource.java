@@ -85,7 +85,7 @@ public class EventResource {
     }
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
-    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getEventVolunteersCSC(@RequestParam Long eventID) {
         try{
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
