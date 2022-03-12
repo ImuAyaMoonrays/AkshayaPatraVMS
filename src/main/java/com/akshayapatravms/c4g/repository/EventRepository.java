@@ -15,7 +15,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e JOIN e.volunteers v")
     public List<Event> findAllByAndVolunteers();
 
-    @Query(value = "SELECT e FROM Event e INNER JOIN FETCH e.volunteers v")
+    @Query(value = "SELECT e FROM Event e left JOIN FETCH e.volunteers v")
     List<Event> findAllEventsAndVolunteers();
 
 }
