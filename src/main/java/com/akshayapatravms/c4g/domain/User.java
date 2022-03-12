@@ -247,6 +247,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.events = events;
     }
 
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

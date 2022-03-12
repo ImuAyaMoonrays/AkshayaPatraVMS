@@ -7,17 +7,23 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.repository.ProfileRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
+import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -208,9 +214,51 @@ public class EventService {
             throw new RuntimeException("unable to find user");
         }
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
+            log.info("finding with volunteers");
             return eventRepository.findAllEventsAndVolunteers();
         } else {
+            log.info("finding without volunteers");
             return eventRepository.findAll();
         }
+    }
+
+
+    //code from https://codeburst.io/returning-csv-content-from-an-api-in-spring-boot-63ea82bbcf0f
+    public CsvDTO createCSVFileOfEventVolunteers(Long eventID) throws RuntimeException {
+        String[] csvHeader = {
+            "name", "email"
+        };
+
+        Event event = eventRepository.getById(eventID);
+        Set<User> volunteers = event.getVolunteers();
+        List<List<String>> csvBody = new ArrayList<>(volunteers.size());
+        for (User volunteer: volunteers) {
+            csvBody.add(Arrays.asList(volunteer.getFullName(),volunteer.getEmail()));
+        }
+
+        ByteArrayInputStream byteArrayOutputStream;
+
+        try (
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CSVPrinter csvPrinter = new CSVPrinter(
+                new PrintWriter(out),
+                CSVFormat.DEFAULT.withHeader(csvHeader)
+            );
+        ) {
+            for (List<String> record : csvBody) {
+                csvPrinter.printRecord(record);
+            }
+            csvPrinter.flush();
+            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        CsvDTO csvDTO = new CsvDTO();
+        //add date as well to name?
+        //may need to validate event name in case there's some character in the name that doesn't play well with filenames
+        csvDTO.setFileName(event.getEventName() + "_volunteers.csv");
+        csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
+        return csvDTO;
     }
 }
