@@ -322,4 +322,32 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    public void addAuthority(Long userID, String authorityString) throws RuntimeException{
+        Optional<User> user = userRepository.findOneById(userID);
+        if(!user.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        try{
+            Optional<Authority> authority = authorityRepository.findById(AuthoritiesConstants.ADMIN);
+            user.get().getAuthorities().add(authority.get());
+            userRepository.save(user.get());
+        } catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void removeAuthority(Long userID, String authorityString) throws RuntimeException{
+        Optional<User> user = userRepository.findOneById(userID);
+        if(!user.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        try{
+            Optional<Authority> authority = authorityRepository.findById(AuthoritiesConstants.ADMIN);
+            user.get().getAuthorities().remove(authority.get());
+            userRepository.save(user.get());
+        } catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

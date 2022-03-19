@@ -1,6 +1,7 @@
 package com.akshayapatravms.c4g.web.rest;
 
 import com.akshayapatravms.c4g.config.Constants;
+import com.akshayapatravms.c4g.domain.Authority;
 import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.repository.UserRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
@@ -204,4 +205,28 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
+
+    @GetMapping("/users/addAdminAuthority/{userID}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity addAdminAuthority(@PathVariable Long userID){
+        try {
+            userService.addAuthority(userID, AuthoritiesConstants.ADMIN);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/users/removeAdminAuthority/{userID}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity removeAdminAuthority(@PathVariable Long userID){
+        try {
+            userService.removeAuthority(userID, AuthoritiesConstants.ADMIN);
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+
 }
