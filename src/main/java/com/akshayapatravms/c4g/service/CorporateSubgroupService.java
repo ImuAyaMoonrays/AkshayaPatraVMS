@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class CorporateSubgroupService {
@@ -39,4 +42,43 @@ public class CorporateSubgroupService {
                 );
         }
     }
+
+    public List<CorporateSubgroup> getAllCorpSubgroups() throws RuntimeException{
+        try {
+            return corporateSubgroupRepository.findAll();
+        } catch (Exception e ){
+            throw new RuntimeException("unable to get corp subgroups");
+        }
+    }
+
+    //add any validation? Require it to start wtih @? Pattern will always be domain.end of email, correct?
+    public void addEmailPatternsToCorpSubgroup(Long corpID, List<String> emailPatterns) throws RuntimeException{
+        try{
+            Optional<CorporateSubgroup>  corp = corporateSubgroupRepository.findOneById(corpID);
+            if (!corp.isPresent()){
+                throw new RuntimeException("unable to find corp group");
+            }
+            corp.get().getSubgroupEmailPatterns().addAll(emailPatterns);
+            corporateSubgroupRepository.save(corp.get());
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void removeEmailPatternsToCorpSubgroup(Long corpID, List<String> emailPatterns) throws RuntimeException{
+        try{
+            Optional<CorporateSubgroup>  corp = corporateSubgroupRepository.findOneById(corpID);
+            if (!corp.isPresent()){
+                throw new RuntimeException("unable to find corp group");
+            }
+            corp.get().getSubgroupEmailPatterns().removeAll(emailPatterns);
+            corporateSubgroupRepository.save(corp.get());
+        } catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+
+
+
 }
