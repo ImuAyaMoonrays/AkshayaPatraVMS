@@ -133,6 +133,23 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    private HashSet<String> getEmailPatternsForEvent(Event event) {
+        HashSet<String> emailPatterns = new HashSet<>();
+        for (CorporateSubgroup corp : event.getCorporateSubgroups()){
+            emailPatterns.addAll(corp.getSubgroupEmailPatterns());
+        }
+
+        return emailPatterns;
+    }
+
+    private Boolean isEmailMatch(Set<String> emailPatterns, String email){
+        for (String emailPattern: emailPatterns){
+            if (email.endsWith(emailPattern)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void checkEligibility(User user, Event event) throws RuntimeException {
         if (user.getAcceptedTOS() != true){
@@ -144,9 +161,15 @@ public class EventService {
             throw new RuntimeException("volunteering event is full");
         }
 
-        //todo: corp subgroup check
-        log.info("user is eligible for event");
+        //does user have an email that is eligible for event
+        if (event.getCorporateSubgroups().size() >0) {
+            HashSet<String> emailPatterns = getEmailPatternsForEvent(event);
+            if (!isEmailMatch(emailPatterns,user.getEmail())){
+                throw  new RuntimeException("user does not have an allowed corporate email");
+            }
+        }
 
+        log.info("user is eligible for event");
     }
 
 

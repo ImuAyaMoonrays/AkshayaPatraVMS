@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,14 +52,29 @@ public class CorporateSubgroupService {
         }
     }
 
-    //add any validation? Require it to start wtih @? Pattern will always be domain.end of email, correct?
+    private ArrayList<String> sanitizeEmails(List<String> originalEmails){
+        //remove any leading/trailing white space. Still could be white space in the middle.
+        ArrayList<String> emails = new ArrayList<>();
+        for (String email : originalEmails){
+            String newemail = email.strip();
+            if (newemail.length() > 0){
+                emails.add(newemail);
+            }
+        }
+
+        return emails;
+    }
+
+    //add any validation? Require it to start with @? Pattern will always be domain.end of email, correct?
+    //if an email fails sanitation (currently just a blank string does this). it will not be added and the front end won't know
     public void addEmailPatternsToCorpSubgroup(Long corpID, List<String> emailPatterns) throws RuntimeException{
         try{
             Optional<CorporateSubgroup>  corp = corporateSubgroupRepository.findOneById(corpID);
             if (!corp.isPresent()){
                 throw new RuntimeException("unable to find corp group");
             }
-            corp.get().getSubgroupEmailPatterns().addAll(emailPatterns);
+            List<String> sanitizedEmails = sanitizeEmails(emailPatterns);
+            corp.get().getSubgroupEmailPatterns().addAll(sanitizedEmails);
             corporateSubgroupRepository.save(corp.get());
         } catch (Exception e){
             throw new RuntimeException(e.getMessage());
