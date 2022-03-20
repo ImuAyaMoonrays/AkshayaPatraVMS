@@ -1,7 +1,6 @@
 package com.akshayapatravms.c4g.web.rest;
 
 import com.akshayapatravms.c4g.config.Constants;
-import com.akshayapatravms.c4g.domain.Authority;
 import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.repository.UserRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
@@ -224,6 +223,16 @@ public class UserResource {
             userService.removeAuthority(userID, AuthoritiesConstants.ADMIN);
             return ResponseEntity.ok().build();
         } catch(Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/users/acceptTOS")
+    public ResponseEntity acceptTOSForUser() throws  RuntimeException {
+        try{
+            userService.acceptTOS();
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

@@ -76,7 +76,8 @@ public class CorporateSubgroupResource {
             corporateSubgroupService.removeEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
                 corproateSubGroupEmailDTO.getEmailPatterns()
-            );            return ResponseEntity.ok().build();
+            );
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

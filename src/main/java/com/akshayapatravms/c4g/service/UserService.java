@@ -350,4 +350,18 @@ public class UserService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    public void acceptTOS(){
+        final Optional<User> user = getUserWithAuthorities();
+        if(!user.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        try {
+            user.get().setAcceptedTOS(true);
+            userRepository.save(user.get());
+        } catch(Exception e){
+            throw new RuntimeException("unable to save user info");
+        }
+    }
+
 }

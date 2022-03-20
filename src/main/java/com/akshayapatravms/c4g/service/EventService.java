@@ -134,22 +134,23 @@ public class EventService {
     }
 
 
-    public Boolean eligibleToVolunteerForEvent(User user, Event event){
+    public void checkEligibility(User user, Event event) throws RuntimeException {
+        if (user.getAcceptedTOS() != true){
+            throw new RuntimeException("User has not accepted TOS");
+        }
+
         //have volunteers spots left
         if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()){
-            log.info("user is NOT eligible for event");
-            return false;
+            throw new RuntimeException("volunteering event is full");
         }
 
         //todo: corp subgroup check
         log.info("user is eligible for event");
-        return true;
+
     }
 
 
     public void volunteerForEvent(Long eventID) throws RuntimeException{
-        //update so there's validation that the user signing up is same as user.
-
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if(!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
@@ -161,13 +162,11 @@ public class EventService {
 
         if (event.isPresent()){
             try{
-                if (!eligibleToVolunteerForEvent(user,event.get())) {
-                    throw new RuntimeException("user is ineligible for event");
-                }
+                checkEligibility(user,event.get());
                 event.get().getVolunteers().add(user);
                 eventRepository.save(event.get());
             } catch (Exception e){
-                throw new RuntimeException(e.getMessage());
+                throw e;
             }
 
         } else{
