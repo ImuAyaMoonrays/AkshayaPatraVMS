@@ -20,20 +20,16 @@
           <div class="form-group">
             <label>Start Date</label>
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="startDate" ngbDatepicker #d="ngbDatepicker">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-              </div>
+              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="startDate" (click)="d.toggle()" ngbDatepicker
+                     #d="ngbDatepicker">
             </div>
           </div>
 
           <div class="form-group">
             <label>End Date</label>
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="endDate" ngbDatepicker #dp="ngbDatepicker">
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
-              </div>
+              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="endDate" (click)="d2.toggle()" ngbDatepicker
+                     #d2="ngbDatepicker">
             </div>
           </div>
           <div class="form-group">
@@ -157,6 +153,7 @@
         <div class="form-group mb-0">
           <label>Create New Cause Tag</label>
           <input style="text-transform: uppercase" type="text" class="form-control" id="newCause" [formControl]="newCause"/>
+          <div *ngif=""></div>
           <div class="row justify-content-center mt-0 ">
             <button (click)="addCause()" type="submit" class="btn btn-link btn-fw">Add Cause</button>
           </div>

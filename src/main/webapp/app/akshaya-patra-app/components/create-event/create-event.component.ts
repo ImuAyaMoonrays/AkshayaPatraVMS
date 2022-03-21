@@ -24,7 +24,6 @@ export class CreateEventComponent implements OnInit {
   newCause: FormControl = new FormControl('');
 
 
-
   createEventForm = this.fb.group({
     eventName: ['', Validators.required],
     description: [''],
@@ -137,6 +136,19 @@ export class CreateEventComponent implements OnInit {
       }
 
       this.eventService.createEvent$(event).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
+
+    } else {
+      this.markAllFormFieldsAsDirty(createEventForm);
+      this.markAllFormFieldsAsDirty(physicalLocationForm);
+      this.markAllFormFieldsAsDirty(virtualLocationForm);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+
+    }
+  }
+
+  private markAllFormFieldsAsDirty(form: FormGroup) {
+    for (const field in form.controls) {
+      form.get(field).markAsDirty();
     }
   }
 
