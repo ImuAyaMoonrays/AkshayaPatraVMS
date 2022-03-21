@@ -1,13 +1,12 @@
 <div *ngIf="event$ | async as event"
      (click)="!isExpandedView && navigateToEventExpandedView(event.id)"
      class="col-md-12 stretch-card grid-margin">
-  <div class="card">
+  <div class="card bg-gradient-danger card-img-holder text-white">
     <div class="card-body">
       <div class="row">
-        <div class="small-screen-center-text {{!isExpandedView ?  'text-center col-md-12' : 'col-md-6'}}">
-          <h2 class="font-weight-normal mb-3">{{event.eventName}}</h2>
+        <div class="text-center align-self-center {{!isExpandedView ?  'col-md-12' : 'col-md-3'}}">
+          <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
           <h4 class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
-          <h6 *ngIf="isExpandedView" class="card-text mb-3">{{event.description}}</h6>
           <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
           <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
 
@@ -20,12 +19,15 @@
         </div>
         <div *ngIf="isExpandedView" class="col-md-6 text-center">
 
+          <h4 class="font-weight-normal mt-2">Description</h4>
+          <h6 class="card-text mb-3">{{event.description}}</h6>
           <h4 class="font-weight-normal mt-2">Contact</h4>
           <h6 class="card-text">Name: {{event.contactName}} </h6>
           <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
           <h6 class="card-text">Email: {{event.contactEmail}} </h6>
+        </div>
 
-
+        <div *ngIf="isExpandedView" class="col-md-3 text-center">
           <h4 class="font-weight-normal mt-3">Location</h4>
           <div *ngIf="event.physicalLocation as physicalLocation">
             <h6 class="card-text">{{physicalLocation.address}}</h6>
