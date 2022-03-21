@@ -13,7 +13,7 @@
           <a *ngIf="isExpandedView && !(isAdmin$ | async)"
              (click)="buttonFunction(event.id)"
              role="button"
-             class="btn btn-gradient-primary btn-fw mt-2">{{ buttonText }}</a>
+             class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
 
           <h6 *ngIf="event.causes?.length > 0" class="card-text">Causes: {{event.causes}} </h6>
         </div>
