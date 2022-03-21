@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EventModel } from '../../models/event.model';
 import { Router } from '@angular/router';
-import { map, mergeMap } from "rxjs/operators";
+import { mergeMap } from "rxjs/operators";
 import { merge, Observable, of } from "rxjs";
 import { EventService } from "../../services/event/event.service";
 import { Time } from "@angular/common";
@@ -11,8 +11,6 @@ import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { CauseModel } from "../../models/cause.model";
 import { CauseService } from "../../services/cause/cause.service";
 import { AccountService } from "../../services/auth/account.service";
-import { Account } from "../../services/auth/account.model";
-import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
 
 @Component({
   selector: 'jhi-create-event',
@@ -24,6 +22,7 @@ export class CreateEventComponent implements OnInit {
   causes: { name: string, id: number }[] = [];
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
+
 
 
   createEventForm = this.fb.group({
@@ -137,7 +136,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent$(event).subscribe(() => this.router.navigate(['/home/events']));
+      this.eventService.createEvent$(event).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
     }
   }
 

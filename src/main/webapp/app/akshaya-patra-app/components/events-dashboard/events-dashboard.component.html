@@ -1,6 +1,6 @@
 <jhi-event
   style="cursor: pointer"
-  *ngFor="let event$ of events$ | async"
+  *ngFor="let event$ of events$$ | async"
   [event$]="event$"
   [hideButton]="true"
   [isExpandedView]="false"

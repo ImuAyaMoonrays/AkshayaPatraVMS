@@ -33,6 +33,8 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { TimePipe } from "./akshaya-patra-app/pipes/time/time.pipe";
 import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
 import { NgxsModule } from "@ngxs/store";
+import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
+import { AppState } from "./akshaya-patra-app/store/states/App.state";
 
 @NgModule({
   imports: [
@@ -45,7 +47,8 @@ import { NgxsModule } from "@ngxs/store";
     HttpClientModule,
     NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
     NgSelectModule,
-    NgxsModule.forRoot()
+    NgxsModule.forRoot([AppState]),
+    NgxsReduxDevtoolsPluginModule.forRoot()
   ],
   providers: [NgbModule, Title, {provide: LOCALE_ID, useValue: 'en'}, httpInterceptorProviders],
   declarations: [

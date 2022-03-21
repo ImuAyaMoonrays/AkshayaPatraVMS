@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Component, isDevMode, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { EventModel } from '../../models/event.model';
-import { map } from 'rxjs/operators';
-import { EventService } from "../../services/event/event.service";
+import { Select, Store } from "@ngxs/store";
+import { AppState } from "../../store/states/App.state";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -12,17 +12,16 @@ import { EventService } from "../../services/event/event.service";
 })
 export class EventsDashboardComponent implements OnInit {
 
-  events$: Observable<Observable<EventModel>[]>;
+  @Select(AppState.upcomingEvents$) events$$: Observable<Observable<EventModel>[]>;
 
-  constructor(private router: Router,
-              private eventService: EventService) {}
+  constructor(private store: Store) {
+  }
+
 
   ngOnInit(): void {
-    this.events$ = this.eventService.allEvents$().pipe(
-      map((events) => {
-        return events.map(event => of(event));
-      })
-    );
+    this.store.dispatch(AppActions.UpdateUpcomingEventsAction);
+    console.log('here')
+    console.log(isDevMode())
   }
 
 }
