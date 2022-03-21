@@ -96,6 +96,7 @@
     "@ng-select/ng-select": "^5.0.1",
     "@ngx-translate/core": "14.0.0",
     "@ngx-translate/http-loader": "7.0.0",
+    "@ngxs/store": "^3.7.3",
     "@sweetalert2/ngx-sweetalert2": "^8.1.1",
     "@tinymce/tinymce-angular": "^4.1.0",
     "amazing-time-picker": "^1.8.0",
@@ -146,6 +147,7 @@
     "ti-icons": "^0.1.2",
     "tinymce": "^5.4.2",
     "tslib": "2.3.1",
+    "webpack": "^5.70.0",
     "zone.js": "0.11.4"
   },
   "devDependencies": {

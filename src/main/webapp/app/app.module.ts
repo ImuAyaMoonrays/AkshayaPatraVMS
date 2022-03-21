@@ -32,6 +32,7 @@ import { NewPasswordComponent } from './akshaya-patra-app/components/new-passwor
 import { NgSelectModule } from "@ng-select/ng-select";
 import { TimePipe } from "./akshaya-patra-app/pipes/time/time.pipe";
 import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
+import { NgxsModule } from "@ngxs/store";
 
 @NgModule({
   imports: [
@@ -44,8 +45,9 @@ import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
     HttpClientModule,
     NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
     NgSelectModule,
+    NgxsModule.forRoot()
   ],
-  providers: [NgbModule, Title, { provide: LOCALE_ID, useValue: 'en' }, httpInterceptorProviders],
+  providers: [NgbModule, Title, {provide: LOCALE_ID, useValue: 'en'}, httpInterceptorProviders],
   declarations: [
     AppComponent,
     NavbarComponent,
