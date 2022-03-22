@@ -6,19 +6,15 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
-
-import java.net.URISyntaxException;
-import java.util.List;
-
-import org.h2.tools.Csv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URISyntaxException;
+import java.util.List;
 
 //todo: have controllers return response entities
 @RestController

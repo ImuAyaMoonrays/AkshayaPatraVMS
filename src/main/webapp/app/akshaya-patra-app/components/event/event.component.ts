@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, forkJoin, merge, Observable, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import { EventModel } from "../../models/event.model";
 import { EventService } from "../../services/event/event.service";
 import { Router } from "@angular/router";
@@ -14,11 +14,10 @@ import { Account } from "../../services/auth/account.model";
 })
 export class EventComponent implements OnInit {
 
-  @Input() event$: Observable<EventModel>;
+  event$: Observable<EventModel>;
   @Input() hideButton: boolean = false;
   @Input() isExpandedView: boolean = true;
   isCompleted: boolean;
-  isAdmin$: Observable<boolean>;
   buttonText: 'Register' | 'Unregister';
   buttonFunction: Function;
   forceEvent$: Subject<EventModel> = new Subject<EventModel>();
@@ -30,12 +29,9 @@ export class EventComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.isAdmin$ = this.accountService.isAdminLoggedIn$();
-    if (!this.event$) {
-      // temporary hack, should get id from router
-      const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
-      this.assignEvent(eventId);
-    }
+    // temporary hack, should get id from router
+    const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
+    this.assignEvent(eventId);
 
     // this is psychotic. Refactor this.
     this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
@@ -57,10 +53,6 @@ export class EventComponent implements OnInit {
     this.event$ = this.eventService.eventById$(Number(eventId));
   }
 
-  navigateToEventExpandedView(eventId: string): void {
-    this.router.navigate([`/home/events/${eventId}`]);
-  }
-
   public register(eventId: string): void {
     this.eventService.register$(Number(eventId)).pipe(
       tap(() => {
@@ -69,6 +61,7 @@ export class EventComponent implements OnInit {
       })
     ).subscribe();
   }
+
   public unregister(eventId: string): void {
     this.eventService.unregister$(Number(eventId)).pipe(
       tap(() => {

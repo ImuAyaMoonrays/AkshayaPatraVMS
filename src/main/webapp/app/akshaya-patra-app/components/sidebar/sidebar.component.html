@@ -13,7 +13,7 @@
         </div>
       </a>
     </li>
-    <li *ngIf="!isAdminLogin" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive }">
+    <li showIfIsNormalUser class="nav-item" [ngClass]="{ active: upcomingEvents.isActive }">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -32,8 +32,7 @@
         </ul>
       </div>
     </li>
-    <li
-      *ngIf="isAdminLogin"
+    <li showOnlyIfAdmin
       class="nav-item"
       [ngClass]="{ active: upcomingEvents.isActive || createEvent.isActive || completedEvents.isActive }"
     >

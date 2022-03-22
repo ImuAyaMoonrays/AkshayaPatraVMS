@@ -9,15 +9,6 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -26,6 +17,13 @@ import org.springframework.cache.CacheManager;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional

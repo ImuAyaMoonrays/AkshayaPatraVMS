@@ -35,6 +35,9 @@ import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
 import { NgxsModule } from "@ngxs/store";
 import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { AppState } from "./akshaya-patra-app/store/states/App.state";
+import { EventPreviewComponent } from './akshaya-patra-app/components/event-preview/event-preview.component';
+import { IsAdminDirective } from './akshaya-patra-app/directives/is-admin/is-admin.directive';
+import { IfIsNormalUserDirective } from './akshaya-patra-app/directives/if-is-normal-user/if-is-normal-user.directive';
 
 @NgModule({
   imports: [
@@ -68,6 +71,9 @@ import { AppState } from "./akshaya-patra-app/store/states/App.state";
     CreateEventComponent,
     TimePipe,
     DatePipe,
+    EventPreviewComponent,
+    IsAdminDirective,
+    IfIsNormalUserDirective,
   ],
   bootstrap: [AppComponent],
 })

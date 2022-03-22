@@ -9,7 +9,6 @@ export class DevTimeDelayTestingInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(request)
     if (isDevMode() && !request.url.includes('api/authenticate') && !request.url.includes('api/account')) {
       return next.handle(request).pipe(
         delay(1500)
