@@ -1,3 +1,17 @@
+<div class="col-md-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body py-2">
+      <div class="form-group row">
+        <div class="col">
+          <div id="the-basics">
+            <input [formControl]="locationSearchEntry" class="form-control" type="text" placeholder="Location" [ngbTypeahead]="typeaheadData"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <jhi-event-preview
   style="cursor: pointer"
   *ngFor="let event of (events$ | async)"
