@@ -14,7 +14,10 @@
              role="button"
              class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
 
-          <h6 *ngIf="event.causes?.length > 0" class="card-text">Causes: {{event.causes}} </h6>
+          <div *ngIf="event.causes?.length > 0">
+            <span class="card-test" class="card-text">Tags: </span>
+            <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
+          </div>
         </div>
         <div class="col-md-6 text-center">
 

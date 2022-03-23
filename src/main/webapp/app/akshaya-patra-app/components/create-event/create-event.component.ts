@@ -19,7 +19,7 @@ import { AccountService } from "../../services/auth/account.service";
 })
 export class CreateEventComponent implements OnInit {
 
-  causes: { name: string, id: number }[] = [];
+  causes: { causeName: string, id: number }[] = [];
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
 
@@ -79,19 +79,19 @@ export class CreateEventComponent implements OnInit {
     this.causeService.allCauses().subscribe((causes) => {
       causes.forEach(cause => this.causes = this.causes.concat(cause))
     })
-    this.showPhysicalLocationForm$ =
-      merge(
-        this.locationTypeForm.get('locationType').valueChanges.pipe(
-          mergeMap(locationType => of(locationType === 'physical')),
-        ),
-        of(true)
-      )
+
+    this.showPhysicalLocationForm$ = merge(
+      this.locationTypeForm.get('locationType').valueChanges.pipe(
+        mergeMap(locationType => of(locationType === 'physical')),
+      ),
+      of(true)
+    )
   }
 
   addCause(): void {
     const newCauseValue = (this.newCause.value as string).toUpperCase();
-    if (newCauseValue !== '' && !this.causes.map(cause => cause.name).includes(newCauseValue)) {
-      const newCause = {name: newCauseValue, id: null};
+    if (newCauseValue !== '' && !this.causes.map(cause => cause.causeName).includes(newCauseValue)) {
+      const newCause = {causeName: newCauseValue, id: null};
 
       this.causes = this.causes.concat(newCause);
       this.selectedCauses = this.selectedCauses.concat(newCauseValue);
@@ -117,7 +117,7 @@ export class CreateEventComponent implements OnInit {
         createEventForm.get('contactPhoneNumber').value,
         createEventForm.get('contactEmail').value,
         createEventForm.get('emailBody').value,
-      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.name)));
+      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)));
 
       if (this.isPhysicalLocationTypeSelected()) {
         event.physicalLocation = new PhysicalLocationModel(

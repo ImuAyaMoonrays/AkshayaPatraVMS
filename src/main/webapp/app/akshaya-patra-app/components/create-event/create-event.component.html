@@ -145,7 +145,7 @@
           <ng-select
             [items]="causes"
             class="ng-select-bottom ng-select ng-select-multiple ng-select-searchable ng-select-clearable ng-untouched ng-pristine ng-valid"
-            bindLabel="name"
+            bindLabel="causeName"
             [(ngModel)]="selectedCauses"
             [multiple]="true">
           </ng-select>
@@ -153,7 +153,6 @@
         <div class="form-group mb-0">
           <label>Create New Cause Tag</label>
           <input style="text-transform: uppercase" type="text" class="form-control" id="newCause" [formControl]="newCause"/>
-          <div *ngif=""></div>
           <div class="row justify-content-center mt-0 ">
             <button (click)="addCause()" type="submit" class="btn btn-link btn-fw">Add Cause</button>
           </div>

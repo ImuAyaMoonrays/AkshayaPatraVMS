@@ -1,17 +1,45 @@
 <div class="col-md-12 grid-margin stretch-card">
   <div class="card">
     <div class="card-body py-2">
-      <div class="form-group row">
+      <div class="form-group row mb-0">
         <div class="col">
-          <div id="the-basics">
-            <input [formControl]="locationSearchEntry" class="form-control" type="text" placeholder="Location" [ngbTypeahead]="typeaheadData"
-                   autocomplete="off">
+          <div class="row">
+
+            <div class="col-md-4">
+                <ng-select
+                  placeholder="Tags"
+                  [items]="causeTags"
+                  class="ng-select-bottom ng-select ng-select-multiple ng-select-searchable ng-select-clearable ng-untouched ng-pristine ng-valid"
+                  [formControl]="selectedCauseTagsFormControl"
+                  [multiple]="true">
+                </ng-select>
+            </div>
+
+            <div class="col-md-3 form-check-flat form-check-primary">
+              <ng-select [items]="locationTypes"
+                         placeholder="Location Type"
+                         autofocus
+                         [formControl]="locationTypeFormControl">
+              </ng-select>
+            </div>
+
+            <div class="col-md-5">
+              <input [formControl]="physicalLocationSearchEntryFormControl"
+                     [ngbTypeahead]="locationTypeaheadData"
+                     [readOnly]="disablePhysicalLocationEntry"
+                     class="form-control"
+                     type="text"
+                     placeholder="Location"
+                     autocomplete="off">
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <jhi-event-preview
   style="cursor: pointer"
   *ngFor="let event of (events$ | async)"

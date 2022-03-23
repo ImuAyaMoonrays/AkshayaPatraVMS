@@ -71,13 +71,13 @@ public class EventService {
                         .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
                 } else {
                     //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
-                    if (causeRepository.findOneByCauseName(causeDTO.getName().toUpperCase()).isPresent()) {
+                    if (causeRepository.findOneByCauseName(causeDTO.getCauseName().toUpperCase()).isPresent()) {
                         throw new RuntimeException(
                             "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
                         );
                     } else {
                         Cause cause = new Cause();
-                        cause.setCauseName(causeDTO.getName().toUpperCase());
+                        cause.setCauseName(causeDTO.getCauseName().toUpperCase());
                         return causeRepository.save(cause);
                     }
                 }

@@ -204,3 +204,7 @@ ui bootstrap tweaks
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
+  position: inherit !important;
+}

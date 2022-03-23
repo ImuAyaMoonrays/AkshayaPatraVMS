@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, tap } from 'rxjs';
+import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, startWith, tap } from 'rxjs';
 import { EventModel } from '../../models/event.model';
 import { Store } from "@ngxs/store";
 import { AppState } from "../../store/states/App.state";
 import { AppActions } from "../../store/actions/app.actions";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
+import { LocationTypeEnum } from "../../enums/location-type.enum";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -16,24 +17,68 @@ export class EventsDashboardComponent implements OnInit {
 
   events$: Observable<EventModel[]>;
   filteredEvents$: Observable<EventModel[]>;
-  locationSearchEntry = new FormControl('');
+  physicalLocationSearchEntryFormControl = new FormControl('');
+  selectedCauseTagsFormControl = new FormControl([]);
+  locationTypeFormControl = new FormControl(null);
+  disablePhysicalLocationEntry = false;
+  causeTags = [];
+  locationTypes = [LocationTypeEnum.PHYSICAL, LocationTypeEnum.VIRTUAL]
 
-  private locations = ['Jai'];
+
+  private locations = [];
 
   constructor(private store: Store) {
   }
 
   ngOnInit(): void {
-    this.events$ = this.store.select(AppState.upcomingEvents$);
-    const eventsAfterUpdatingTypeahead$ = this.store.select(AppState.upcomingEvents$).pipe(
+    const eventsAfterUpdatingFilterOptions$ = this.store.select(AppState.upcomingEvents$).pipe(
       filter(events => !!events),
       tap((events) => {
         this.addEventPhysicalLocations(events);
+        this.addCauseTags(events);
       })
     );
 
-    this.events$ = this.locationSearchEntry.valueChanges.pipe(
-      combineLatestWith(eventsAfterUpdatingTypeahead$),
+    const eventsFilteredByLocationType$ = this.locationTypeFormControl.valueChanges.pipe(
+      startWith(null),
+      tap((locationType: LocationTypeEnum) => {
+        if (locationType === LocationTypeEnum.VIRTUAL) {
+          this.disablePhysicalLocationEntry = true;
+          this.physicalLocationSearchEntryFormControl.setValue('');
+        } else if (locationType === LocationTypeEnum.PHYSICAL) {
+          this.disablePhysicalLocationEntry = false
+        }
+      }),
+      combineLatestWith(eventsAfterUpdatingFilterOptions$),
+      map(([locationType, events]: [LocationTypeEnum, EventModel[]]) => {
+        if (locationType) {
+          return events.filter((event) => {
+            if (locationType === LocationTypeEnum.VIRTUAL) {
+              return !!event.virtualLocation;
+            } else if (locationType === LocationTypeEnum.PHYSICAL) {
+              return !!event.physicalLocation;
+            }
+          })
+        } else {
+          return events;
+        }
+      })
+    )
+
+    const eventsFilteredByTags$ = this.selectedCauseTagsFormControl.valueChanges.pipe(
+      startWith([]),
+      combineLatestWith(eventsAfterUpdatingFilterOptions$),
+      map(([causeTags, events]: [string[], EventModel[]]) => {
+        return events.filter((event) => {
+          const eventCauseTags = event.causes.map(cause => cause.causeName);
+          return causeTags.every(causeTag => eventCauseTags.includes(causeTag));
+        })
+      })
+    )
+
+    const eventsFilteredByPhysicalLocation$ = this.physicalLocationSearchEntryFormControl.valueChanges.pipe(
+      startWith(''),
+      combineLatestWith(eventsAfterUpdatingFilterOptions$),
       map(([locationSearchEntry, events]: [string, EventModel[]]) => {
         if (locationSearchEntry === '') return events;
         const lowercaseLocationSearchEntry = locationSearchEntry.toLowerCase();
@@ -50,21 +95,25 @@ export class EventsDashboardComponent implements OnInit {
       })
     );
 
+    this.events$ = eventsFilteredByTags$.pipe(
+      combineLatestWith(eventsFilteredByLocationType$),
+      map(([eventsFilteredByTag, eventsFilteredByLocationType]: [EventModel[], EventModel[]]) => {
+        return this.intersection(eventsFilteredByLocationType, eventsFilteredByTag);
+      }),
+      combineLatestWith(eventsFilteredByPhysicalLocation$),
+      map(([eventsFilteredByTag, eventsFilteredByLocation]: [EventModel[], EventModel[]]) => {
+        return this.intersection(eventsFilteredByTag, eventsFilteredByLocation)
+      }),
+    )
 
     this.store.dispatch(AppActions.UpdateUpcomingEventsAction);
-    // this.events$$2 = this.events$$.pipe(
-    //   tap(console.log),
-    //   filter(obs => obs),
-    //   mergeMap((eventObservables) => {
-    //     return forkJoin(eventObservables);
-    //   }),
-    //   map((events: EventModel[]) => {
-    //     return events.map(event => of(event));
-    //   }),
-    //   map(obsArr => of(obsArr))
-    // )
   }
 
+
+  private intersection(eventsFilteredByLocationType: EventModel[], eventsFilteredByTag: EventModel[]): EventModel[] {
+    const eventsByLocationType = new Set(eventsFilteredByLocationType);
+    return [...new Set(eventsFilteredByTag)].filter(x => eventsByLocationType.has(x));
+  }
 
   private addEventPhysicalLocations(events: EventModel[]) {
     let locations = [];
@@ -83,12 +132,21 @@ export class EventsDashboardComponent implements OnInit {
     this.locations = [...new Set(locations)];
   }
 
-  typeaheadData = (text$: Observable<string>) =>
+  private addCauseTags(events: EventModel[]) {
+    let causeTags = [];
+    events.forEach(event => {
+      if (event.causes) {
+        causeTags = causeTags.concat(event.causes.map(cause => cause.causeName));
+      }
+    })
+    this.causeTags = [...new Set(causeTags)];
+  }
+
+  locationTypeaheadData = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       map(term => term.length < 1 ? [] : this.locations.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     );
-
 
 }
