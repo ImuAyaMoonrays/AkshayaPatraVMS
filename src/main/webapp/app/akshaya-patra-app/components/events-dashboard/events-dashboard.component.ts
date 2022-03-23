@@ -65,7 +65,7 @@ export class EventsDashboardComponent implements OnInit {
       map(([date, events]: [Date, EventModel[]]) => {
         if (date) {
           return events.filter((event) => {
-            return (new Date(event.startDate)) <= date;
+            return (new Date(event.endDate)) <= date;
           });
         } else {
           return events;
