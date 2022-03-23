@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     }
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/home/events']);
       }
     });
   }
@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
             this.store.dispatch(AppActions.UpdateUpcomingEventsAction);
-            this.router.navigate(['/home']);
+            this.router.navigate(['/home/events']);
           }
         },
         () => (this.authenticationError = true)

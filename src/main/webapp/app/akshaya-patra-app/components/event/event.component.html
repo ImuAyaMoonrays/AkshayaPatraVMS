@@ -14,6 +14,11 @@
              role="button"
              class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
 
+          <a showOnlyIfAdmin
+             (click)="saveCsv(event.id)"
+             role="button"
+             class="btn btn-gradient-light btn-fw">Volunteers CSV</a>
+
           <div *ngIf="event.causes?.length > 0">
             <span class="card-test" class="card-text">Tags: </span>
             <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>

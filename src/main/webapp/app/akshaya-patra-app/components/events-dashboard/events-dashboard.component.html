@@ -5,7 +5,7 @@
         <div class="col">
           <div class="row">
 
-            <div class="col-md-4">
+            <div class="col-md-3 p-1">
                 <ng-select
                   placeholder="Tags"
                   [items]="causeTags"
@@ -15,7 +15,7 @@
                 </ng-select>
             </div>
 
-            <div class="col-md-3 form-check-flat form-check-primary">
+            <div class="col-md-2 form-check-flat form-check-primary p-1">
               <ng-select [items]="locationTypes"
                          placeholder="Location Type"
                          autofocus
@@ -23,7 +23,7 @@
               </ng-select>
             </div>
 
-            <div class="col-md-5">
+            <div class="col-md-3 p-1 tiny-margin-top">
               <input [formControl]="physicalLocationSearchEntryFormControl"
                      [ngbTypeahead]="locationTypeaheadData"
                      [readOnly]="disablePhysicalLocationEntry"
@@ -31,6 +31,28 @@
                      type="text"
                      placeholder="Location"
                      autocomplete="off">
+            </div>
+            <div class="col-md-2 p-1 tiny-margin-top">
+                <div class="input-group">
+                  <input class="form-control"
+                         placeholder="Minimum Date"
+                         [formControl]="minimumDateFormControl"
+                         (focus)="minimumDatePicker.open()"
+                         restoreFocus="false"
+                         ngbDatepicker
+                         #minimumDatePicker="ngbDatepicker">
+                </div>
+            </div>
+            <div class="col-md-2 p-1 tiny-margin-top">
+                <div class="input-group">
+                  <input class="form-control"
+                         placeholder="Maximum Date"
+                         [formControl]="maximumDateFormControl"
+                         (focus)="maximumDatePicker.open()"
+                         restoreFocus="false"
+                         ngbDatepicker
+                         #maximumDatePicker="ngbDatepicker">
+                </div>
             </div>
           </div>
 

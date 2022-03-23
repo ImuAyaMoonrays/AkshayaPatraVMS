@@ -6,6 +6,7 @@ import { Router } from "@angular/router";
 import { AccountService } from "../../services/auth/account.service";
 import { map, tap } from "rxjs/operators";
 import { Account } from "../../services/auth/account.model";
+import { CsvExportService } from "../../services/csv-export/csv-export.service";
 
 @Component({
   selector: 'jhi-event',
@@ -23,6 +24,7 @@ export class EventComponent implements OnInit {
   forceEvent$: Subject<EventModel> = new Subject<EventModel>();
 
   constructor(private router: Router,
+              private csvExportService: CsvExportService,
               private accountService: AccountService,
               private eventService: EventService) {
   }
@@ -46,6 +48,11 @@ export class EventComponent implements OnInit {
       }),
       map(eventAndAccount => eventAndAccount[0])
     );
+  }
+
+  saveCsv(eventId: number): void {
+    this.csvExportService.csvOfCurrentlyRegisteredVolunteers$(eventId)
+
   }
 
 

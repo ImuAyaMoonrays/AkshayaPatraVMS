@@ -7,6 +7,7 @@ import { AppActions } from "../../store/actions/app.actions";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
+import { TemporalUtil } from "../../utils/temporal.util";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -16,10 +17,11 @@ import { LocationTypeEnum } from "../../enums/location-type.enum";
 export class EventsDashboardComponent implements OnInit {
 
   events$: Observable<EventModel[]>;
-  filteredEvents$: Observable<EventModel[]>;
   physicalLocationSearchEntryFormControl = new FormControl('');
   selectedCauseTagsFormControl = new FormControl([]);
   locationTypeFormControl = new FormControl(null);
+  minimumDateFormControl = new FormControl(null);
+  maximumDateFormControl = new FormControl(null);
   disablePhysicalLocationEntry = false;
   causeTags = [];
   locationTypes = [LocationTypeEnum.PHYSICAL, LocationTypeEnum.VIRTUAL]
@@ -31,6 +33,8 @@ export class EventsDashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+
     const eventsAfterUpdatingFilterOptions$ = this.store.select(AppState.upcomingEvents$).pipe(
       filter(events => !!events),
       tap((events) => {
@@ -39,13 +43,43 @@ export class EventsDashboardComponent implements OnInit {
       })
     );
 
+    const eventsFilteredByMinimumDate$ = this.minimumDateFormControl.valueChanges.pipe(
+      startWith(null),
+      map(date => date && TemporalUtil.dateFromDatePicker(date)),
+      combineLatestWith(eventsAfterUpdatingFilterOptions$),
+      map(([date, events]: [Date, EventModel[]]) => {
+        if (date) {
+          return events.filter((event) => {
+            return (new Date(event.startDate)) >= date;
+          });
+        } else {
+          return events;
+        }
+      })
+    )
+
+    const eventsFilteredByMaximumDate$ = this.maximumDateFormControl.valueChanges.pipe(
+      startWith(null),
+      map(date => date && TemporalUtil.dateFromDatePicker(date)),
+      combineLatestWith(eventsAfterUpdatingFilterOptions$),
+      map(([date, events]: [Date, EventModel[]]) => {
+        if (date) {
+          return events.filter((event) => {
+            return (new Date(event.startDate)) <= date;
+          });
+        } else {
+          return events;
+        }
+      })
+    )
+
     const eventsFilteredByLocationType$ = this.locationTypeFormControl.valueChanges.pipe(
       startWith(null),
       tap((locationType: LocationTypeEnum) => {
         if (locationType === LocationTypeEnum.VIRTUAL) {
           this.disablePhysicalLocationEntry = true;
           this.physicalLocationSearchEntryFormControl.setValue('');
-        } else if (locationType === LocationTypeEnum.PHYSICAL) {
+        } else {
           this.disablePhysicalLocationEntry = false
         }
       }),
@@ -101,8 +135,16 @@ export class EventsDashboardComponent implements OnInit {
         return this.intersection(eventsFilteredByLocationType, eventsFilteredByTag);
       }),
       combineLatestWith(eventsFilteredByPhysicalLocation$),
-      map(([eventsFilteredByTag, eventsFilteredByLocation]: [EventModel[], EventModel[]]) => {
-        return this.intersection(eventsFilteredByTag, eventsFilteredByLocation)
+      map(([eventsFilteredByTagAndLocationType, eventsFilteredByLocation]: [EventModel[], EventModel[]]) => {
+        return this.intersection(eventsFilteredByTagAndLocationType, eventsFilteredByLocation)
+      }),
+      combineLatestWith(eventsFilteredByMinimumDate$),
+      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocation, eventsFilteredByMinimumDate$]: [EventModel[], EventModel[]]) => {
+        return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocation, eventsFilteredByMinimumDate$)
+      }),
+      combineLatestWith(eventsFilteredByMaximumDate$),
+      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$]: [EventModel[], EventModel[]]) => {
+        return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
     )
 

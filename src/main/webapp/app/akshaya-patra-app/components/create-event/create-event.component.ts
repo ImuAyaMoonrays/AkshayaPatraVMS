@@ -5,12 +5,12 @@ import { Router } from '@angular/router';
 import { mergeMap } from "rxjs/operators";
 import { merge, Observable, of } from "rxjs";
 import { EventService } from "../../services/event/event.service";
-import { Time } from "@angular/common";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { CauseModel } from "../../models/cause.model";
 import { CauseService } from "../../services/cause/cause.service";
 import { AccountService } from "../../services/auth/account.service";
+import { TemporalUtil } from "../../utils/temporal.util";
 
 @Component({
   selector: 'jhi-create-event',
@@ -109,10 +109,10 @@ export class CreateEventComponent implements OnInit {
         createEventForm.get('eventName').value,
         createEventForm.get('description').value,
         Number(createEventForm.get('volunteersNeededAmount').value),
-        this.dateFromDatePicker(createEventForm.get('startDate').value),
-        this.dateFromDatePicker(createEventForm.get('endDate').value),
-        this.timeFromTimePicker(createEventForm.get('startTime').value),
-        this.timeFromTimePicker(createEventForm.get('endTime').value),
+        TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
+        TemporalUtil.dateFromDatePicker(createEventForm.get('endDate').value),
+        TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
+        TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
         createEventForm.get('contactName').value,
         createEventForm.get('contactPhoneNumber').value,
         createEventForm.get('contactEmail').value,
@@ -163,14 +163,5 @@ export class CreateEventComponent implements OnInit {
   private isPhysicalLocationTypeSelected(): boolean {
     return this.locationTypeForm.get('locationType').value === 'physical';
   }
-
-  private dateFromDatePicker(datePickerValue: { year: number, month: number, day: number }): Date {
-    return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day - 1);
-  }
-
-  private timeFromTimePicker(timePickerValue: { hour: number, minute: number, second: number }): Time {
-    return {hours: timePickerValue.hour, minutes: timePickerValue.minute};
-  }
-
 
 }
