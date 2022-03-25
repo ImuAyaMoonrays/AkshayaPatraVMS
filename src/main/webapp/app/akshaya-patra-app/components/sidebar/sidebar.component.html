@@ -22,14 +22,16 @@
       <div class="collapse" id="events" [ngbCollapse]="parentId !== 'nav-link-12'">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link" routerLink="events/upcoming" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
+            <a class="nav-link" routerLink="user/events/upcoming" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="events/registered" routerLinkActive="active" #registeredEvents="routerLinkActive">Registered
+            <a class="nav-link" routerLink="user/events/registered" routerLinkActive="active"
+               #registeredEvents="routerLinkActive">Registered
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="events/completed" routerLinkActive="active" #completedEvents="routerLinkActive">Completed </a>
+            <a class="nav-link" routerLink="user/events/completed" routerLinkActive="active" #completedEvents="routerLinkActive">Completed
+            </a>
           </li>
         </ul>
       </div>
@@ -46,13 +48,14 @@
       <div class="collapse" id="admin-events" [ngbCollapse]="parentId !== 'nav-link-admin-evens'">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link" routerLink="createEvent" routerLinkActive="active" #createEvent="routerLinkActive">Create Event </a>
+            <a class="nav-link" routerLink="admin/createEvent" routerLinkActive="active" #createEvent="routerLinkActive">Create Event </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="events/adminUpcoming" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
+            <a class="nav-link" routerLink="admin/events/upcoming" routerLinkActive="active"
+               #upcomingEvents="routerLinkActive">Upcoming </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="events/adminPast" routerLinkActive="active" #completedEvents="routerLinkActive"
+            <a class="nav-link" routerLink="admin/events/past" routerLinkActive="active" #completedEvents="routerLinkActive"
             >Completed
             </a>
           </li>

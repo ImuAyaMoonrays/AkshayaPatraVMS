@@ -47,6 +47,16 @@ export class AccountService {
     return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
   }
 
+  hasEveryAuthority(authorities: string[] | string): boolean {
+    if (!this.userIdentity) {
+      return false;
+    }
+    if (!Array.isArray(authorities)) {
+      authorities = [authorities];
+    }
+    return this.userIdentity.authorities.every((authority: string) => authorities.includes(authority));
+  }
+
   isAdminLoggedIn$(): Observable<boolean> {
     return this.identity().pipe(
       map((account: Account) => {
@@ -80,6 +90,10 @@ export class AccountService {
 
   isAuthenticated(): boolean {
     return this.userIdentity !== null;
+  }
+
+  isAdminLoggedIn(): boolean {
+    return this.userIdentity?.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
   }
 
   getAuthenticationState(): Observable<Account | null> {

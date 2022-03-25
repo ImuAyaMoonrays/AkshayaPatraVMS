@@ -14,6 +14,8 @@ import { CompletedEventsComponent } from "./akshaya-patra-app/components/complet
 import { RegisteredEventsComponent } from "./akshaya-patra-app/components/registered-events/registered-events.component";
 import { AdminUpcomingEventsComponent } from "./akshaya-patra-app/components/admin-upcoming-events/admin-upcoming-events.component";
 import { AdminPastEventsComponent } from "./akshaya-patra-app/components/admin-past-events/admin-past-events.component";
+import { AuthoiritiesEnum } from "./akshaya-patra-app/enums/authoirities.enum";
+import { RouteAcccessByRequiredAuthoritiesService } from "./akshaya-patra-app/services/route-access-by-authority/route-acccess-by-required-authorities.service";
 
 // http://127.0.0.1:8080/account/activate?key=YFF7j4pQQkGHR14J5keQ
 const routes: Routes = [
@@ -22,26 +24,45 @@ const routes: Routes = [
     component: HomeScreenComponent,
     canActivate: [UserRouteAccessService],
     children: [
-      { path: 'events/upcoming', component: UpcomingUnregisteredEventsComponent },
-      { path: 'events/completed', component: CompletedEventsComponent },
-      { path: 'events/registered', component: RegisteredEventsComponent },
-      { path: 'events/adminUpcoming', component: AdminUpcomingEventsComponent },
-      { path: 'events/adminPast', component: AdminPastEventsComponent },
-      { path: 'events/:id', component: EventComponent },
-      { path: 'createEvent', component: CreateEventComponent },
+      {
+        path: 'admin',
+        data: {
+          authorities: [AuthoiritiesEnum.ROLE_ADMIN, AuthoiritiesEnum.ROLE_USER]
+        },
+        canActivate: [RouteAcccessByRequiredAuthoritiesService],
+        children: [
+          {path: 'events/upcoming', component: AdminUpcomingEventsComponent},
+          {path: 'events/past', component: AdminPastEventsComponent},
+          {path: 'createEvent', component: CreateEventComponent},
+        ]
+      },
+      {
+        path: 'user',
+        data: {
+          authorities: [AuthoiritiesEnum.ROLE_USER]
+        },
+        canActivate: [RouteAcccessByRequiredAuthoritiesService],
+        children: [
+          {path: 'events/upcoming', component: UpcomingUnregisteredEventsComponent},
+          {path: 'events/completed', component: CompletedEventsComponent},
+          {path: 'events/registered', component: RegisteredEventsComponent},
+        ]
+      },
+      {path: 'events/:id', component: EventComponent},
     ],
   },
-  { path: 'login', component: LoginComponent },
-  { path: 'account/activate', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'swagger', component: DocsComponent },
-  { path: 'resetPassword', component: PasswordResetInitComponent },
-  { path: 'account/reset/finish', component: NewPasswordComponent },
-  { path: '**', redirectTo: 'login' },
+  {path: 'login', component: LoginComponent},
+  {path: 'account/activate', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
+  {path: 'swagger', component: DocsComponent},
+  {path: 'resetPassword', component: PasswordResetInitComponent},
+  {path: 'account/reset/finish', component: NewPasswordComponent},
+  {path: '**', redirectTo: 'login'},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

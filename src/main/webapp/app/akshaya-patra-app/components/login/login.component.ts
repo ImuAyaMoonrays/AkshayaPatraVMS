@@ -28,7 +28,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private activateAccountService: ActivateService,
     private store: Store
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     const url = window.location.href;
@@ -39,7 +40,8 @@ export class LoginComponent implements OnInit {
     }
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/home/events']);
+        this.accountService.isAdminLoggedIn() ? this.router.navigate(['/home/admin/events/upcoming']) :
+          this.router.navigate(['/home/user/events/upcoming']);
       }
     });
   }
@@ -57,7 +59,8 @@ export class LoginComponent implements OnInit {
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
             this.store.dispatch(AppActions.UpdateAllEventsAction);
-            this.router.navigate(['/home/events/upcoming']);
+            this.accountService.isAdminLoggedIn() ? this.router.navigate(['/home/admin/events/upcoming']) :
+              this.router.navigate(['/home/user/events/upcoming']);
           }
         },
         () => (this.authenticationError = true)

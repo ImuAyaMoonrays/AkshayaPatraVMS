@@ -4,6 +4,7 @@ import { EventService } from "../../services/event/event.service";
 import { EventModel } from "../../models/event.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
+import { AccountService } from "../../services/auth/account.service";
 
 @Component({
   selector: 'jhi-app-root',
@@ -11,12 +12,15 @@ import { PhysicalLocationModel } from "../../models/physical-location.model";
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private router: Router, private eventService: EventService) {
+  constructor(private router: Router, private eventService: EventService, private accountService: AccountService) {
   }
 
   ngOnInit() {
+
     if (isDevMode()) {
-      this.addTestData();
+      this.accountService.isAdminLoggedIn$().subscribe((isAdminLoggedIn) => {
+        isAdminLoggedIn && this.addTestData();
+      })
     }
 
     // Scroll to top after route change
@@ -29,6 +33,7 @@ export class AppComponent implements OnInit {
   }
 
   private addTestData() {
+
     this.eventService.createEvent$(new EventModel('Water Drive',
       'this is an event to collect water. We will be collecting 45 gallons of water. It must be filtered but it must not be cold.',
       55,

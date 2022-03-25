@@ -9,7 +9,8 @@
           <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
           <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
 
-          <a showIfIsNormalUser
+          <a *ngIf="!isPastEvent"
+             showIfIsNormalUser
              (click)="buttonFunction(event.id)"
              role="button"
              class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>

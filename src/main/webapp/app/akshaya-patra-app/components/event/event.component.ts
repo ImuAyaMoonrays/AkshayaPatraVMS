@@ -18,6 +18,7 @@ import { AppActions } from "../../store/actions/app.actions";
 export class EventComponent implements OnInit {
 
   event$: Observable<EventModel>;
+  isPastEvent: boolean;
   @Input() hideButton: boolean = false;
   @Input() isExpandedView: boolean = true;
   isCompleted: boolean;
@@ -49,7 +50,8 @@ export class EventComponent implements OnInit {
           this.buttonFunction = this.register;
         }
       }),
-      map(eventAndAccount => eventAndAccount[0])
+      map(eventAndAccount => eventAndAccount[0]),
+      tap(event => this.isPastEvent = new Date(event.endDate) < new Date()),
     );
   }
 
