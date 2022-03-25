@@ -60,7 +60,7 @@ export class AccountService {
   isAdminLoggedIn$(): Observable<boolean> {
     return this.identity().pipe(
       map((account: Account) => {
-        return account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
+        return account?.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
       })
     )
   }

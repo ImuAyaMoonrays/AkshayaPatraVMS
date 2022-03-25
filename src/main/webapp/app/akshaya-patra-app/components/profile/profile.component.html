@@ -1,0 +1,37 @@
+<div *ngIf="loggedInUser$ | async as loggedInUser" class="col-md-8 mx-auto grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-4 align-self-center text-center">
+          <img src="content/images/akshaya-patra-images/Sample_User_Icon.png" alt="avatar"
+               class="rounded-circle img-fluid" style="width: 150px;">
+          <h5 class="mt-1">{{loggedInUser.login}}</h5>
+          <p class="text-muted">{{loggedInUser.firstName + ' ' + loggedInUser.lastName}}</p>
+          <div class="d-flex justify-content-center">
+          </div>
+        </div>
+        <form [formGroup]="profileForm" class="col-lg-8 align-self-center">
+          <div class="form-group">
+            <label for="first-name">First Name</label>
+            <input [readOnly]="!isEditing" formControlName="firstName" type="text" class="form-control" id="first-name"
+                   placeholder="First Name">
+          </div>
+          <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input [readOnly]="!isEditing" formControlName="lastName" type="text" class="form-control" id="last-name"
+                   placeholder="Last Name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input [readOnly]="!isEditing" formControlName="email" type="email" class="form-control" id="email" placeholder="Email">
+          </div>
+          <div class="text-center">
+            <button (click)="buttonFunction()" class="btn btn-gradient-primary mr-2">{{buttonText}}</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+

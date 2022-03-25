@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { LoginService } from '../../services/login/login.service';
 import { AccountService } from '../../services/auth/account.service';
 import { map } from 'rxjs/operators';
@@ -26,13 +26,14 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
 
-    this.isStartUrlAndIsEvent = document.URL.includes('events');
+    // this.isStartUrlAndIsEvent = document.URL.includes('events');
 
-    this.isEventActive$ = this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      tap(() => this.isStartUrlAndIsEvent = false),
-      map((navigationEnd: NavigationEnd) => navigationEnd.url.includes('events'))
-    )
+    // this.isEventActive$ = this.router.events.pipe(
+    //   tap(console.log),
+    //   filter(event => event instanceof NavigationEnd),
+    //   tap(() => this.isStartUrlAndIsEvent = false),
+    //   map((navigationEnd: NavigationEnd) => navigationEnd.url.includes('events'))
+    // )
     this.username$ = this.accountService.identity().pipe(
       map((account: Account) => {
         return account.login;

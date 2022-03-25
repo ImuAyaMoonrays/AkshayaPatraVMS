@@ -14,8 +14,7 @@
       </a>
     </li>
     <li showIfIsNormalUser class="nav-item"
-        [ngClass]="{ active: upcomingEvents.isActive || registeredEvents.isActive || completedEvents.isActive ||
-        isStartUrlAndIsEvent || (isEventActive$ | async)}">
+        [ngClass]="{ active: upcomingEvents.isActive || registeredEvents.isActive || completedEvents.isActive}">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -40,7 +39,7 @@
     </li>
     <li showOnlyIfAdmin
         class="nav-item"
-        [ngClass]="{ active: upcomingEvents.isActive || createEvent.isActive || completedEvents.isActive }"
+        [ngClass]="{ active: allFutureEvents.isActive || createEvent.isActive || allPastEvents.isActive }"
     >
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-admin-evens">
         <span class="menu-title">Events</span>
@@ -54,10 +53,10 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="admin/events/upcoming" routerLinkActive="active"
-               #upcomingEvents="routerLinkActive">Upcoming </a>
+               #allFutureEvents="routerLinkActive">Upcoming </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="admin/events/past" routerLinkActive="active" #completedEvents="routerLinkActive"
+            <a class="nav-link" routerLink="admin/events/past" routerLinkActive="active" #allPastEvents="routerLinkActive"
             >Completed
             </a>
           </li>
@@ -71,9 +70,9 @@
         <i class="mdi mdi-account-plus menu-icon"></i>
       </a>
     </li>
-    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">
-      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
-        <span class="menu-title">Settings</span>
+    <li class="nav-item" [ngClass]="{ active: accountSettings.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="profile" routerLinkActive #accountSettings="routerLinkActive">
+        <span class="menu-title">Account Settings</span>
         <i class="mdi mdi-wrench menu-icon"></i>
       </a>
     </li>
