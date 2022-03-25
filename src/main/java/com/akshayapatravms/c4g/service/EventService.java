@@ -150,9 +150,10 @@ public class EventService {
     }
 
     public void checkEligibility(User user, Event event) throws RuntimeException {
-        if (user.getAcceptedTOS() != true){
-            throw new RuntimeException("User has not accepted TOS");
-        }
+//          Turned off until we have TOS set up
+//        if (user.getAcceptedTOS() != true){
+//            throw new RuntimeException("User has not accepted TOS");
+//        }
 
         //have volunteers spots left
         if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()){
