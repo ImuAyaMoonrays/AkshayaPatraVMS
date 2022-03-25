@@ -13,7 +13,9 @@
         </div>
       </a>
     </li>
-    <li showIfIsNormalUser class="nav-item" [ngClass]="{ active: upcomingEvents.isActive || registeredEvents.isActive || completedEvents.isActive}">
+    <li showIfIsNormalUser class="nav-item"
+        [ngClass]="{ active: upcomingEvents.isActive || registeredEvents.isActive || completedEvents.isActive ||
+        isStartUrlAndIsEvent || (isEventActive$ | async)}">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
@@ -62,12 +64,19 @@
         </ul>
       </div>
     </li>
-    <!--    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">-->
-    <!--      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">-->
-    <!--        <span class="menu-title">Settings</span>-->
-    <!--        <i class="mdi mdi-wrench menu-icon"></i>-->
-    <!--      </a>-->
-    <!--    </li>-->
+    <li showOnlyIfAdmin
+      class="nav-item" [ngClass]="{ active: promote.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="admin/promote" routerLinkActive #promote="routerLinkActive">
+        <span class="menu-title">Admin Promotions</span>
+        <i class="mdi mdi-account-plus menu-icon"></i>
+      </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">
+        <span class="menu-title">Settings</span>
+        <i class="mdi mdi-wrench menu-icon"></i>
+      </a>
+    </li>
     <li class="nav-item">
       <a class="nav-link" (click)="logout()">
         <span class="menu-title" style="color: orangered">Logout</span>

@@ -43,6 +43,7 @@ import { RegisteredEventsComponent } from './akshaya-patra-app/components/regist
 import { CompletedEventsComponent } from './akshaya-patra-app/components/completed-events/completed-events.component';
 import { AdminUpcomingEventsComponent } from './akshaya-patra-app/components/admin-upcoming-events/admin-upcoming-events.component';
 import { AdminPastEventsComponent } from './akshaya-patra-app/components/admin-past-events/admin-past-events.component';
+import { PromoteToAdminComponent } from './akshaya-patra-app/components/promote-to-admin/promote-to-admin.component';
 
 @NgModule({
   imports: [
@@ -84,6 +85,7 @@ import { AdminPastEventsComponent } from './akshaya-patra-app/components/admin-p
     CompletedEventsComponent,
     AdminUpcomingEventsComponent,
     AdminPastEventsComponent,
+    PromoteToAdminComponent,
   ],
   bootstrap: [AppComponent],
 })

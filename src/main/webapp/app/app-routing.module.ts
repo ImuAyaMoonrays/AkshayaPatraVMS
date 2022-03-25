@@ -16,6 +16,7 @@ import { AdminUpcomingEventsComponent } from "./akshaya-patra-app/components/adm
 import { AdminPastEventsComponent } from "./akshaya-patra-app/components/admin-past-events/admin-past-events.component";
 import { AuthoiritiesEnum } from "./akshaya-patra-app/enums/authoirities.enum";
 import { RouteAcccessByRequiredAuthoritiesService } from "./akshaya-patra-app/services/route-access-by-authority/route-acccess-by-required-authorities.service";
+import { PromoteToAdminComponent } from "./akshaya-patra-app/components/promote-to-admin/promote-to-admin.component";
 
 // http://127.0.0.1:8080/account/activate?key=YFF7j4pQQkGHR14J5keQ
 const routes: Routes = [
@@ -34,6 +35,7 @@ const routes: Routes = [
           {path: 'events/upcoming', component: AdminUpcomingEventsComponent},
           {path: 'events/past', component: AdminPastEventsComponent},
           {path: 'createEvent', component: CreateEventComponent},
+          {path: 'promote', component: PromoteToAdminComponent},
         ]
       },
       {
