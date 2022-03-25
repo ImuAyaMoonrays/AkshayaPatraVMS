@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, startWith, tap } from 'rxjs';
 import { EventModel } from '../../models/event.model';
 import { Store } from "@ngxs/store";
-import { AppState } from "../../store/states/App.state";
 import { AppActions } from "../../store/actions/app.actions";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
@@ -16,7 +15,9 @@ import { TemporalUtil } from "../../utils/temporal.util";
 })
 export class EventsDashboardComponent implements OnInit {
 
-  events$: Observable<EventModel[]>;
+  @Input() events$: Observable<EventModel[]>
+
+  eventsAfterFilters$: Observable<EventModel[]>;
   physicalLocationSearchEntryFormControl = new FormControl('');
   selectedCauseTagsFormControl = new FormControl([]);
   locationTypeFormControl = new FormControl(null);
@@ -35,7 +36,7 @@ export class EventsDashboardComponent implements OnInit {
   ngOnInit(): void {
 
 
-    const eventsAfterUpdatingFilterOptions$ = this.store.select(AppState.upcomingEvents$).pipe(
+    const eventsAfterUpdatingFilterOptions$ = this.events$.pipe(
       filter(events => !!events),
       tap((events) => {
         this.addEventPhysicalLocations(events);
@@ -129,7 +130,7 @@ export class EventsDashboardComponent implements OnInit {
       })
     );
 
-    this.events$ = eventsFilteredByTags$.pipe(
+    this.eventsAfterFilters$ = eventsFilteredByTags$.pipe(
       combineLatestWith(eventsFilteredByLocationType$),
       map(([eventsFilteredByTag, eventsFilteredByLocationType]: [EventModel[], EventModel[]]) => {
         return this.intersection(eventsFilteredByLocationType, eventsFilteredByTag);
@@ -148,7 +149,7 @@ export class EventsDashboardComponent implements OnInit {
       }),
     )
 
-    this.store.dispatch(AppActions.UpdateUpcomingEventsAction);
+    this.store.dispatch(AppActions.UpdateAllEventsAction);
   }
 
 

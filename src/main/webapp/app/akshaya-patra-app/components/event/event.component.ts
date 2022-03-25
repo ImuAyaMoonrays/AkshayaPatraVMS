@@ -7,6 +7,8 @@ import { AccountService } from "../../services/auth/account.service";
 import { map, tap } from "rxjs/operators";
 import { Account } from "../../services/auth/account.model";
 import { CsvExportService } from "../../services/csv-export/csv-export.service";
+import { Store } from "@ngxs/store";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Component({
   selector: 'jhi-event',
@@ -24,6 +26,7 @@ export class EventComponent implements OnInit {
   forceEvent$: Subject<EventModel> = new Subject<EventModel>();
 
   constructor(private router: Router,
+              private store: Store,
               private csvExportService: CsvExportService,
               private accountService: AccountService,
               private eventService: EventService) {
@@ -65,6 +68,7 @@ export class EventComponent implements OnInit {
       tap(() => {
         // refactor this
         this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllEventsAction)
       })
     ).subscribe();
   }
@@ -74,6 +78,7 @@ export class EventComponent implements OnInit {
       tap(() => {
         // refactor this
         this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllEventsAction)
       })
     ).subscribe();
   }

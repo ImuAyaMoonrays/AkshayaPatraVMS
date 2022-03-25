@@ -1,7 +1,9 @@
-import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AccountService } from '../../services/auth/account.service';
+import { Store } from "@ngxs/store";
+import { AppState } from "../../store/states/App.state";
 
 /**
  * @whatItDoes Conditionally includes an HTML element if current user has any
@@ -22,15 +24,18 @@ export class HasAnyAuthorityDirective implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private accountService: AccountService, private templateRef: TemplateRef<any>, private viewContainerRef: ViewContainerRef) {}
+  constructor(private accountService: AccountService,
+              private store: Store,
+              private templateRef: TemplateRef<any>,
+              private viewContainerRef: ViewContainerRef) {}
 
   @Input()
   set jhiHasAnyAuthority(value: string | string[]) {
     this.authorities = value;
     this.updateView();
     // Get notified each time authentication state changes.
-    this.accountService
-      .getAuthenticationState()
+    this.store
+      .select(AppState.authenticatedUser)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.updateView();

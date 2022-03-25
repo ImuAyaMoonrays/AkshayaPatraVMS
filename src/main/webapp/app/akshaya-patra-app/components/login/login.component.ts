@@ -56,8 +56,8 @@ export class LoginComponent implements OnInit {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.store.dispatch(AppActions.UpdateUpcomingEventsAction);
-            this.router.navigate(['/home/events']);
+            this.store.dispatch(AppActions.UpdateAllEventsAction);
+            this.router.navigate(['/home/events/upcoming']);
           }
         },
         () => (this.authenticationError = true)

@@ -18,7 +18,6 @@
             <div class="col-md-2 form-check-flat form-check-primary p-1">
               <ng-select [items]="locationTypes"
                          placeholder="Location Type"
-                         autofocus
                          [formControl]="locationTypeFormControl">
               </ng-select>
             </div>
@@ -64,7 +63,7 @@
 
 <jhi-event-preview
   style="cursor: pointer"
-  *ngFor="let event of (events$ | async)"
+  *ngFor="let event of (eventsAfterFilters$ | async)"
   [event]="event"
 ></jhi-event-preview>
 
