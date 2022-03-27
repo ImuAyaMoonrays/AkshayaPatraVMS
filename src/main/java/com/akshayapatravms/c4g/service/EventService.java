@@ -4,7 +4,6 @@ import com.akshayapatravms.c4g.domain.*;
 import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
-import com.akshayapatravms.c4g.repository.ProfileRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
@@ -35,8 +34,6 @@ public class EventService {
 
     private final CauseRepository causeRepository;
 
-    private final ProfileRepository profileRepository;
-
     private final CorporateSubgroupRepository corporateSubgroupRepository;
 
     private final UserService userService;
@@ -48,15 +45,13 @@ public class EventService {
         CacheManager cacheManager,
         UserService userService,
         CauseRepository causeRepository,
-        CorporateSubgroupRepository corporateSubgroupRepository,
-        ProfileRepository profileRepository
+        CorporateSubgroupRepository corporateSubgroupRepository
     ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
         this.causeRepository = causeRepository;
         this.corporateSubgroupRepository = corporateSubgroupRepository;
-        this.profileRepository = profileRepository;
     }
 
     //saves new causes to db

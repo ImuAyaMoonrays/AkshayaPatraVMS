@@ -19,6 +19,7 @@
     <include file="config/liquibase/changelog/20220310130211_event_and_dependencies.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20220310221541_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/base_users.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20220327182349_remove_profile_tables.xml" relativeToChangelogFile="false"/>
 
 
 
