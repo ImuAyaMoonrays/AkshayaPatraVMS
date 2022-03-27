@@ -3,7 +3,7 @@
     <li class="nav-item nav-profile">
       <a href="javascript:;" class="nav-link">
         <div class="nav-profile-image">
-          <img src="content/images/akshaya-patra-images/Sample_User_Icon.png" alt="profile" />
+          <img src="content/images/akshaya-patra-images/Sample_User_Icon.png" alt="profile"/>
           <span class="login-status online"></span>
           <!--change to offline or busy as needed-->
         </div>
@@ -13,29 +13,33 @@
         </div>
       </a>
     </li>
-    <li *ngIf="!isAdminLogin" class="nav-item" [ngClass]="{ active: upcomingEvents.isActive }">
+    <li showIfIsNormalUser class="nav-item"
+        [ngClass]="{ active: upcomingEvents.isActive || registeredEvents.isActive || completedEvents.isActive}">
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-12">
         <span class="menu-title">Events</span>
         <i class="menu-arrow"></i>
         <i class="mdi mdi-calendar menu-icon"></i>
       </a>
-      <div class="collapse" id="e-commerce" [ngbCollapse]="parentId !== 'nav-link-12'">
+      <div class="collapse" id="events" [ngbCollapse]="parentId !== 'nav-link-12'">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link" routerLink="events" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
+            <a class="nav-link" routerLink="user/events/upcoming" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a class="nav-link" routerLink="completedEventForPrototype" routerLinkActive="active" #completedEvents="routerLinkActive"-->
-<!--              >Completed-->
-<!--            </a>-->
-<!--          </li>-->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="user/events/registered" routerLinkActive="active"
+               #registeredEvents="routerLinkActive">Registered
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="user/events/completed" routerLinkActive="active" #completedEvents="routerLinkActive">Completed
+            </a>
+          </li>
         </ul>
       </div>
     </li>
-    <li
-      *ngIf="isAdminLogin"
-      class="nav-item"
-      [ngClass]="{ active: upcomingEvents.isActive || createEvent.isActive || completedEvents.isActive }"
+    <li showOnlyIfAdmin
+        class="nav-item"
+        [ngClass]="{ active: allFutureEvents.isActive || createEvent.isActive || allPastEvents.isActive }"
     >
       <a class="nav-link" (click)="clickedMenu($event)" id="nav-link-admin-evens">
         <span class="menu-title">Events</span>
@@ -45,25 +49,33 @@
       <div class="collapse" id="admin-events" [ngbCollapse]="parentId !== 'nav-link-admin-evens'">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item">
-            <a class="nav-link" routerLink="createEvent" routerLinkActive="active" #createEvent="routerLinkActive">Create Event </a>
+            <a class="nav-link" routerLink="admin/createEvent" routerLinkActive="active" #createEvent="routerLinkActive">Create Event </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="events" routerLinkActive="active" #upcomingEvents="routerLinkActive">Upcoming </a>
+            <a class="nav-link" routerLink="admin/events/upcoming" routerLinkActive="active"
+               #allFutureEvents="routerLinkActive">Upcoming </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="completedEventForPrototype" routerLinkActive="active" #completedEvents="routerLinkActive"
-              >Completed
+            <a class="nav-link" routerLink="admin/events/past" routerLinkActive="active" #allPastEvents="routerLinkActive"
+            >Completed
             </a>
           </li>
         </ul>
       </div>
     </li>
-<!--    <li class="nav-item" [ngClass]="{ active: calendar.isActive }">-->
-<!--      <a class="nav-link" (click)="clickedMenu($event)" routerLink="apps/calendar" routerLinkActive #calendar="routerLinkActive">-->
-<!--        <span class="menu-title">Settings</span>-->
-<!--        <i class="mdi mdi-wrench menu-icon"></i>-->
-<!--      </a>-->
-<!--    </li>-->
+    <li showOnlyIfAdmin
+      class="nav-item" [ngClass]="{ active: promote.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="admin/promote" routerLinkActive #promote="routerLinkActive">
+        <span class="menu-title">Admin Promotions</span>
+        <i class="mdi mdi-account-plus menu-icon"></i>
+      </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: accountSettings.isActive }">
+      <a class="nav-link" (click)="clickedMenu($event)" routerLink="profile" routerLinkActive #accountSettings="routerLinkActive">
+        <span class="menu-title">Account Settings</span>
+        <i class="mdi mdi-wrench menu-icon"></i>
+      </a>
+    </li>
     <li class="nav-item">
       <a class="nav-link" (click)="logout()">
         <span class="menu-title" style="color: orangered">Logout</span>

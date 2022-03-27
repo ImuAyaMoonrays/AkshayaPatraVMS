@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LoginService } from '../../services/login/login.service';
 import { AccountService } from '../../services/auth/account.service';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Account } from '../../services/auth/account.model';
-import { AuthoiritiesEnum } from '../../enums/authoirities.enum';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,6 +13,8 @@ import { AuthoiritiesEnum } from '../../enums/authoirities.enum';
 })
 export class SidebarComponent implements OnInit {
   parentId = '';
+  isEventActive$: Observable<boolean>;
+  isStartUrlAndIsEvent: boolean;
 
   constructor(
     private router: Router,
@@ -22,13 +23,18 @@ export class SidebarComponent implements OnInit {
   ) {}
 
   username$: Observable<string>;
-  isAdminLogin: boolean;
 
   ngOnInit() {
+
+    // this.isStartUrlAndIsEvent = document.URL.includes('events');
+
+    // this.isEventActive$ = this.router.events.pipe(
+    //   tap(console.log),
+    //   filter(event => event instanceof NavigationEnd),
+    //   tap(() => this.isStartUrlAndIsEvent = false),
+    //   map((navigationEnd: NavigationEnd) => navigationEnd.url.includes('events'))
+    // )
     this.username$ = this.accountService.identity().pipe(
-      tap((account: Account) => {
-        this.isAdminLogin = account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
-      }),
       map((account: Account) => {
         return account.login;
       })

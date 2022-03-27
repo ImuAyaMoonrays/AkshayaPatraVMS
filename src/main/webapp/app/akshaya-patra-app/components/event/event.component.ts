@@ -1,11 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, forkJoin, merge, Observable, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import { EventModel } from "../../models/event.model";
 import { EventService } from "../../services/event/event.service";
 import { Router } from "@angular/router";
 import { AccountService } from "../../services/auth/account.service";
 import { map, tap } from "rxjs/operators";
 import { Account } from "../../services/auth/account.model";
+import { CsvExportService } from "../../services/csv-export/csv-export.service";
+import { Store } from "@ngxs/store";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Component({
   selector: 'jhi-event',
@@ -14,28 +17,27 @@ import { Account } from "../../services/auth/account.model";
 })
 export class EventComponent implements OnInit {
 
-  @Input() event$: Observable<EventModel>;
+  event$: Observable<EventModel>;
+  isPastEvent: boolean;
   @Input() hideButton: boolean = false;
   @Input() isExpandedView: boolean = true;
   isCompleted: boolean;
-  isAdmin$: Observable<boolean>;
   buttonText: 'Register' | 'Unregister';
   buttonFunction: Function;
   forceEvent$: Subject<EventModel> = new Subject<EventModel>();
 
   constructor(private router: Router,
+              private store: Store,
+              private csvExportService: CsvExportService,
               private accountService: AccountService,
               private eventService: EventService) {
   }
 
   ngOnInit(): void {
 
-    this.isAdmin$ = this.accountService.isAdminLoggedIn$();
-    if (!this.event$) {
-      // temporary hack, should get id from router
-      const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
-      this.assignEvent(eventId);
-    }
+    // temporary hack, should get id from router
+    const eventId = document.documentURI.slice(document.documentURI.lastIndexOf('/') + 1);
+    this.assignEvent(eventId);
 
     // this is psychotic. Refactor this.
     this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
@@ -48,8 +50,14 @@ export class EventComponent implements OnInit {
           this.buttonFunction = this.register;
         }
       }),
-      map(eventAndAccount => eventAndAccount[0])
+      map(eventAndAccount => eventAndAccount[0]),
+      tap(event => this.isPastEvent = new Date(event.endDate) < new Date()),
     );
+  }
+
+  saveCsv(eventId: number): void {
+    this.csvExportService.csvOfCurrentlyRegisteredVolunteers$(eventId)
+
   }
 
 
@@ -57,23 +65,22 @@ export class EventComponent implements OnInit {
     this.event$ = this.eventService.eventById$(Number(eventId));
   }
 
-  navigateToEventExpandedView(eventId: string): void {
-    this.router.navigate([`/home/events/${eventId}`]);
-  }
-
   public register(eventId: string): void {
     this.eventService.register$(Number(eventId)).pipe(
       tap(() => {
         // refactor this
         this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllEventsAction)
       })
     ).subscribe();
   }
+
   public unregister(eventId: string): void {
     this.eventService.unregister$(Number(eventId)).pipe(
       tap(() => {
         // refactor this
         this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllEventsAction)
       })
     ).subscribe();
   }

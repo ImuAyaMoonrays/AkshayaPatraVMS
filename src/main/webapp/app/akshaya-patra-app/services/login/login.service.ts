@@ -18,3 +18,4 @@ export class LoginService {
     this.authServerProvider.logout().subscribe({ complete: () => this.accountService.authenticate(null) });
   }
 }
+

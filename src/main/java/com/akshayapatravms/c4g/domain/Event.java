@@ -1,12 +1,12 @@
 package com.akshayapatravms.c4g.domain;
 
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "event")
@@ -20,7 +20,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     // double check CascadeType persist
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "event_cause", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "cause_id"))
     private Set<Cause> causes = new HashSet<>();
 

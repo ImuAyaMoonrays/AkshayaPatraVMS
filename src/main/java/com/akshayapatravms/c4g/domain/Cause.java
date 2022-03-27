@@ -1,9 +1,10 @@
 package com.akshayapatravms.c4g.domain;
 
 import com.akshayapatravms.c4g.service.dto.CauseDTO;
-import java.io.Serializable;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "cause")
@@ -31,7 +32,7 @@ public class Cause extends AbstractAuditingEntity implements Serializable {
     public Cause() {}
 
     public Cause(CauseDTO causeDTO) {
-        this.causeName = causeDTO.getName();
+        this.causeName = causeDTO.getCauseName();
         this.id = causeDTO.getId();
     }
 

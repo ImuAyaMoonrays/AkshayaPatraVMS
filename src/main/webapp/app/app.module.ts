@@ -32,6 +32,19 @@ import { NewPasswordComponent } from './akshaya-patra-app/components/new-passwor
 import { NgSelectModule } from "@ng-select/ng-select";
 import { TimePipe } from "./akshaya-patra-app/pipes/time/time.pipe";
 import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
+import { NgxsModule } from "@ngxs/store";
+import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
+import { AppState } from "./akshaya-patra-app/store/states/App.state";
+import { EventPreviewComponent } from './akshaya-patra-app/components/event-preview/event-preview.component';
+import { IsAdminDirective } from './akshaya-patra-app/directives/is-admin/is-admin.directive';
+import { IfIsNormalUserDirective } from './akshaya-patra-app/directives/if-is-normal-user/if-is-normal-user.directive';
+import { UpcomingUnregisteredEventsComponent } from './akshaya-patra-app/components/upcoming-events/upcoming-unregistered-events.component';
+import { RegisteredEventsComponent } from './akshaya-patra-app/components/registered-events/registered-events.component';
+import { CompletedEventsComponent } from './akshaya-patra-app/components/completed-events/completed-events.component';
+import { AdminUpcomingEventsComponent } from './akshaya-patra-app/components/admin-upcoming-events/admin-upcoming-events.component';
+import { AdminPastEventsComponent } from './akshaya-patra-app/components/admin-past-events/admin-past-events.component';
+import { PromoteToAdminComponent } from './akshaya-patra-app/components/promote-to-admin/promote-to-admin.component';
+import { ProfileComponent } from './akshaya-patra-app/components/profile/profile.component';
 
 @NgModule({
   imports: [
@@ -44,8 +57,10 @@ import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
     HttpClientModule,
     NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
     NgSelectModule,
+    NgxsModule.forRoot([AppState]),
+    NgxsReduxDevtoolsPluginModule.forRoot()
   ],
-  providers: [NgbModule, Title, { provide: LOCALE_ID, useValue: 'en' }, httpInterceptorProviders],
+  providers: [NgbModule, Title, {provide: LOCALE_ID, useValue: 'en'}, httpInterceptorProviders],
   declarations: [
     AppComponent,
     NavbarComponent,
@@ -63,6 +78,16 @@ import { DatePipe } from './akshaya-patra-app/pipes/date/date.pipe';
     CreateEventComponent,
     TimePipe,
     DatePipe,
+    EventPreviewComponent,
+    IsAdminDirective,
+    IfIsNormalUserDirective,
+    UpcomingUnregisteredEventsComponent,
+    RegisteredEventsComponent,
+    CompletedEventsComponent,
+    AdminUpcomingEventsComponent,
+    AdminPastEventsComponent,
+    PromoteToAdminComponent,
+    ProfileComponent,
   ],
   bootstrap: [AppComponent],
 })

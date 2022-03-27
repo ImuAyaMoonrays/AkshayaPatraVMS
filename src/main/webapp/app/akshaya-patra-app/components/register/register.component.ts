@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { RegisterService } from '../../services/register/register.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from '../../constants/error.constants';
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'app-register',
@@ -11,12 +12,24 @@ import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from '../../constant
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  doNotMatch = false;
+
+  passwordsMatchSubscription: Subscription;
+  passwordStrengthSubscription: Subscription;
+  passwordsDoNotMatch: boolean;
+  passwordsAreStrongEnough: boolean;
+
+  registerClicked: boolean;
   error = false;
   errorEmailExists = false;
   errorUserExists = false;
   showTermsAndConditionsNeedsToBeAcceptedMessage = false;
   success: boolean;
+  showInsufficientPasswordMessage = false;
+
+  private readonly passwordValidators = [Validators.required,
+    Validators.pattern(String.raw`^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$`),
+    Validators.minLength(4),
+    Validators.maxLength(50)];
 
   registerForm = this.fb.group({
     login: [
@@ -29,17 +42,22 @@ export class RegisterComponent implements OnInit {
       ],
     ],
     email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-    confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+    password: ['', this.passwordValidators],
+    confirmPassword: ['', this.passwordValidators],
     termsAndConditions: [false],
   });
 
-  constructor(private router: Router, private registerService: RegisterService, private fb: FormBuilder) {}
+  constructor(private router: Router, private registerService: RegisterService, private fb: FormBuilder) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.passwordStrengthSubscription = this.registerForm.valueChanges.subscribe(() => {
+      this.passwordsAreStrongEnough = this.registerForm.get('password').valid;
+    })
+  }
 
   register(): void {
-    this.doNotMatch = false;
+    this.passwordsDoNotMatch = false;
     this.error = false;
     this.errorEmailExists = false;
     this.errorUserExists = false;
@@ -47,13 +65,13 @@ export class RegisterComponent implements OnInit {
 
     const password = this.registerForm.get(['password'])!.value;
     if (password !== this.registerForm.get(['confirmPassword'])!.value) {
-      this.doNotMatch = true;
+      this.passwordsDoNotMatch = true;
     } else if (!this.registerForm.get(['termsAndConditions']).value) {
       this.showTermsAndConditionsNeedsToBeAcceptedMessage = true;
     } else {
       const login = this.registerForm.get(['login'])!.value;
       const email = this.registerForm.get(['email'])!.value;
-      this.registerService.save({ login, email, password, langKey: 'en' }).subscribe(
+      this.registerService.save({login, email, password, langKey: 'en'}).subscribe(
         () => (this.success = true),
         response => this.processError(response)
       );

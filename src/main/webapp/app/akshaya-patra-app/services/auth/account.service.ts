@@ -9,6 +9,8 @@ import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../application-config/application-config.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
+import { Store } from "@ngxs/store";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -21,7 +23,8 @@ export class AccountService {
     private http: HttpClient,
     private stateStorageService: StateStorageService,
     private router: Router,
-    private applicationConfigService: ApplicationConfigService
+    private applicationConfigService: ApplicationConfigService,
+    private store: Store
   ) {}
 
   save(account: Account): Observable<{}> {
@@ -30,6 +33,7 @@ export class AccountService {
 
   authenticate(identity: Account | null): void {
     this.userIdentity = identity;
+    this.store.dispatch(new AppActions.UpdateAuthenticatedUserAction(identity));
     this.authenticationState.next(this.userIdentity);
   }
 
@@ -43,10 +47,20 @@ export class AccountService {
     return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
   }
 
+  hasEveryAuthority(authorities: string[] | string): boolean {
+    if (!this.userIdentity) {
+      return false;
+    }
+    if (!Array.isArray(authorities)) {
+      authorities = [authorities];
+    }
+    return this.userIdentity.authorities.every((authority: string) => authorities.includes(authority));
+  }
+
   isAdminLoggedIn$(): Observable<boolean> {
     return this.identity().pipe(
       map((account: Account) => {
-        return account.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
+        return account?.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
       })
     )
   }
@@ -76,6 +90,10 @@ export class AccountService {
 
   isAuthenticated(): boolean {
     return this.userIdentity !== null;
+  }
+
+  isAdminLoggedIn(): boolean {
+    return this.userIdentity?.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
   }
 
   getAuthenticationState(): Observable<Account | null> {

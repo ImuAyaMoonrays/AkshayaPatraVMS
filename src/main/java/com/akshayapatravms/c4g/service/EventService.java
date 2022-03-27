@@ -9,15 +9,6 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -26,6 +17,13 @@ import org.springframework.cache.CacheManager;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -73,13 +71,13 @@ public class EventService {
                         .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
                 } else {
                     //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
-                    if (causeRepository.findOneByCauseName(causeDTO.getName().toUpperCase()).isPresent()) {
+                    if (causeRepository.findOneByCauseName(causeDTO.getCauseName().toUpperCase()).isPresent()) {
                         throw new RuntimeException(
                             "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
                         );
                     } else {
                         Cause cause = new Cause();
-                        cause.setCauseName(causeDTO.getName().toUpperCase());
+                        cause.setCauseName(causeDTO.getCauseName().toUpperCase());
                         return causeRepository.save(cause);
                     }
                 }

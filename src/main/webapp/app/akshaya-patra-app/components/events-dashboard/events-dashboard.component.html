@@ -1,22 +1,69 @@
-<jhi-event
-  style="cursor: pointer"
-  *ngFor="let event$ of events$ | async"
-  [event$]="event$"
-  [hideButton]="true"
-  [isExpandedView]="false"
-></jhi-event>
+<div class="col-md-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body py-2">
+      <div class="form-group row mb-0">
+        <div class="col">
+          <div class="row">
 
-<!--<div *ngIf="false" style="cursor: pointer" (click)="navigateToEvent('0')" class="col-md-12 stretch-card grid-margin">-->
-<!--  <div class="card bg-gradient-success card-img-holder text-white">-->
-<!--    <div class="card-body">-->
-<!--      <p>(CLICKABLE FOR PROTOTYPE)</p>-->
-<!--      <img src="content/images/purple-template-images/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />-->
-<!--      <h6 class="font-weight-normal mb-3">-->
-<!--        {{ (jaipurEventStatus$ | async)?.numberRegistered }}/15 volunteers<i class="mdi mdi-food-apple mdi-24px float-right"></i>-->
-<!--      </h6>-->
-<!--      <h1 class="mb-3">Food Drive {{ (jaipurEventStatus$ | async)?.isRegistered ? '(REGISTERED)' : '' }}</h1>-->
-<!--      <h5 class="card-text">Jaipur, India</h5>-->
-<!--      <h6 class="card-text">12 May, 2022</h6>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+            <div class="col-md-3 p-1">
+                <ng-select
+                  placeholder="Tags"
+                  [items]="causeTags"
+                  class="ng-select-bottom ng-select ng-select-multiple ng-select-searchable ng-select-clearable ng-untouched ng-pristine ng-valid"
+                  [formControl]="selectedCauseTagsFormControl"
+                  [multiple]="true">
+                </ng-select>
+            </div>
+
+            <div class="col-md-2 form-check-flat form-check-primary p-1">
+              <ng-select [items]="locationTypes"
+                         placeholder="Location Type"
+                         [formControl]="locationTypeFormControl">
+              </ng-select>
+            </div>
+
+            <div class="col-md-3 p-1 tiny-margin-top">
+              <input [formControl]="physicalLocationSearchEntryFormControl"
+                     [ngbTypeahead]="locationTypeaheadData"
+                     [readOnly]="disablePhysicalLocationEntry"
+                     class="form-control"
+                     type="text"
+                     placeholder="Location"
+                     autocomplete="off">
+            </div>
+            <div class="col-md-2 p-1 tiny-margin-top">
+                <div class="input-group">
+                  <input class="form-control"
+                         placeholder="Minimum Date"
+                         [formControl]="minimumDateFormControl"
+                         (focus)="minimumDatePicker.open()"
+                         restoreFocus="false"
+                         ngbDatepicker
+                         #minimumDatePicker="ngbDatepicker">
+                </div>
+            </div>
+            <div class="col-md-2 p-1 tiny-margin-top">
+                <div class="input-group">
+                  <input class="form-control"
+                         placeholder="Maximum Date"
+                         [formControl]="maximumDateFormControl"
+                         (focus)="maximumDatePicker.open()"
+                         restoreFocus="false"
+                         ngbDatepicker
+                         #maximumDatePicker="ngbDatepicker">
+                </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<jhi-event-preview
+  style="cursor: pointer"
+  *ngFor="let event of (eventsAfterFilters$ | async)"
+  [event]="event"
+></jhi-event-preview>
+

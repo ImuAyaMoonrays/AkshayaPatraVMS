@@ -4,6 +4,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AccountService } from '../../services/auth/account.service';
 import { LoginService } from '../../services/login/login.service';
 import { ActivateService } from '../../services/activate-account/activate.service';
+import { Store } from "@ngxs/store";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Component({
   selector: 'app-login',
@@ -24,8 +26,10 @@ export class LoginComponent implements OnInit {
     private loginService: LoginService,
     private router: Router,
     private fb: FormBuilder,
-    private activateAccountService: ActivateService
-  ) {}
+    private activateAccountService: ActivateService,
+    private store: Store
+  ) {
+  }
 
   ngOnInit(): void {
     const url = window.location.href;
@@ -36,7 +40,8 @@ export class LoginComponent implements OnInit {
     }
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/home']);
+        this.accountService.isAdminLoggedIn() ? this.router.navigate(['/home/admin/events/upcoming']) :
+          this.router.navigate(['/home/user/events/upcoming']);
       }
     });
   }
@@ -53,7 +58,9 @@ export class LoginComponent implements OnInit {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.router.navigate(['/home']);
+            this.store.dispatch(AppActions.UpdateAllEventsAction);
+            this.accountService.isAdminLoggedIn() ? this.router.navigate(['/home/admin/events/upcoming']) :
+              this.router.navigate(['/home/user/events/upcoming']);
           }
         },
         () => (this.authenticationError = true)

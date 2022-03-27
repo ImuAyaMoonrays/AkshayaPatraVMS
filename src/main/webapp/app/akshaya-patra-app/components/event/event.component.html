@@ -1,31 +1,41 @@
 <div *ngIf="event$ | async as event"
-     (click)="!isExpandedView && navigateToEventExpandedView(event.id)"
      class="col-md-12 stretch-card grid-margin">
-  <div class="card">
+  <div class="card bg-gradient-danger card-img-holder text-white">
     <div class="card-body">
       <div class="row">
-        <div class="small-screen-center-text {{!isExpandedView ?  'text-center col-md-12' : 'col-md-6'}}">
-          <h2 class="font-weight-normal mb-3">{{event.eventName}}</h2>
+        <div class="text-center align-self-center col-md-3">
+          <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
           <h4 class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
-          <h6 *ngIf="isExpandedView" class="card-text mb-3">{{event.description}}</h6>
           <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
           <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
 
-          <a *ngIf="isExpandedView && !(isAdmin$ | async)"
+          <a *ngIf="!isPastEvent"
+             showIfIsNormalUser
              (click)="buttonFunction(event.id)"
              role="button"
-             class="btn btn-gradient-primary btn-fw mt-2">{{ buttonText }}</a>
+             class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
 
-          <h6 *ngIf="event.causes?.length > 0" class="card-text">Causes: {{event.causes}} </h6>
+          <a showOnlyIfAdmin
+             (click)="saveCsv(event.id)"
+             role="button"
+             class="btn btn-gradient-light btn-fw">Volunteers CSV</a>
+
+          <div *ngIf="event.causes?.length > 0">
+            <span class="card-test" class="card-text">Tags: </span>
+            <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
+          </div>
         </div>
-        <div *ngIf="isExpandedView" class="col-md-6 text-center">
+        <div class="col-md-6 text-center">
 
+          <h4 class="font-weight-normal mt-2">Description</h4>
+          <h6 class="card-text mb-3">{{event.description}}</h6>
           <h4 class="font-weight-normal mt-2">Contact</h4>
           <h6 class="card-text">Name: {{event.contactName}} </h6>
           <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
           <h6 class="card-text">Email: {{event.contactEmail}} </h6>
+        </div>
 
-
+        <div class="col-md-3 text-center">
           <h4 class="font-weight-normal mt-3">Location</h4>
           <div *ngIf="event.physicalLocation as physicalLocation">
             <h6 class="card-text">{{physicalLocation.address}}</h6>
@@ -41,10 +51,8 @@
             <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
           </div>
 
-          <!--          form later-->
+          <!--          for later-->
           <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
-          <!--      <h5 *ngIf="event.physicalLocation" class="card-text">{{ (event.physicalLocation) }}</h5>-->
-          <!--      <h5 *ngIf="event.virtualLocation" class="card-text">{{ (event.virtualLocation) }}</h5>-->
 
         </div>
       </div>
@@ -52,21 +60,3 @@
   </div>
 </div>
 
-<!--<div *ngIf="isPrototypeEvent" class="col-md-12 stretch-card grid-margin">-->
-<!--  <div class="card bg-gradient-success card-img-holder text-white">-->
-<!--    <div class="card-body">-->
-<!--      <h6 class="font-weight-normal mb-3">-->
-<!--        {{ (jaipurStatus$ | async)?.numberRegistered + '/15 volunteers' }}<i class="mdi mdi-food-apple mdi-24px float-right"></i>-->
-<!--      </h6>-->
-<!--      <h1 class="mb-3">-->
-<!--        Food Drive-->
-<!--        {{ (jaipurStatus$ | async)?.isRegistered ? '(REGISTERED)' : '' }}-->
-<!--      </h1>-->
-<!--      <h5 class="card-text">Jaipur, India</h5>-->
-<!--      <h6 class="card-text">12 May, 2022</h6>-->
-<!--      <a (click)="registrationButtonClick()" role="button" class="float-right btn btn-outline-light text-light btn-fw">{{-->
-<!--        isRegistered ? 'Unregister' : 'Sign Up'-->
-<!--      }}</a>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->

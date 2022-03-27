@@ -2,17 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EventModel } from '../../models/event.model';
 import { Router } from '@angular/router';
-import { map, mergeMap } from "rxjs/operators";
+import { mergeMap } from "rxjs/operators";
 import { merge, Observable, of } from "rxjs";
 import { EventService } from "../../services/event/event.service";
-import { Time } from "@angular/common";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
 import { CauseModel } from "../../models/cause.model";
 import { CauseService } from "../../services/cause/cause.service";
 import { AccountService } from "../../services/auth/account.service";
-import { Account } from "../../services/auth/account.model";
-import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
+import { TemporalUtil } from "../../utils/temporal.util";
 
 @Component({
   selector: 'jhi-create-event',
@@ -21,7 +19,7 @@ import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
 })
 export class CreateEventComponent implements OnInit {
 
-  causes: { name: string, id: number }[] = [];
+  causes: { causeName: string, id: number }[] = [];
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
 
@@ -81,19 +79,19 @@ export class CreateEventComponent implements OnInit {
     this.causeService.allCauses().subscribe((causes) => {
       causes.forEach(cause => this.causes = this.causes.concat(cause))
     })
-    this.showPhysicalLocationForm$ =
-      merge(
-        this.locationTypeForm.get('locationType').valueChanges.pipe(
-          mergeMap(locationType => of(locationType === 'physical')),
-        ),
-        of(true)
-      )
+
+    this.showPhysicalLocationForm$ = merge(
+      this.locationTypeForm.get('locationType').valueChanges.pipe(
+        mergeMap(locationType => of(locationType === 'physical')),
+      ),
+      of(true)
+    )
   }
 
   addCause(): void {
     const newCauseValue = (this.newCause.value as string).toUpperCase();
-    if (newCauseValue !== '' && !this.causes.map(cause => cause.name).includes(newCauseValue)) {
-      const newCause = {name: newCauseValue, id: null};
+    if (newCauseValue !== '' && !this.causes.map(cause => cause.causeName).includes(newCauseValue)) {
+      const newCause = {causeName: newCauseValue, id: null};
 
       this.causes = this.causes.concat(newCause);
       this.selectedCauses = this.selectedCauses.concat(newCauseValue);
@@ -111,15 +109,15 @@ export class CreateEventComponent implements OnInit {
         createEventForm.get('eventName').value,
         createEventForm.get('description').value,
         Number(createEventForm.get('volunteersNeededAmount').value),
-        this.dateFromDatePicker(createEventForm.get('startDate').value),
-        this.dateFromDatePicker(createEventForm.get('endDate').value),
-        this.timeFromTimePicker(createEventForm.get('startTime').value),
-        this.timeFromTimePicker(createEventForm.get('endTime').value),
+        TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
+        TemporalUtil.dateFromDatePicker(createEventForm.get('endDate').value),
+        TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
+        TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
         createEventForm.get('contactName').value,
         createEventForm.get('contactPhoneNumber').value,
         createEventForm.get('contactEmail').value,
         createEventForm.get('emailBody').value,
-      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.name)));
+      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)));
 
       if (this.isPhysicalLocationTypeSelected()) {
         event.physicalLocation = new PhysicalLocationModel(
@@ -137,7 +135,20 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent$(event).subscribe(() => this.router.navigate(['/home/events']));
+      this.eventService.createEvent$(event).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
+
+    } else {
+      this.markAllFormFieldsAsDirty(createEventForm);
+      this.markAllFormFieldsAsDirty(physicalLocationForm);
+      this.markAllFormFieldsAsDirty(virtualLocationForm);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+
+    }
+  }
+
+  private markAllFormFieldsAsDirty(form: FormGroup) {
+    for (const field in form.controls) {
+      form.get(field).markAsDirty();
     }
   }
 
@@ -152,14 +163,5 @@ export class CreateEventComponent implements OnInit {
   private isPhysicalLocationTypeSelected(): boolean {
     return this.locationTypeForm.get('locationType').value === 'physical';
   }
-
-  private dateFromDatePicker(datePickerValue: { year: number, month: number, day: number }): Date {
-    return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day - 1);
-  }
-
-  private timeFromTimePicker(timePickerValue: { hour: number, minute: number, second: number }): Time {
-    return {hours: timePickerValue.hour, minutes: timePickerValue.minute};
-  }
-
 
 }

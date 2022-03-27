@@ -7,7 +7,7 @@ public class CauseDTO {
     //    if payload contains id, will find existing cause by this id
     private Long id;
 
-    private String name;
+    private String causeName;
 
     public Long getId() {
         return id;
@@ -17,18 +17,18 @@ public class CauseDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCauseName() {
+        return causeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCauseName(String causeName) {
+        this.causeName = causeName;
     }
 
     public CauseDTO() {}
 
     public CauseDTO(Cause cause) {
         this.id = cause.getId();
-        this.name = cause.getCauseName();
+        this.causeName = cause.getCauseName();
     }
 }
