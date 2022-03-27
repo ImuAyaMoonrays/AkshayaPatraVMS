@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="bhale (generated)" id="1648405548442-2">
+        <dropForeignKeyConstraint baseTableName="PROFILE" constraintName="FK6389KNLLMPV2QY2Y9BDDJAM6G"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648405548442-3">
+        <dropForeignKeyConstraint baseTableName="PROFILE_EVENT" constraintName="FK7BTKM15S58OOA0UMYWS2JBRRC"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648405548442-4">
+        <dropForeignKeyConstraint baseTableName="PROFILE_EVENT" constraintName="FK81F4N9HEXLR20W6X1NY3EUIBQ"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648405548442-5">
+        <dropTable tableName="PROFILE"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648405548442-6">
+        <dropTable tableName="PROFILE_EVENT"/>
+    </changeSet>
+</databaseChangeLog>
