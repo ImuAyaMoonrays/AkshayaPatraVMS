@@ -1,17 +1,34 @@
 package com.akshayapatravms.c4g.web.rest;
 
+import com.akshayapatravms.c4g.config.Constants;
 import com.akshayapatravms.c4g.domain.Event;
+import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
+import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
+
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import com.akshayapatravms.c4g.web.rest.errors.EmailAlreadyUsedException;
+import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
+import org.h2.tools.Csv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -73,6 +90,84 @@ public class EventResource {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
+    //Done
+    @GetMapping("/getAllPast")
+    public ResponseEntity getAllPastEvents() {
+        try{
+            return ResponseEntity.ok().body(eventService.getAllPast());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    //Done
+    @GetMapping("/getAllFuture")
+    public ResponseEntity getAllFutureEvents() {
+        try{
+            return ResponseEntity.ok().body(eventService.getAllFuture());
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    //get completed events (events that the logged in user registered for that are past)
+    //Done
+    @GetMapping("/completedEvents/")
+    public ResponseEntity getCompletedEvents() {
+        try{
+            eventService.getAllCompletedEventsForUser();
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    //Done
+    @GetMapping("/registeredEvents/")
+    public ResponseEntity getRegisteredEvents() {
+        try{
+            eventService.getAllFutureEventsForUser();
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    //Done
+    @GetMapping("/delete/")
+    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity deleteEvent(@RequestParam Long id) {
+        try{
+            log.debug("REST request to delete Event: {}", id);
+            eventService.deleteEvent(id);
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/updateEvent")
+    public ResponseEntity<AdminUserDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+        log.debug("REST request to update Event : {}", eventDTO);
+        Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
+        Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
+
+        return ResponseUtil.wrapOrNotFound(
+            updatedEvent,
+            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId())
+        );
+    }
+
+//    //get future events (date in future + should filter out events that contain a corporate subgroup but that the logged in user doesn't fit)
+//    @GetMapping("/getFutureEvents")
+//    public ResponseEntity getFutureEvents() {
+//        try{
+//            return ResponseEntity.ok().body(eventService.getAll());
+//        } catch (Exception e){
+//            return ResponseEntity.internalServerError().body(e.getMessage());
+//        }
+//    }
 
     @GetMapping("/getAll")
     public ResponseEntity getAllEvents() {
