@@ -225,7 +225,7 @@ public class EventService {
         }
     }
 
-//    public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
+    public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
 //        return Optional
 //            .of(eventRepository.findById(eventDTO.getId()))
 //            .filter(Optional::isPresent)
@@ -245,19 +245,21 @@ public class EventService {
 //                //event.setLocation(eventDTO.getPhysicalLocation());
 //                //event.setVirtualLocation(eventDTO.getVirtualLocation());
 //                event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-//                event.setLastModifiedBy(eventDTO.getContactName());
 //                return event;
 //            })
 //            .map(EventDTO::new);
-//    }
+        return null;
+    }
 
     public void deleteEvent (Long eventID)  throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if(!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        eventRepository.deleteEventByCreator(eventID, isUser.get().getId());
-        log.debug("Deleted Event: {}", eventID);
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
+            eventRepository.deleteEventByCreator(eventID, isUser.get().getId());
+            log.debug("Deleted Event: {}", eventID);
+        }
     }
 
     public List<Event> getAll() throws  RuntimeException{
@@ -280,7 +282,7 @@ public class EventService {
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
             return eventRepository.findAllPastEvents();
         } else {
-            return eventRepository.findAll();
+            return eventRepository.findAllCompletedEventsForUser(isUser.get().getId());
         }
     }
 
@@ -292,7 +294,7 @@ public class EventService {
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
             return eventRepository.findAllFutureEvents();
         } else {
-            return eventRepository.findAll();
+            return eventRepository.findAllFutureEventsForUser(isUser.get().getId());
         }
     }
 

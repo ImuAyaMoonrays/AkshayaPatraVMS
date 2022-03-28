@@ -92,7 +92,7 @@ public class EventResource {
     }
 
     //Done
-    @GetMapping("/getAllPast")
+    @GetMapping("/pastEvents")
     public ResponseEntity getAllPastEvents() {
         try{
             return ResponseEntity.ok().body(eventService.getAllPast());
@@ -102,7 +102,7 @@ public class EventResource {
     }
 
     //Done
-    @GetMapping("/getAllFuture")
+    @GetMapping("/futureEvents")
     public ResponseEntity getAllFutureEvents() {
         try{
             return ResponseEntity.ok().body(eventService.getAllFuture());
@@ -116,8 +116,7 @@ public class EventResource {
     @GetMapping("/completedEvents/")
     public ResponseEntity getCompletedEvents() {
         try{
-            eventService.getAllCompletedEventsForUser();
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(eventService.getAllCompletedEventsForUser());
         } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -127,16 +126,14 @@ public class EventResource {
     @GetMapping("/registeredEvents/")
     public ResponseEntity getRegisteredEvents() {
         try{
-            eventService.getAllFutureEventsForUser();
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(eventService.getAllFutureEventsForUser());
         } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
-    //Done
-    @GetMapping("/delete/")
-    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @DeleteMapping()
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity deleteEvent(@RequestParam Long id) {
         try{
             log.debug("REST request to delete Event: {}", id);
@@ -147,7 +144,7 @@ public class EventResource {
         }
     }
 
-    @PutMapping("/updateEvent")
+    @PatchMapping("/updateEvent")
     public ResponseEntity<AdminUserDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
         log.debug("REST request to update Event : {}", eventDTO);
         Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
