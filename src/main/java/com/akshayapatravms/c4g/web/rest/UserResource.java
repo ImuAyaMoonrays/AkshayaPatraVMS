@@ -7,6 +7,8 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.MailService;
 import com.akshayapatravms.c4g.service.UserService;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
+import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.UserUpdateDTO;
 import com.akshayapatravms.c4g.web.rest.errors.BadRequestAlertException;
 import com.akshayapatravms.c4g.web.rest.errors.EmailAlreadyUsedException;
 import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
@@ -28,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.testcontainers.shaded.okhttp3.Response;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -228,9 +231,20 @@ public class UserResource {
     }
 
     @PutMapping("/users/acceptTOS")
-    public ResponseEntity acceptTOSForUser() throws  RuntimeException {
+    public ResponseEntity acceptTOSForUser() {
         try{
             userService.acceptTOS();
+            return ResponseEntity.ok().build();
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+
+    @PatchMapping("/users")
+    public ResponseEntity updateUserProfile(@RequestBody UserUpdateDTO userUpdateDTO) {
+        try{
+            userService.updateLoggedInUser(userUpdateDTO);
             return ResponseEntity.ok().build();
         } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());

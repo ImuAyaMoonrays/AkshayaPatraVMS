@@ -252,6 +252,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return this.firstName + " " + this.lastName;
     }
 
+    public PhysicalLocation getPhysicalLocation() {
+        return physicalLocation;
+    }
+
+    public void setPhysicalLocation(PhysicalLocation physicalLocation) {
+        this.physicalLocation = physicalLocation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
