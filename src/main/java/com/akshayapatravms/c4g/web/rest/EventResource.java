@@ -9,7 +9,6 @@ import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
-import com.akshayapatravms.c4g.service.dto.ProfileEventDTO;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -20,6 +19,7 @@ import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
 import org.h2.tools.Csv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +43,9 @@ public class EventResource {
     private final EventService eventService;
 
     private final EventRepository eventRepository;
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     public EventResource(EventService eventService,
                          EventRepository eventRepository) {
@@ -145,14 +148,14 @@ public class EventResource {
     }
 
     @PatchMapping("/updateEvent")
-    public ResponseEntity<AdminUserDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
         log.debug("REST request to update Event : {}", eventDTO);
         Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
         Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
 
         return ResponseUtil.wrapOrNotFound(
             updatedEvent,
-            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId())
+            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId().toString())
         );
     }
 

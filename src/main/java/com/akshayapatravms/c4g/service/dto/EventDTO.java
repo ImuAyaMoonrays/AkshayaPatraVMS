@@ -1,13 +1,17 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.*;
+
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EventDTO {
 
     private Long id;
 
-    private Set<CauseDTO> causes;
+    private Set<Cause> causes;
 
     private Set<Long> corporateSubgroupIds;
 
@@ -37,8 +41,30 @@ public class EventDTO {
 
     private String emailBody;
 
-
     public EventDTO() {}
+
+    public EventDTO(Event event) {
+        this.id = event.getId();
+        this.eventName = event.getEventName();
+        this.description = event.getDescription();
+        this.volunteersNeededAmount = event.getVolunteersNeededAmount();
+        this.startDate = event.getStartDate();
+        this.endDate = event.getEndDate();
+        this.contactName = event.getContactName();
+        this.contactPhoneNumber = event.getContactPhoneNumber();
+        this.contactEmail = event.getContactEmail();
+        this.emailBody = event.getEmailBody();
+
+        // Need to find out why are these DTO's?
+        //this.physicalLocation = new PhysicalLocationDTO(event.getPhysicalLocation());
+        //this.startTime = new TimeDTO(event.getStartTime());
+        //this.endTime = new TimeDTO(event.getEndTime());
+
+        // Event has Set<Cause>, EventDTO is expecting Set<CauseDTO>
+        this.causes = event.getCauses();
+        this.corporateSubgroupIds = event.getCorporateSubgroups().stream().map(CorporateSubgroup::getId).collect(Collectors.toSet());
+
+    }
 
     public VirtualLocationDTO getVirtualLocation() {
         return virtualLocation;
@@ -88,11 +114,11 @@ public class EventDTO {
         this.id = id;
     }
 
-    public Set<CauseDTO> getCauses() {
+    public Set<Cause> getCauses() {
         return causes;
     }
 
-    public void setCauses(Set<CauseDTO> causes) {
+    public void setCauses(Set<Cause> causes) {
         this.causes = causes;
     }
 
