@@ -9,6 +9,7 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.UserDTO;
+import com.akshayapatravms.c4g.service.dto.UserUpdateDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -153,6 +154,16 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
+        }
+        if (userDTO.getPhoneNumber() != null) {
+            user.setPhoneNumber(userDTO.getPhoneNumber().replaceAll( "[^\\d]", "" ));
+        }
+        log.info("location" +   userDTO.getLocation());
+        if (userDTO.getLocation() != null) {
+            user.setPhysicalLocation(userDTO.getLocation());
+        }
+        if (userDTO.getDob() != null) {
+            user.setDob(userDTO.getDob());
         }
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
@@ -371,5 +382,51 @@ public class UserService {
             throw new RuntimeException("unable to save user info");
         }
     }
+
+    //TODO: add validation. Errors are thrown if invalid inputs are given.
+    public void updateLoggedInUser(UserUpdateDTO userUpdateDTO) throws RuntimeException {
+        Optional<User> isUser = getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        User user = isUser.get();
+
+        try {
+            if (userUpdateDTO.getFirstName() != null) {
+                user.setFirstName(userUpdateDTO.getFirstName());
+            }
+
+            if (userUpdateDTO.getLastName() != null) {
+                user.setLastName(userUpdateDTO.getLastName());
+            }
+
+            //error is produced if not a valid email (e.g. no @ in the string)
+            //"Could not commit JPA transaction; nested exception is javax.persistence.RollbackException: Error while committing the transaction"
+            if (userUpdateDTO.getEmail() != null) {
+                user.setEmail(userUpdateDTO.getEmail());
+            }
+
+            if (userUpdateDTO.getDob() != null) {
+                user.setDob(userUpdateDTO.getDob());
+            }
+
+
+            //can phone number be null? or is it required?
+            if (userUpdateDTO.getPhoneNumber() != null) {
+                user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
+            }
+
+            userRepository.save(user);
+            this.clearUserCaches(user);
+
+        } catch (Exception e){
+            log.error("error updating user " + user.getId() + " with updateDTO " + userUpdateDTO.toString());
+            throw new RuntimeException("error updating user");
+        }
+
+    }
+
+
+
 
 }

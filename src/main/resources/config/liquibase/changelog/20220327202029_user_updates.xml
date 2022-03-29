@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="bhale (generated)" id="1648412440026-2">
+        <addColumn tableName="jhi_user">
+            <column name="date_of_birth" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648412440026-3">
+        <addColumn tableName="jhi_user">
+            <column name="physical_location_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648412440026-4">
+        <addForeignKeyConstraint baseColumnNames="physical_location_id" baseTableName="jhi_user" constraintName="FKjuly9jdwv9kxo9rpnsbvnnfyr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="physical_location" validate="true"/>
+    </changeSet>
+    <changeSet author="bhale (generated)" id="1648412440026-5">
+        <dropColumn columnName="AGE" tableName="JHI_USER"/>
+    </changeSet>
+</databaseChangeLog>

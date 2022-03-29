@@ -2,7 +2,10 @@ package com.akshayapatravms.c4g.service.dto;
 
 import com.akshayapatravms.c4g.config.Constants;
 import com.akshayapatravms.c4g.domain.Authority;
+import com.akshayapatravms.c4g.domain.PhysicalLocation;
 import com.akshayapatravms.c4g.domain.User;
+
+import java.sql.Date;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +51,14 @@ public class AdminUserDTO {
 
     private Set<String> authorities;
 
+    private String phoneNumber;
+
+    private Date dob;
+
+    private PhysicalLocation location;
+
+
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -58,6 +69,9 @@ public class AdminUserDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
+        this.dob = user.getDob();
+        this.location = user.getPhysicalLocation();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
         this.langKey = user.getLangKey();
@@ -171,6 +185,32 @@ public class AdminUserDTO {
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        //allow numbers only. no other characters.
+        this.phoneNumber = phoneNumber.replaceAll( "[^\\d]", "" );
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public PhysicalLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(PhysicalLocation location) {
+        this.location = location;
+    }
+
 
     // prettier-ignore
     @Override
