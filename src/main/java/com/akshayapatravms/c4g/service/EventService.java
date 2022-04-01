@@ -226,48 +226,48 @@ public class EventService {
         }
     }
 
-    public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
-        return Optional
-            .of(eventRepository.findById(eventDTO.getId()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(event -> {
-                Set<Cause> causes = event.getCauses();
-                causes.clear();
-                eventDTO
-                    .getCauses()
-                    .stream()
-                    .map(Cause::getId)
-                    .map(causeRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(causes::add);
-
-                Set<CorporateSubgroup> corporateSubgroups = event.getCorporateSubgroups();
-                corporateSubgroups.clear();
-                eventDTO
-                    .getCorporateSubgroupIds()
-                    .stream()
-                    .map(corporateSubgroupRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(corporateSubgroups::add);
-                event.setEventName(eventDTO.getEventName());
-                event.setDescription(eventDTO.getDescription());
-                event.setContactEmail(eventDTO.getContactEmail());
-                event.setContactName(eventDTO.getContactName());
-                event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
-                event.setEmailBody(eventDTO.getEmailBody());
-                event.setEndDate(eventDTO.getEndDate());
-                event.setStartDate(eventDTO.getStartDate());
-                event.setStartTime(new Time(eventDTO.getStartTime()));
-                event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
-                event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
-                event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-                return event;
-            })
-            .map(EventDTO::new);
-    }
+//    public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
+//        return Optional
+//            .of(eventRepository.findById(eventDTO.getId()))
+//            .filter(Optional::isPresent)
+//            .map(Optional::get)
+//            .map(event -> {
+//                Set<Cause> causes = event.getCauses();
+//                causes.clear();
+//                eventDTO
+//                    .getCauses()
+//                    .stream()
+//                    .map(Cause::getId)
+//                    .map(causeRepository::findById)
+//                    .filter(Optional::isPresent)
+//                    .map(Optional::get)
+//                    .forEach(causes::add);
+//
+//                Set<CorporateSubgroup> corporateSubgroups = event.getCorporateSubgroups();
+//                corporateSubgroups.clear();
+//                eventDTO
+//                    .getCorporateSubgroupIds()
+//                    .stream()
+//                    .map(corporateSubgroupRepository::findById)
+//                    .filter(Optional::isPresent)
+//                    .map(Optional::get)
+//                    .forEach(corporateSubgroups::add);
+//                event.setEventName(eventDTO.getEventName());
+//                event.setDescription(eventDTO.getDescription());
+//                event.setContactEmail(eventDTO.getContactEmail());
+//                event.setContactName(eventDTO.getContactName());
+//                event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
+//                event.setEmailBody(eventDTO.getEmailBody());
+//                event.setEndDate(eventDTO.getEndDate());
+//                event.setStartDate(eventDTO.getStartDate());
+//                event.setStartTime(new Time(eventDTO.getStartTime()));
+//                event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
+//                event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
+//                event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
+//                return event;
+//            })
+//            .map(EventDTO::new);
+//    }
 
     public void deleteEvent (Long eventID)  throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();

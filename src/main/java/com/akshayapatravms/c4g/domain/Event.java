@@ -68,7 +68,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "start_date")
     private Instant startDate;
 
-    @Column(name = "end_date")
+    @JoinColumn(name = "end_date", referencedColumnName = "end_date")
     private Instant endDate;
 
     @OneToOne(cascade = CascadeType.ALL)

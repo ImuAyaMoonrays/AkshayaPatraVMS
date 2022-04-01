@@ -147,17 +147,17 @@ public class EventResource {
         }
     }
 
-    @PatchMapping("/updateEvent")
-    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
-        log.debug("REST request to update Event : {}", eventDTO);
-        Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
-        Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            updatedEvent,
-            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId().toString())
-        );
-    }
+//    @PatchMapping("/updateEvent")
+//    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+//        log.debug("REST request to update Event : {}", eventDTO);
+//        Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
+//        Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
+//
+//        return ResponseUtil.wrapOrNotFound(
+//            updatedEvent,
+//            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId().toString())
+//        );
+//    }
 
 //    //get future events (date in future + should filter out events that contain a corporate subgroup but that the logged in user doesn't fit)
 //    @GetMapping("/getFutureEvents")
