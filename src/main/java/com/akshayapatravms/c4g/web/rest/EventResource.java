@@ -101,7 +101,7 @@ public class EventResource {
     }
 
     @GetMapping(value = "/exportAll", produces = "text/csv")
-    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventInfoEventVolunteersCSV() {
         try{
             CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription();
@@ -119,7 +119,7 @@ public class EventResource {
     }
 
     @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
-    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventVolunteersCSV() {
         try{
             CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers();

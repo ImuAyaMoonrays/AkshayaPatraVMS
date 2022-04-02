@@ -261,24 +261,7 @@ public class EventService {
             csvBody.add(Arrays.asList(volunteer.getFullName(), volunteer.getEmail()));
         }
 
-        ByteArrayInputStream byteArrayOutputStream;
-
-        try (
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CSVPrinter csvPrinter = new CSVPrinter(
-                new PrintWriter(out),
-                CSVFormat.DEFAULT.withHeader(csvHeader)
-            );
-        ) {
-            for (List<String> record : csvBody) {
-                csvPrinter.printRecord(record);
-            }
-            csvPrinter.flush();
-            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
         CsvDTO csvDTO = new CsvDTO();
         //add date as well to name?
         //may need to validate event name in case there's some character in the name that doesn't play well with filenames
@@ -363,26 +346,9 @@ public class EventService {
             ));
         }
 
-        ByteArrayInputStream byteArrayOutputStream;
-
-        try (
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CSVPrinter csvPrinter = new CSVPrinter(
-                new PrintWriter(out),
-                CSVFormat.DEFAULT.withHeader(csvHeader)
-            );
-        ) {
-            for (List<String> record : csvBody) {
-                csvPrinter.printRecord(record);
-            }
-            csvPrinter.flush();
-            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
         CsvDTO csvDTO = new CsvDTO();
-        csvDTO.setFileName("all event info.csv");
+        csvDTO.setFileName("all_event_info.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
         return csvDTO;
     }
@@ -412,26 +378,11 @@ public class EventService {
             }
         }
 
-        ByteArrayInputStream byteArrayOutputStream;
 
-        try (
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            CSVPrinter csvPrinter = new CSVPrinter(
-                new PrintWriter(out),
-                CSVFormat.DEFAULT.withHeader(csvHeader)
-            );
-        ) {
-            for (List<String> record : csvBody) {
-                csvPrinter.printRecord(record);
-            }
-            csvPrinter.flush();
-            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
 
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
         CsvDTO csvDTO = new CsvDTO();
-        csvDTO.setFileName("all event volunteers.csv");
+        csvDTO.setFileName("all_event_volunteers.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
         return csvDTO;
     }
