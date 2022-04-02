@@ -118,5 +118,23 @@ public class EventResource {
         }
     }
 
+    @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
+    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity getAllEventVolunteersCSV() {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
+            headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return  ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(csvDTO.getDataStream());
+
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
 
 }

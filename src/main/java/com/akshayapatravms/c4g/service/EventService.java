@@ -289,6 +289,7 @@ public class EventService {
 
     public CsvDTO createCSVFileOfAllEventDescription() throws RuntimeException {
         String[] csvHeader = {
+            "id",
             "eventName",
             "eventDescription",
             "volunteersNeeded",
@@ -338,6 +339,7 @@ public class EventService {
             }
 
             csvBody.add(Arrays.asList(
+                String.valueOf(event.getId()),
                 event.getEventName(),
                 event.getDescription(),
                String.valueOf(event.getVolunteersNeededAmount()),
@@ -350,14 +352,14 @@ public class EventService {
                 event.getEmailBody(),
                 event.getCauseList(),
                 event.getCorpGroupList(),
-             address,
-             state,
-             city,
-             locality,
-             region,
-             country,
-             url,
-            passcode
+                address,
+                state,
+                city,
+                locality,
+                region,
+                country,
+                url,
+                passcode
             ));
         }
 
@@ -383,5 +385,74 @@ public class EventService {
         csvDTO.setFileName("all event info.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
         return csvDTO;
+    }
+
+    public CsvDTO createCSVFileOfAllEventVolunteers() throws RuntimeException {
+        String[] csvHeader = {
+            "eventID",
+            "eventName",
+            "volunteerName",
+            "volunteerEmail"
+        };
+
+
+        List<Event> events = eventRepository.findAllEventsAndVolunteers();
+        List<List<String>> csvBody = new ArrayList<>(events.size());
+
+        for (Event event : events) {
+            String eventID = String.valueOf(event.getId());
+            String eventName = String.valueOf(event.getEventName());
+            for (User user: event.getVolunteers()) {
+                csvBody.add(Arrays.asList(
+                    eventID,
+                    eventName,
+                    user.getFullName(),
+                    user.getEmail()
+                ));
+            }
+        }
+
+        ByteArrayInputStream byteArrayOutputStream;
+
+        try (
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CSVPrinter csvPrinter = new CSVPrinter(
+                new PrintWriter(out),
+                CSVFormat.DEFAULT.withHeader(csvHeader)
+            );
+        ) {
+            for (List<String> record : csvBody) {
+                csvPrinter.printRecord(record);
+            }
+            csvPrinter.flush();
+            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        CsvDTO csvDTO = new CsvDTO();
+        csvDTO.setFileName("all event volunteers.csv");
+        csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
+        return csvDTO;
+    }
+
+    private ByteArrayInputStream createCSVStream( String[] csvHeader,List<List<String>> csvBody ) throws RuntimeException {
+        ByteArrayInputStream byteArrayOutputStream;
+
+        try (
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CSVPrinter csvPrinter = new CSVPrinter(
+                new PrintWriter(out),
+                CSVFormat.DEFAULT.withHeader(csvHeader)
+            );
+        ) {
+            for (List<String> record : csvBody) {
+                csvPrinter.printRecord(record);
+            }
+            csvPrinter.flush();
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
