@@ -3,7 +3,9 @@ package com.akshayapatravms.c4g.domain;
 import com.akshayapatravms.c4g.config.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -85,19 +87,19 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "accepted_TOS")
     private Boolean acceptedTOS;
 
-
-
-    @Column(name = "age")
-    private Integer age;
+    @Column(name = "date_of_birth")
+    private Date dob;
 
     @Size(max = 100)
     @Column(name = "phone_number", length = 100)
     private String phoneNumber;
 
-
     @ManyToMany(mappedBy = "volunteers",  cascade = CascadeType.PERSIST)
     private Set<Event> events = new HashSet<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "physical_location_id", referencedColumnName = "id")
+    private PhysicalLocation physicalLocation;
 
     @JsonIgnore
     @ManyToMany
@@ -215,6 +217,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
     public Boolean getAcceptedTOS() {
         return acceptedTOS;
     }
@@ -222,15 +232,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setAcceptedTOS(Boolean acceptedTOS) {
         this.acceptedTOS = acceptedTOS;
     }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -249,6 +250,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public String getFullName() {
         return this.firstName + " " + this.lastName;
+    }
+
+    public PhysicalLocation getPhysicalLocation() {
+        return physicalLocation;
+    }
+
+    public void setPhysicalLocation(PhysicalLocation physicalLocation) {
+        this.physicalLocation = physicalLocation;
     }
 
     @Override
