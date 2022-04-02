@@ -109,4 +109,17 @@ public class PhysicalLocation extends AbstractAuditingEntity implements Serializ
     public void setCountry(String country) {
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        return "PhyscialLocation{" +
+            "Address='" + address + '\'' +
+            ", State='" + state + '\'' +
+            ", City='" + city + '\'' +
+            ", Locality='" + locality + '\'' +
+            ", Region='" + region + '\'' +
+            ", Country='" + country + '\'' +
+            "}";
+    }
+
 }

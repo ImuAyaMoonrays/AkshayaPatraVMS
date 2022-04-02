@@ -158,7 +158,6 @@ public class UserService {
         if (userDTO.getPhoneNumber() != null) {
             user.setPhoneNumber(userDTO.getPhoneNumber().replaceAll( "[^\\d]", "" ));
         }
-        log.info("location" +   userDTO.getLocation());
         if (userDTO.getLocation() != null) {
             user.setPhysicalLocation(userDTO.getLocation());
         }
@@ -410,10 +409,14 @@ public class UserService {
                 user.setDob(userUpdateDTO.getDob());
             }
 
-
-            //can phone number be null? or is it required?
             if (userUpdateDTO.getPhoneNumber() != null) {
                 user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
+            }
+
+            if (userUpdateDTO.getLocation() != null){
+                user.setPhysicalLocation(
+                    userUpdateDTO.getLocation().createUpdatedPhysicalLocation(user.getPhysicalLocation())
+                );
             }
 
             userRepository.save(user);

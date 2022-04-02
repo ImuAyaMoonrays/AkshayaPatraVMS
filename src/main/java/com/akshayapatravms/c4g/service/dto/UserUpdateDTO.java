@@ -9,6 +9,9 @@ public class UserUpdateDTO {
     private Date dob;
     private String phoneNumber;
 
+
+    private PhysicalLocationDTO location;
+
     public String getFirstName() {
         return firstName;
     }
@@ -49,14 +52,29 @@ public class UserUpdateDTO {
         this.phoneNumber = phone_number;
     }
 
+    public PhysicalLocationDTO getLocation() {
+        return location;
+    }
+
+    public void setLocation(PhysicalLocationDTO location) {
+        this.location = location;
+    }
+
+
     @Override
     public String toString() {
+        String locationString = null;
+        if (location != null){
+            locationString = location.toString();
+        }
+
         return "UserDTO{" +
             "firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             "email='" + email + '\'' +
             ", dob='" + dob + '\'' +
             "phone_number='" + phoneNumber + '\'' +
+            "location='" + locationString + '\'' +
             "}";
     }
 

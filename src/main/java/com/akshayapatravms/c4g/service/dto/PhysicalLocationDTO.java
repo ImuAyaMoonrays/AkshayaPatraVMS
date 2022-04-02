@@ -1,5 +1,7 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.PhysicalLocation;
+
 public class PhysicalLocationDTO {
 
     private String address;
@@ -64,6 +66,42 @@ public class PhysicalLocationDTO {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public PhysicalLocation createUpdatedPhysicalLocation(PhysicalLocation physicalLocation){
+        if (physicalLocation == null){
+            physicalLocation = new PhysicalLocation();
+        }
+
+        if (this.address != null){
+            physicalLocation.setAddress(this.address);
+        }
+        if (this.locality != null){
+            physicalLocation.setLocality(this.locality);
+        }
+        if (this.city != null){
+            physicalLocation.setCity(this.city);
+        }
+        if (this.country!= null){
+            physicalLocation.setCountry(this.country);
+        }
+        if (this.state!= null){
+            physicalLocation.setState(this.state);
+        }
+
+        return physicalLocation;
+    }
+
+    @Override
+    public String toString() {
+        return "PhyscialLocationDTO{" +
+            "Address='" + address + '\'' +
+            ", State='" + state + '\'' +
+            ", City='" + city + '\'' +
+            ", Locality='" + locality + '\'' +
+            ", Region='" + region + '\'' +
+            ", Country='" + country + '\'' +
+            "}";
     }
 
 }
