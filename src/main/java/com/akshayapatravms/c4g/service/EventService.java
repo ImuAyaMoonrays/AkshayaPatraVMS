@@ -95,11 +95,21 @@ public class EventService {
     public Event createEvent(EventDTO eventDTO) {
         Event event = new Event();
 
-        Set<Cause> causes = existingAndNewCauses(eventDTO);
-        event.setCauses(causes);
+        if (
+            eventDTO.getCauses() != null &&
+            eventDTO.getCauses().size() >0){
+                Set<Cause> causes = existingAndNewCauses(eventDTO);
+                event.setCauses(causes);
+        }
 
-        Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
-        event.setCorporateSubgroups(corporateSubgroups);
+
+        if (
+            eventDTO.getCorporateSubgroupIds() != null &&
+            eventDTO.getCorporateSubgroupIds().size() >0){
+                Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
+                event.setCorporateSubgroups(corporateSubgroups);
+        }
+
 
         event.setEventName(eventDTO.getEventName());
 
