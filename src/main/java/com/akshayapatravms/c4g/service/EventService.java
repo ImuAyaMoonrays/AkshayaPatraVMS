@@ -67,6 +67,7 @@ public class EventService {
                 } else {
                     //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
                     if (causeRepository.findOneByCauseName(causeDTO.getCauseName().toUpperCase()).isPresent()) {
+                        log.error("cause + " + causeDTO.getCauseName() + " already exists");
                         throw new RuntimeException(
                             "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
                         );
@@ -97,17 +98,17 @@ public class EventService {
 
         if (
             eventDTO.getCauses() != null &&
-            eventDTO.getCauses().size() >0){
-                Set<Cause> causes = existingAndNewCauses(eventDTO);
-                event.setCauses(causes);
+                eventDTO.getCauses().size() > 0) {
+            Set<Cause> causes = existingAndNewCauses(eventDTO);
+            event.setCauses(causes);
         }
 
 
         if (
             eventDTO.getCorporateSubgroupIds() != null &&
-            eventDTO.getCorporateSubgroupIds().size() >0){
-                Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
-                event.setCorporateSubgroups(corporateSubgroups);
+                eventDTO.getCorporateSubgroupIds().size() > 0) {
+            Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
+            event.setCorporateSubgroups(corporateSubgroups);
         }
 
 
@@ -138,16 +139,16 @@ public class EventService {
 
     private HashSet<String> getEmailPatternsForEvent(Event event) {
         HashSet<String> emailPatterns = new HashSet<>();
-        for (CorporateSubgroup corp : event.getCorporateSubgroups()){
+        for (CorporateSubgroup corp : event.getCorporateSubgroups()) {
             emailPatterns.addAll(corp.getSubgroupEmailPatterns());
         }
 
         return emailPatterns;
     }
 
-    private Boolean isEmailMatch(Set<String> emailPatterns, String email){
-        for (String emailPattern: emailPatterns){
-            if (email.endsWith(emailPattern)){
+    private Boolean isEmailMatch(Set<String> emailPatterns, String email) {
+        for (String emailPattern : emailPatterns) {
+            if (email.endsWith(emailPattern)) {
                 return true;
             }
         }
@@ -161,15 +162,15 @@ public class EventService {
 //        }
 
         //have volunteers spots left
-        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()){
+        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()) {
             throw new RuntimeException("volunteering event is full");
         }
 
         //does user have an email that is eligible for event
-        if (event.getCorporateSubgroups().size() >0) {
+        if (event.getCorporateSubgroups().size() > 0) {
             HashSet<String> emailPatterns = getEmailPatternsForEvent(event);
-            if (!isEmailMatch(emailPatterns,user.getEmail())){
-                throw  new RuntimeException("user does not have an allowed corporate email");
+            if (!isEmailMatch(emailPatterns, user.getEmail())) {
+                throw new RuntimeException("user does not have an allowed corporate email");
             }
         }
 
@@ -177,42 +178,42 @@ public class EventService {
     }
 
 
-    public void volunteerForEvent(Long eventID) throws RuntimeException{
+    public void volunteerForEvent(Long eventID) throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();
-        if(!isUser.isPresent()) {
+        if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
 
         final User user = isUser.get();
 
-        Optional<Event>  event = eventRepository.findOneById(eventID);
+        Optional<Event> event = eventRepository.findOneById(eventID);
 
-        if (event.isPresent()){
-            try{
-                checkEligibility(user,event.get());
+        if (event.isPresent()) {
+            try {
+                checkEligibility(user, event.get());
                 event.get().getVolunteers().add(user);
                 eventRepository.save(event.get());
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw e;
             }
 
-        } else{
+        } else {
             throw new RuntimeException("unable to find event");
         }
 
     }
 
-    public void unRegisterForEvent (Long eventID)  throws RuntimeException {
+    public void unRegisterForEvent(Long eventID) throws RuntimeException {
 
         final Optional<User> isUser = userService.getUserWithAuthorities();
-        if(!isUser.isPresent()) {
+        if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
         final User user = isUser.get();
 
-        Optional<Event>  event = eventRepository.findOneById(eventID);
+        Optional<Event> event = eventRepository.findOneById(eventID);
 
-        if (event.isPresent()){
+        if (event.isPresent()) {
             try {
 //                log.info("event" + event.get());
 //                log.info("volunteer count before " + event.get().getVolunteers().size());
@@ -229,17 +230,17 @@ public class EventService {
             } catch (Exception e) {
                 throw new RuntimeException("unable to save event");
             }
-        } else{
+        } else {
             throw new RuntimeException("unable to find event");
         }
     }
 
-    public List<Event> getAll() throws  RuntimeException{
+    public List<Event> getAll() throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();
-        if(!isUser.isPresent()) {
+        if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)){
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
             return eventRepository.findAllEventsAndVolunteers();
         } else {
             return eventRepository.findAll();
@@ -256,8 +257,8 @@ public class EventService {
         Event event = eventRepository.getById(eventID);
         Set<User> volunteers = event.getVolunteers();
         List<List<String>> csvBody = new ArrayList<>(volunteers.size());
-        for (User volunteer: volunteers) {
-            csvBody.add(Arrays.asList(volunteer.getFullName(),volunteer.getEmail()));
+        for (User volunteer : volunteers) {
+            csvBody.add(Arrays.asList(volunteer.getFullName(), volunteer.getEmail()));
         }
 
         ByteArrayInputStream byteArrayOutputStream;
@@ -282,6 +283,104 @@ public class EventService {
         //add date as well to name?
         //may need to validate event name in case there's some character in the name that doesn't play well with filenames
         csvDTO.setFileName(event.getEventName() + "_volunteers.csv");
+        csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
+        return csvDTO;
+    }
+
+    public CsvDTO createCSVFileOfAllEventDescription() throws RuntimeException {
+        String[] csvHeader = {
+            "eventName",
+            "eventDescription",
+            "volunteersNeeded",
+            "volunteersSignedUpCount",
+            "startDate",
+            "endDate",
+            "contactName",
+            "contactPhoneNumber",
+            "contactEmail",
+            "emailBody",
+            "causeList",
+            "corpSubGroupList",
+            "address",
+            "state",
+            "city",
+            "locality",
+            "region",
+            "country",
+            "url",
+            "passcode"
+        };
+
+
+        List<Event> events = eventRepository.findAllEventInfo();
+        List<List<String>> csvBody = new ArrayList<>(events.size());
+
+        for (Event event : events) {
+            String address = null;
+            String state = null;
+            String city = null;
+            String locality = null;
+            String region = null;
+            String country = null;
+            String passcode = null;
+            String url = null;
+            if (event.getPhysicalLocation() != null){
+                address= event.getPhysicalLocation().getAddress();
+                state  =  event.getPhysicalLocation().getState();
+                city =  event.getPhysicalLocation().getCity();
+                locality = event.getPhysicalLocation().getLocality();
+                region = event.getPhysicalLocation().getRegion();
+                country = event.getPhysicalLocation().getCountry();
+            }
+            if (event.getVirtualLocation() != null){
+                passcode = event.getVirtualLocation().getPasscode();
+                url = event.getVirtualLocation().getUrl();
+            }
+
+            csvBody.add(Arrays.asList(
+                event.getEventName(),
+                event.getDescription(),
+               String.valueOf(event.getVolunteersNeededAmount()),
+                String.valueOf(event.getVolunteers().size()),
+                event.getStartDate().toString(),
+                event.getEndDate().toString(),
+                event.getContactName(),
+                event.getContactEmail(),
+                event.getContactPhoneNumber(),
+                event.getEmailBody(),
+                event.getCauseList(),
+                event.getCorpGroupList(),
+             address,
+             state,
+             city,
+             locality,
+             region,
+             country,
+             url,
+            passcode
+            ));
+        }
+
+        ByteArrayInputStream byteArrayOutputStream;
+
+        try (
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CSVPrinter csvPrinter = new CSVPrinter(
+                new PrintWriter(out),
+                CSVFormat.DEFAULT.withHeader(csvHeader)
+            );
+        ) {
+            for (List<String> record : csvBody) {
+                csvPrinter.printRecord(record);
+            }
+            csvPrinter.flush();
+            byteArrayOutputStream = new ByteArrayInputStream(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        CsvDTO csvDTO = new CsvDTO();
+        csvDTO.setFileName("all event info.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
         return csvDTO;
     }

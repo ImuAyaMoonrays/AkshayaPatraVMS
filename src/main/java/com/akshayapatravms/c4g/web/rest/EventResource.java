@@ -85,7 +85,7 @@ public class EventResource {
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getEventVolunteersCSC(@RequestParam Long eventID) {
+    public ResponseEntity getEventVolunteersCSV(@RequestParam Long eventID) {
         try{
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
             HttpHeaders headers = new HttpHeaders();
@@ -100,6 +100,23 @@ public class EventResource {
         }
     }
 
+    @GetMapping(value = "/exportAll", produces = "text/csv")
+    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity getAllEventInfoEventVolunteersCSV() {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
+            headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return  ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(csvDTO.getDataStream());
+
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 
 
 }

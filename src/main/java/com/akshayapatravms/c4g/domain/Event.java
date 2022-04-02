@@ -247,6 +247,31 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.volunteers = volunteers;
     }
 
+    public String getCauseList(){
+        StringBuilder causeList = new StringBuilder();
+        for (Cause cause: this.getCauses()){
+            if (causeList.length() > 0){
+                causeList.append(", " + cause.getCauseName());
+            } else{
+                causeList.append(cause.getCauseName());
+            }
+
+        }
+        return causeList.toString();
+    }
+
+    public String getCorpGroupList(){
+        StringBuilder groupList = new StringBuilder();
+        for (CorporateSubgroup subgroup: this.getCorporateSubgroups()){
+            if (groupList.length() > 0){
+                groupList.append(", " + subgroup.getSubgroupName());
+            } else{
+                groupList.append(subgroup.getSubgroupName());
+            }
+
+        }
+        return groupList.toString();
+    }
 
     @Override
     public String toString() {
