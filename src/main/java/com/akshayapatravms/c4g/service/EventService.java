@@ -88,7 +88,7 @@ public class EventService {
             .map(corporateSubgroupId -> {
                 return corporateSubgroupRepository
                     .findOneById(corporateSubgroupId)
-                    .orElseThrow(() -> new RuntimeException("inexistant subgroup by id"));
+                    .orElseThrow(() -> new RuntimeException("nonexistent subgroup by id"));
             })
             .collect(Collectors.toSet());
     }
@@ -241,7 +241,7 @@ public class EventService {
             throw new RuntimeException("unable to find user");
         }
         if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
-            return eventRepository.findAllEventsAndVolunteers();
+            return eventRepository.findAllEventInfo();
         } else {
             return eventRepository.findAll();
         }

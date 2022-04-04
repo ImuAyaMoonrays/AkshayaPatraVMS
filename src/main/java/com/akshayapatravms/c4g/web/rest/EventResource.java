@@ -47,7 +47,7 @@ public class EventResource {
 //    need one for admins which contains all registered users and one for normal user which doesn't
     @GetMapping("/all")
     public List<Event> allEvents() throws URISyntaxException {
-        return this.eventRepository.findAll();
+        return this.eventRepository.findAllEventInfo();
     }
 
     //eventually might want to change this to register to match unregister. my bad for having them separate names at the start.
