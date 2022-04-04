@@ -39,9 +39,10 @@ public class EventResource {
         return eventService.createEvent(eventDTO);
     }
 
+    //todo: remove /event in pahth
     @GetMapping("/event/{id}")
     public Event eventById(@PathVariable Long id) throws URISyntaxException {
-        return eventRepository.findOneById(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
+        return eventRepository.findAllEventInfoForEvent(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
     }
 
 //    need one for admins which contains all registered users and one for normal user which doesn't
