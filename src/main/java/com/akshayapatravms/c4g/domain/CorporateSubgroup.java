@@ -47,4 +47,9 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
     public void setSubgroupEmailPatterns(Set<String> subgroupEmailPatterns) {
         this.subgroupEmailPatterns = subgroupEmailPatterns;
     }
+
+    @Override
+    public String toString() {
+        return subgroupName;
+    }
 }
