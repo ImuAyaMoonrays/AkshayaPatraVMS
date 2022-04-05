@@ -191,8 +191,10 @@ public class AdminUserDTO {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        //allow numbers only. no other characters.
-        this.phoneNumber = phoneNumber.replaceAll( "[^\\d]", "" );
+        if (phoneNumber != null){
+            //allow numbers only. no other characters.
+            this.phoneNumber = phoneNumber.replaceAll( "[^\\d]", "" );
+        }
     }
 
     public Date getDob() {
