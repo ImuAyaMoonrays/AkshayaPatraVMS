@@ -1,10 +1,12 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import javax.validation.constraints.Email;
 import java.sql.Date;
 
 public class UserUpdateDTO {
     private String firstName;
     private String lastName;
+    @Email
     private String email;
     private Date dob;
     private String phoneNumber;

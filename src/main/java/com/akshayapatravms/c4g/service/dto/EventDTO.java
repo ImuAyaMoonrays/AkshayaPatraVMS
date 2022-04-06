@@ -1,5 +1,6 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import javax.validation.constraints.Email;
 import java.time.Instant;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ public class EventDTO {
 
     private String contactPhoneNumber;
 
+    @Email
     private String contactEmail;
 
     private String emailBody;

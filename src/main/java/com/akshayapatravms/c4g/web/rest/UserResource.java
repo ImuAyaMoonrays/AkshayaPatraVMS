@@ -241,7 +241,7 @@ public class UserResource {
 
 
     @PatchMapping("/users")
-    public ResponseEntity updateUserProfile(@RequestBody UserUpdateDTO userUpdateDTO) {
+    public ResponseEntity updateUserProfile(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
         try{
             userService.updateLoggedInUser(userUpdateDTO);
             return ResponseEntity.ok().build();
