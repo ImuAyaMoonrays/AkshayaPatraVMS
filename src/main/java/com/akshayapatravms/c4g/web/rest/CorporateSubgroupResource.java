@@ -43,7 +43,7 @@ public class CorporateSubgroupResource {
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CorporateSubgroupDTO createEvent(@Valid @RequestBody CorporateSubgroupDTO corporateSubgroupDTO) throws URISyntaxException {
+    public CorporateSubgroupDTO createEvent(@RequestBody CorporateSubgroupDTO corporateSubgroupDTO) throws URISyntaxException {
         return corporateSubgroupService.createSubgroup(corporateSubgroupDTO);
     }
 
