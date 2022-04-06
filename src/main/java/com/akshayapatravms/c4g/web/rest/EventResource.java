@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class EventResource {
 
     @PostMapping("/createEvent")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Event createEvent(@RequestBody EventDTO eventDTO) throws URISyntaxException {
+    public Event createEvent(@Valid @RequestBody EventDTO eventDTO) throws URISyntaxException {
         return eventService.createEvent(eventDTO);
     }
 

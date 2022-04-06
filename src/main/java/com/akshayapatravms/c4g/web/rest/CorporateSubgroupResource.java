@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/corporateSubgroups")
 public class CorporateSubgroupResource {
@@ -41,7 +43,7 @@ public class CorporateSubgroupResource {
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CorporateSubgroupDTO createEvent(@RequestBody CorporateSubgroupDTO corporateSubgroupDTO) throws URISyntaxException {
+    public CorporateSubgroupDTO createEvent(@Valid @RequestBody CorporateSubgroupDTO corporateSubgroupDTO) throws URISyntaxException {
         return corporateSubgroupService.createSubgroup(corporateSubgroupDTO);
     }
 
@@ -57,7 +59,7 @@ public class CorporateSubgroupResource {
 
     @PutMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity addEmail(@RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity addEmail(@Valid @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.addEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
@@ -71,7 +73,7 @@ public class CorporateSubgroupResource {
 
     @DeleteMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity removeEmail(@RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity removeEmail(@Valid @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.removeEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
