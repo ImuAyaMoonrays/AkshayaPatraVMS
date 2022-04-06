@@ -59,7 +59,7 @@ public class CorporateSubgroupResource {
 
     @PutMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity addEmail(@Valid @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity addEmail( @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.addEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
@@ -73,7 +73,7 @@ public class CorporateSubgroupResource {
 
     @DeleteMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity removeEmail(@Valid @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity removeEmail( @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.removeEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
