@@ -51,6 +51,12 @@
             <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
           </div>
 
+          <h4 class="font-weight-normal mt-3">Email Filters</h4>
+          <div
+          showOnlyIfAdmin>
+            {{event.corporateSubgroups[0].subgroupEmailPatterns}}
+          </div>
+
           <!--          for later-->
           <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
 
