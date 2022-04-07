@@ -5,6 +5,7 @@ import { RegisterService } from '../../services/register/register.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from '../../constants/error.constants';
 import { Subscription } from "rxjs";
+import { AppConstants } from "../../constants/app.constants";
 
 @Component({
   selector: 'app-register',
@@ -40,7 +41,7 @@ export class RegisterComponent implements OnInit {
       ],
     ],
     email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
-    phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+    phoneNumber: ['', [Validators.required, Validators.pattern(AppConstants.PHONE_NUMBER_REGEX)]],
     password: ['', this.passwordValidators],
     confirmPassword: ['', this.passwordValidators],
     termsAndConditions: [false],

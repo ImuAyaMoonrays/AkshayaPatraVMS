@@ -25,6 +25,14 @@
             <label for="email">Email</label>
             <input [readOnly]="!isEditing" formControlName="email" type="email" class="form-control" id="email" placeholder="Email">
           </div>
+          <div class="form-group">
+            <label for="phone-number">Phone Number</label>
+            <input [readOnly]="!isEditing" formControlName="phoneNumber" type="tel" class="form-control" id="phone-number"
+                   placeholder="Phone Number">
+            <p *ngIf="profileForm.controls['phoneNumber'].errors?.pattern" class="validation-error-message">
+              Only numbers please
+            </p>
+          </div>
           <div class="text-center">
             <button (click)="buttonFunction()" class="btn btn-gradient-primary mr-2">{{buttonText}}</button>
           </div>
