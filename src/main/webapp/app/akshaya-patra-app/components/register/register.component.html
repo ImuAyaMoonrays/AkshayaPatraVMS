@@ -1,7 +1,7 @@
 <div class="d-flex align-items-center auth px-0">
   <div class="row w-100 mx-0">
     <div class="col-lg-4 mx-auto mt-5 mb-5">
-      <form class="form" role="form" (ngSubmit)="register()" [formGroup]="registerForm">
+      <form class="form" role="form" (ngSubmit)="registerForm.valid && register()" [formGroup]="registerForm">
         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
           <div class="brand-logo">
             <img class="logo-display" src="content/images/akshaya-patra-logo.png" alt="logo"/>
@@ -29,6 +29,18 @@
             </div>
             <div class="form-group">
               <input
+                formControlName="phoneNumber"
+                type="tel"
+                class="form-control form-control-lg"
+                id="phoneNumber"
+                placeholder="Phone Number"
+              />
+              <p *ngIf="registerForm.controls['phoneNumber'].errors?.pattern" class="validation-error-message">
+                Only numbers please
+              </p>
+            </div>
+            <div class="form-group">
+              <input
                 formControlName="password"
                 type="password"
                 class="form-control form-control-lg"
@@ -37,7 +49,7 @@
               />
               <div *ngIf="!passwordsAreStrongEnough" style="color: black; font-size: 5px; text-align: center">
                 <p style="font-size: 12px">
-                  Minimum eight characters, at least one letter, one number and one special character:
+                  Minimum eight characters, at least one letter, one number and one special character
                 </p>
               </div>
             </div>

@@ -13,12 +13,10 @@ import { Subscription } from "rxjs";
 })
 export class RegisterComponent implements OnInit {
 
-  passwordsMatchSubscription: Subscription;
   passwordStrengthSubscription: Subscription;
   passwordsDoNotMatch: boolean;
   passwordsAreStrongEnough: boolean;
 
-  registerClicked: boolean;
   error = false;
   errorEmailExists = false;
   errorUserExists = false;
@@ -42,6 +40,7 @@ export class RegisterComponent implements OnInit {
       ],
     ],
     email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
     password: ['', this.passwordValidators],
     confirmPassword: ['', this.passwordValidators],
     termsAndConditions: [false],
@@ -54,6 +53,7 @@ export class RegisterComponent implements OnInit {
     this.passwordStrengthSubscription = this.registerForm.valueChanges.subscribe(() => {
       this.passwordsAreStrongEnough = this.registerForm.get('password').valid;
     })
+
   }
 
   register(): void {
@@ -71,7 +71,8 @@ export class RegisterComponent implements OnInit {
     } else {
       const login = this.registerForm.get(['login'])!.value;
       const email = this.registerForm.get(['email'])!.value;
-      this.registerService.save({login, email, password, langKey: 'en'}).subscribe(
+      const phoneNumber = this.registerForm.get(['phoneNumber'])!.value;
+      this.registerService.save({login, email, password, phoneNumber, langKey: 'en'}).subscribe(
         () => (this.success = true),
         response => this.processError(response)
       );
