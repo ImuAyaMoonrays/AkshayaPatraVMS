@@ -5,7 +5,7 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -36,8 +36,8 @@ public class EventResource {
 
     @PostMapping("/createEvent")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Event createEvent(@Valid @RequestBody EventDTO eventDTO) throws URISyntaxException {
-        return eventService.createEvent(eventDTO);
+    public Event createEvent(@Valid @RequestBody CreateEventDTO createEventDTO) throws URISyntaxException {
+        return eventService.createEvent(createEventDTO);
     }
 
     //todo: remove /event in pahth
