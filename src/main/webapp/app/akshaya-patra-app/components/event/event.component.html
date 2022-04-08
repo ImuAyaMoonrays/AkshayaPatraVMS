@@ -5,7 +5,8 @@
       <div class="row">
         <div class="text-center align-self-center col-md-3">
           <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
-          <h4 class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
+          <h4 *ngIf="event.volunteers"
+              class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
           <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
           <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
 
@@ -52,8 +53,8 @@
           </div>
 
           <h4 class="font-weight-normal mt-3">Email Filters</h4>
-          <div
-          showOnlyIfAdmin>
+          <div *ngIf="event.corporateSubgroups && event.corporateSubgroups.length > 0"
+               showOnlyIfAdmin>
             {{event.corporateSubgroups[0].subgroupEmailPatterns}}
           </div>
 

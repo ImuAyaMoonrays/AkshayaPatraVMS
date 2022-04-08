@@ -6,6 +6,7 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
+import com.akshayapatravms.c4g.service.dto.event.EventResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 //todo: have controllers return response entities
 @RestController
@@ -46,8 +48,13 @@ public class EventResource {
 
     //todo: remove /event in pahth
     @GetMapping("/event/{id}")
-    public Event eventById(@PathVariable Long id) throws URISyntaxException {
-        return eventRepository.findAllEventInfoForEvent(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
+    public EventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
+        Optional<Event> event = eventRepository.findAllEventInfoForEvent(id);
+        if (event.isPresent()) {
+            return new EventResponseDTO(event.get());
+        } else  {
+            throw new RuntimeException("could not find an event by this id");
+        }
     }
 
     //    need one for admins which contains all registered users and one for normal user which doesn't
