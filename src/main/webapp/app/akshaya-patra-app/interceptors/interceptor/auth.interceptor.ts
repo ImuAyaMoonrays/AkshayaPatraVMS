@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { ApplicationConfigService } from '../../services/application-config/application-config.service';
 
 @Injectable()
@@ -15,6 +15,9 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const serverApiUrl = this.applicationConfigService.getEndpointFor('');
     if (!request.url || (request.url.startsWith('http') && !(serverApiUrl && request.url.startsWith(serverApiUrl)))) {
+      console.log(request);
+      console.log(serverApiUrl);
+      console.log('inside here');
       return next.handle(request);
     }
 
@@ -26,6 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
         },
       });
     }
+    console.log(request);
     return next.handle(request);
   }
 }

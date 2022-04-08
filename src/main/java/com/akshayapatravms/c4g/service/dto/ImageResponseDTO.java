@@ -16,8 +16,8 @@ public class ImageResponseDTO {
         this.size = image.getSize();
         this.contentType = image.getContentType();
 //        todo: create image controller for /images
-        this.url = ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/images/")
+        this.url = ServletUriComponentsBuilder.newInstance()
+            .path("/api/images/")
             .path(image.getId())
             .toUriString();
     }

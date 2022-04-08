@@ -48,6 +48,7 @@ import { ProfileComponent } from './akshaya-patra-app/components/profile/profile
 import { TagInputModule } from "ngx-chips";
 import { BrowserAnimationsModule, NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { DropzoneModule } from "ngx-dropzone-wrapper";
+import { SecureImageSrcPipe } from './akshaya-patra-app/pipes/secure-image-src/secure-image-src.pipe';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { DropzoneModule } from "ngx-dropzone-wrapper";
     AdminPastEventsComponent,
     PromoteToAdminComponent,
     ProfileComponent,
+    SecureImageSrcPipe,
   ],
   bootstrap: [AppComponent],
 })

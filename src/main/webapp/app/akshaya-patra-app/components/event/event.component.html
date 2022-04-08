@@ -1,69 +1,83 @@
-<div *ngIf="event$ | async as event"
-     class="col-md-12 stretch-card grid-margin">
-  <div class="card bg-gradient-danger card-img-holder text-white">
-    <div class="card-body">
-      <div class="row">
-        <div class="text-center align-self-center col-md-3">
-          <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
-          <h4 *ngIf="event.volunteers"
-              class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
-          <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
-          <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
+<div *ngIf="event$ | async as event">
+  <div class="col-md-12 stretch-card grid-margin">
+    <div class="card bg-gradient-danger card-img-holder text-white">
+      <div class="card-body">
+        <div class="row">
+          <div class="text-center align-self-center col-md-3">
+            <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
+            <h4 *ngIf="event.volunteers"
+                class="font-weight-normal mb-3">{{event.volunteers.length + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
+            <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
+            <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
 
-          <a *ngIf="!isPastEvent"
-             showIfIsNormalUser
-             (click)="buttonFunction(event.id)"
-             role="button"
-             class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
+            <a *ngIf="!isPastEvent"
+               showIfIsNormalUser
+               (click)="buttonFunction(event.id)"
+               role="button"
+               class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
 
-          <a showOnlyIfAdmin
-             (click)="saveCsv(event.id)"
-             role="button"
-             class="btn btn-gradient-light btn-fw">Volunteers CSV</a>
+            <a showOnlyIfAdmin
+               (click)="saveCsv(event.id)"
+               role="button"
+               class="btn btn-gradient-light btn-fw">Volunteers CSV</a>
 
-          <div *ngIf="event.causes?.length > 0">
-            <span class="card-test" class="card-text">Tags: </span>
-            <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
+            <div *ngIf="event.causes?.length > 0">
+              <span class="card-test" class="card-text">Tags: </span>
+              <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
+            </div>
           </div>
-        </div>
-        <div class="col-md-6 text-center">
+          <div class="col-md-6 text-center">
 
-          <h4 class="font-weight-normal mt-2">Description</h4>
-          <h6 class="card-text mb-3">{{event.description}}</h6>
-          <h4 class="font-weight-normal mt-2">Contact</h4>
-          <h6 class="card-text">Name: {{event.contactName}} </h6>
-          <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
-          <h6 class="card-text">Email: {{event.contactEmail}} </h6>
-        </div>
-
-        <div class="col-md-3 text-center">
-          <h4 class="font-weight-normal mt-3">Location</h4>
-          <div *ngIf="event.physicalLocation as physicalLocation">
-            <h6 class="card-text">{{physicalLocation.address}}</h6>
-            <h6 class="card-text">{{physicalLocation.state}}</h6>
-            <h6 class="card-text">{{physicalLocation.city}}</h6>
-            <h6 class="card-text">{{physicalLocation.locality}}</h6>
-            <h6 class="card-text">{{physicalLocation.region}}</h6>
-            <h6 class="card-text">{{physicalLocation.country}}</h6>
+            <h4 class="font-weight-normal mt-2">Description</h4>
+            <h6 class="card-text mb-3">{{event.description}}</h6>
+            <h4 class="font-weight-normal mt-2">Contact</h4>
+            <h6 class="card-text">Name: {{event.contactName}} </h6>
+            <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
+            <h6 class="card-text">Email: {{event.contactEmail}} </h6>
           </div>
 
-          <div *ngIf="event.virtualLocation as virtualLocation">
-            <h6 class="card-text">Url: {{virtualLocation.url}}</h6>
-            <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
+          <div class="col-md-3 text-center">
+            <h4 class="font-weight-normal mt-3">Location</h4>
+            <div *ngIf="event.physicalLocation as physicalLocation">
+              <h6 class="card-text">{{physicalLocation.address}}</h6>
+              <h6 class="card-text">{{physicalLocation.state}}</h6>
+              <h6 class="card-text">{{physicalLocation.city}}</h6>
+              <h6 class="card-text">{{physicalLocation.locality}}</h6>
+              <h6 class="card-text">{{physicalLocation.region}}</h6>
+              <h6 class="card-text">{{physicalLocation.country}}</h6>
+            </div>
+
+            <div *ngIf="event.virtualLocation as virtualLocation">
+              <h6 class="card-text">Url: {{virtualLocation.url}}</h6>
+              <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
+            </div>
+
+            <h4 class="font-weight-normal mt-3">Email Filters</h4>
+            <div *ngIf="event.corporateSubgroups && event.corporateSubgroups.length > 0"
+                 showOnlyIfAdmin>
+              {{event.corporateSubgroups[0].subgroupEmailPatterns}}
+            </div>
+
+            <!--          for later-->
+            <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
+
           </div>
-
-          <h4 class="font-weight-normal mt-3">Email Filters</h4>
-          <div *ngIf="event.corporateSubgroups && event.corporateSubgroups.length > 0"
-               showOnlyIfAdmin>
-            {{event.corporateSubgroups[0].subgroupEmailPatterns}}
-          </div>
-
-          <!--          for later-->
-          <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
-
         </div>
       </div>
     </div>
   </div>
-</div>
 
+
+  <div *ngIf="(event.image.id | secureImageSrc | async) as imageSrc" class="col-md-12 stretch-card grid-margin">
+    <div class="card card-img-holder">
+      <div class="card-body">
+        <div class="row">
+          <img class="block-display-centered" style="height: 100%; width: 100%; object-fit: contain"
+               [attr.src]="imageSrc" alt="logo"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
