@@ -81,16 +81,11 @@ public class EventService {
             .collect(Collectors.toSet());
     }
 
-    private Set<CorporateSubgroup> getCorpSubGroupsFromEvent(EventDTO eventDTO) {
-        return eventDTO
-            .getCorporateSubgroupIds()
-            .stream()
-            .map(corporateSubgroupId -> {
-                return corporateSubgroupRepository
-                    .findOneById(corporateSubgroupId)
-                    .orElseThrow(() -> new RuntimeException("nonexistent subgroup by id"));
-            })
-            .collect(Collectors.toSet());
+//    temporarily only sending events with a list of email filters, ie @google.com, @apple.com
+    private CorporateSubgroup newCorporateSubgroup(Set<String> emailFilters) {
+        CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
+        corporateSubgroup.setSubgroupEmailPatterns(emailFilters);
+        return corporateSubgroupRepository.save(corporateSubgroup);
     }
 
     public Event createEvent(EventDTO eventDTO) {
@@ -105,10 +100,10 @@ public class EventService {
 
 
         if (
-            eventDTO.getCorporateSubgroupIds() != null &&
-                eventDTO.getCorporateSubgroupIds().size() > 0) {
-            Set<CorporateSubgroup> corporateSubgroups = getCorpSubGroupsFromEvent(eventDTO);
-            event.setCorporateSubgroups(corporateSubgroups);
+            eventDTO.getEmailFilters() != null &&
+                eventDTO.getEmailFilters().size() > 0) {
+            CorporateSubgroup corporateSubgroup = newCorporateSubgroup(eventDTO.getEmailFilters());
+            event.setCorporateSubgroups(Collections.singleton(corporateSubgroup));
         }
 
 

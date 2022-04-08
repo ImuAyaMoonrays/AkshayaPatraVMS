@@ -22,6 +22,8 @@ export class CreateEventComponent implements OnInit {
   causes: { causeName: string, id: number }[] = [];
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
+  emailFilters: {display: string, value: string}[] = [];
+  tagValidator = Validators.pattern('^@\\w+.\\w+');
 
 
   createEventForm = this.fb.group({
@@ -117,7 +119,8 @@ export class CreateEventComponent implements OnInit {
         createEventForm.get('contactPhoneNumber').value,
         createEventForm.get('contactEmail').value,
         createEventForm.get('emailBody').value,
-      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)));
+      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)))
+        .withEmailFilters(this.emailFilters.map(emailFilter => emailFilter.value));
 
       if (this.isPhysicalLocationTypeSelected()) {
         event.physicalLocation = new PhysicalLocationModel(

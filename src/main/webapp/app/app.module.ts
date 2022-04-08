@@ -45,6 +45,8 @@ import { AdminUpcomingEventsComponent } from './akshaya-patra-app/components/adm
 import { AdminPastEventsComponent } from './akshaya-patra-app/components/admin-past-events/admin-past-events.component';
 import { PromoteToAdminComponent } from './akshaya-patra-app/components/promote-to-admin/promote-to-admin.component';
 import { ProfileComponent } from './akshaya-patra-app/components/profile/profile.component';
+import { TagInputModule } from "ngx-chips";
+import { BrowserAnimationsModule, NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   imports: [
@@ -58,7 +60,10 @@ import { ProfileComponent } from './akshaya-patra-app/components/profile/profile
     NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
     NgSelectModule,
     NgxsModule.forRoot([AppState]),
-    NgxsReduxDevtoolsPluginModule.forRoot()
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    TagInputModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule
   ],
   providers: [NgbModule, Title, {provide: LOCALE_ID, useValue: 'en'}, httpInterceptorProviders],
   declarations: [

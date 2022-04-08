@@ -10,7 +10,7 @@ public class EventDTO {
 
     private Set<CauseDTO> causes;
 
-    private Set<Long> corporateSubgroupIds;
+    private Set<String> emailFilters;
 
     private String eventName;
 
@@ -74,12 +74,12 @@ public class EventDTO {
         this.eventName = eventName;
     }
 
-    public Set<Long> getCorporateSubgroupIds() {
-        return corporateSubgroupIds;
+    public Set<String> getEmailFilters() {
+        return emailFilters;
     }
 
-    public void setCorporateSubgroupIds(Set<Long> corporateSubgroupIds) {
-        this.corporateSubgroupIds = corporateSubgroupIds;
+    public void setEmailFilters(Set<String> emailFilters) {
+        this.emailFilters = emailFilters;
     }
 
     public Long getId() {
