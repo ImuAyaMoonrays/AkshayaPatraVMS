@@ -6,6 +6,7 @@ import { Store } from "@ngxs/store";
 import { FormBuilder, Validators } from "@angular/forms";
 import { AccountService } from "../../services/auth/account.service";
 import { shareReplay } from "rxjs/operators";
+import { AppConstants } from "../../constants/app.constants";
 
 @Component({
   selector: 'jhi-profile',
@@ -24,6 +25,7 @@ export class ProfileComponent implements OnInit {
     firstName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
     lastName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
     email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    phoneNumber: ['', [Validators.required, Validators.pattern(AppConstants.PHONE_NUMBER_REGEX)]]
   });
 
   constructor(private fb: FormBuilder,
@@ -39,6 +41,7 @@ export class ProfileComponent implements OnInit {
         this.profileForm.get('firstName').setValue(account.firstName);
         this.profileForm.get('lastName').setValue(account.lastName);
         this.profileForm.get('email').setValue(account.email);
+        this.profileForm.get('phoneNumber').setValue(account.phoneNumber);
       }),
       shareReplay(1)
     )
@@ -57,21 +60,24 @@ export class ProfileComponent implements OnInit {
 
 
   save(): void {
-    this.loggedInUser$.pipe(
-      mergeMap((account) => {
-        // caution - edited in pipe
-        account.firstName = this.profileForm.get('firstName')!.value;
-        account.lastName = this.profileForm.get('lastName')!.value;
-        account.email = this.profileForm.get('email')!.value;
-        return this.accountService.save(account);
-      }),
-      tap(() => {
-        this.accountService.identity(true);
-        this.isSuccess = true;
-        this.isEditing = false;
-        this.assignEditButton()
-      })
-    ).subscribe();
+    if (this.profileForm.valid) {
+      this.loggedInUser$.pipe(
+        mergeMap((account) => {
+          // caution - edited in pipe
+          account.firstName = this.profileForm.get('firstName')!.value;
+          account.lastName = this.profileForm.get('lastName')!.value;
+          account.email = this.profileForm.get('email')!.value;
+          account.phoneNumber = this.profileForm.get('phoneNumber')!.value;
+          return this.accountService.save(account);
+        }),
+        tap(() => {
+          this.accountService.identity(true);
+          this.isSuccess = true;
+          this.isEditing = false;
+          this.assignEditButton()
+        })
+      ).subscribe();
+    }
   }
 
   edit(): void {

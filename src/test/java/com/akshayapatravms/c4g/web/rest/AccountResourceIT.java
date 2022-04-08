@@ -1,10 +1,5 @@
 package com.akshayapatravms.c4g.web.rest;
 
-import static com.akshayapatravms.c4g.web.rest.AccountResourceIT.TEST_USER_LOGIN;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import com.akshayapatravms.c4g.IntegrationTest;
 import com.akshayapatravms.c4g.config.Constants;
 import com.akshayapatravms.c4g.domain.User;
@@ -14,11 +9,8 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.UserService;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.PasswordChangeDTO;
-import com.akshayapatravms.c4g.service.dto.UserDTO;
 import com.akshayapatravms.c4g.web.rest.vm.KeyAndPasswordVM;
 import com.akshayapatravms.c4g.web.rest.vm.ManagedUserVM;
-import java.time.Instant;
-import java.util.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +20,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.akshayapatravms.c4g.web.rest.AccountResourceIT.TEST_USER_LOGIN;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link AccountResource} REST controller.
@@ -91,7 +95,6 @@ class AccountResourceIT {
         user.setImageUrl("http://placehold.it/50x50");
         user.setLangKey("en");
         user.setAuthorities(authorities);
-        userService.createUser(user);
 
         restAccountMockMvc
             .perform(get("/api/account").accept(MediaType.APPLICATION_JSON))

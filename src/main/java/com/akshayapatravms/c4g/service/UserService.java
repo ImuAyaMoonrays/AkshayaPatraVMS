@@ -1,6 +1,5 @@
 package com.akshayapatravms.c4g.service;
 
-import com.akshayapatravms.c4g.config.Constants;
 import com.akshayapatravms.c4g.domain.Authority;
 import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.repository.AuthorityRepository;
@@ -122,6 +121,15 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
+        if (userDTO.getPhoneNumber() != null) {
+            newUser.setPhoneNumber(userDTO.getPhoneNumber().replaceAll("[^\\d]", ""));
+        }
+        if (userDTO.getLocation() != null) {
+            newUser.setPhysicalLocation(userDTO.getLocation());
+        }
+        if (userDTO.getDob() != null) {
+            newUser.setDob(userDTO.getDob());
+        }
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
@@ -145,50 +153,6 @@ public class UserService {
         userRepository.flush();
         this.clearUserCaches(existingUser);
         return true;
-    }
-
-    public User createUser(AdminUserDTO userDTO) {
-        User user = new User();
-        user.setLogin(userDTO.getLogin().toLowerCase());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        if (userDTO.getEmail() != null) {
-            user.setEmail(userDTO.getEmail().toLowerCase());
-        }
-        if (userDTO.getPhoneNumber() != null) {
-            user.setPhoneNumber(userDTO.getPhoneNumber().replaceAll( "[^\\d]", "" ));
-        }
-        if (userDTO.getLocation() != null) {
-            user.setPhysicalLocation(userDTO.getLocation());
-        }
-        if (userDTO.getDob() != null) {
-            user.setDob(userDTO.getDob());
-        }
-        user.setImageUrl(userDTO.getImageUrl());
-        if (userDTO.getLangKey() == null) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
-        } else {
-            user.setLangKey(userDTO.getLangKey());
-        }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        user.setPassword(encryptedPassword);
-        user.setResetKey(RandomUtil.generateResetKey());
-        user.setResetDate(Instant.now());
-        user.setActivated(true);
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO
-                .getAuthorities()
-                .stream()
-                .map(authorityRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-            user.setAuthorities(authorities);
-        }
-        userRepository.save(user);
-        this.clearUserCaches(user);
-        log.debug("Created Information for User: {}", user);
-        return user;
     }
 
     /**
@@ -248,7 +212,7 @@ public class UserService {
      * @param langKey   language key.
      * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl, String phoneNumber) {
         SecurityUtils
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
@@ -260,6 +224,7 @@ public class UserService {
                 }
                 user.setLangKey(langKey);
                 user.setImageUrl(imageUrl);
+                user.setPhoneNumber(phoneNumber);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
@@ -320,6 +285,7 @@ public class UserService {
 
     /**
      * Gets a list of all the authorities.
+     *
      * @return a list of all the authorities.
      */
     @Transactional(readOnly = true)
@@ -334,29 +300,29 @@ public class UserService {
         }
     }
 
-    public void addAuthority(Long userID, String authorityString) throws RuntimeException{
+    public void addAuthority(Long userID, String authorityString) throws RuntimeException {
         Optional<User> user = userRepository.findOneById(userID);
-        if(!user.isPresent()) {
+        if (!user.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        try{
+        try {
             Optional<Authority> authority = authorityRepository.findById(AuthoritiesConstants.ADMIN);
 
             final User presentUser = user.get();
             presentUser.getAuthorities().add(authority.get());
             userRepository.save(presentUser);
             clearUserCaches(presentUser);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public void removeAuthority(Long userID, String authorityString) throws RuntimeException{
+    public void removeAuthority(Long userID, String authorityString) throws RuntimeException {
         Optional<User> user = userRepository.findOneById(userID);
-        if(!user.isPresent()) {
+        if (!user.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        try{
+        try {
             Optional<Authority> authority = authorityRepository.findById(AuthoritiesConstants.ADMIN);
 
             final User presentUser = user.get();
@@ -364,20 +330,20 @@ public class UserService {
             userRepository.save(presentUser);
             clearUserCaches(presentUser);
 
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public void acceptTOS(){
+    public void acceptTOS() {
         final Optional<User> user = getUserWithAuthorities();
-        if(!user.isPresent()) {
+        if (!user.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
         try {
             user.get().setAcceptedTOS(true);
             userRepository.save(user.get());
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("unable to save user info");
         }
     }
@@ -413,7 +379,7 @@ public class UserService {
                 user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
             }
 
-            if (userUpdateDTO.getLocation() != null){
+            if (userUpdateDTO.getLocation() != null) {
                 user.setPhysicalLocation(
                     userUpdateDTO.getLocation().createUpdatedPhysicalLocation(user.getPhysicalLocation())
                 );
@@ -422,14 +388,12 @@ public class UserService {
             userRepository.save(user);
             this.clearUserCaches(user);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("error updating user " + user.getId() + " with updateDTO " + userUpdateDTO.toString());
             throw new RuntimeException("error updating user");
         }
 
     }
-
-
 
 
 }

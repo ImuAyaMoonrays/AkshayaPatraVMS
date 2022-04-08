@@ -217,6 +217,18 @@ ui bootstrap tweaks
   position: inherit !important;
 }
 
+.validation-error-message {
+  font-size: 12px;
+  color: red;
+  text-align: center
+}
+
+.ng-submitted {
+  .ng-invalid {
+    border: .5px solid red;
+  }
+}
+
 .input-information {
   color: black;
   font-size: 12px;

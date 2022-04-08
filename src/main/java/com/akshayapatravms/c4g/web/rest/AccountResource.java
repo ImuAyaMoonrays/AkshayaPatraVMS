@@ -7,17 +7,20 @@ import com.akshayapatravms.c4g.service.MailService;
 import com.akshayapatravms.c4g.service.UserService;
 import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.PasswordChangeDTO;
-import com.akshayapatravms.c4g.web.rest.errors.*;
+import com.akshayapatravms.c4g.web.rest.errors.EmailAlreadyUsedException;
+import com.akshayapatravms.c4g.web.rest.errors.InvalidPasswordException;
+import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
 import com.akshayapatravms.c4g.web.rest.vm.KeyAndPasswordVM;
 import com.akshayapatravms.c4g.web.rest.vm.ManagedUserVM;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.
@@ -130,7 +133,8 @@ public class AccountResource {
             userDTO.getLastName(),
             userDTO.getEmail(),
             userDTO.getLangKey(),
-            userDTO.getImageUrl()
+            userDTO.getImageUrl(),
+            userDTO.getPhoneNumber()
         );
     }
 
