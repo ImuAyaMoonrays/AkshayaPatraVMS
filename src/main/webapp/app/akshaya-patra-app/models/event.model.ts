@@ -20,6 +20,7 @@ export class EventModel {
     public physicalLocation: PhysicalLocationModel = null,
     public virtualLocation: VirtualLocationModel = null,
     public causes: CauseModel[] = [],
+    public emailFilters: string[] = [],
     public corporateSubgroupIds: number[] =[],
     public id: string = null,
     public volunteers: Account[] = []
@@ -28,6 +29,11 @@ export class EventModel {
 
   withCauses(causes: CauseModel[]): EventModel {
     this.causes = causes;
+    return this;
+  }
+
+  withEmailFilters(emailFilters: string[]): EventModel {
+    this.emailFilters = emailFilters;
     return this;
   }
 

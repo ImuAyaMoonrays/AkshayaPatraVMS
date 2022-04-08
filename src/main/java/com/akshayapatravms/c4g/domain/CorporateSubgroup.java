@@ -1,9 +1,9 @@
 package com.akshayapatravms.c4g.domain;
 
-import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "corporate_subgroup")
@@ -17,7 +17,7 @@ public class CorporateSubgroup extends AbstractAuditingEntity implements Seriali
     private Long id;
 
     @Size(max = 100)
-    @Column(name = "subgroup_name", nullable = false, unique = true)
+    @Column(name = "subgroup_name")
     private String subgroupName;
 
     @ElementCollection(fetch = FetchType.EAGER)
