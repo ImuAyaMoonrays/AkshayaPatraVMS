@@ -47,24 +47,26 @@ import { PromoteToAdminComponent } from './akshaya-patra-app/components/promote-
 import { ProfileComponent } from './akshaya-patra-app/components/profile/profile.component';
 import { TagInputModule } from "ngx-chips";
 import { BrowserAnimationsModule, NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { DropzoneModule } from "ngx-dropzone-wrapper";
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    SharedModule,
-    // jhipster-needle-angular-add-module JHipster will add new module here
-    AppRoutingModule,
-    // Set this to true to enable service worker (PWA)
-    ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
-    HttpClientModule,
-    NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
-    NgSelectModule,
-    NgxsModule.forRoot([AppState]),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
-    TagInputModule,
-    BrowserAnimationsModule,
-    NoopAnimationsModule
-  ],
+    imports: [
+        BrowserModule,
+        SharedModule,
+        // jhipster-needle-angular-add-module JHipster will add new module here
+        AppRoutingModule,
+        // Set this to true to enable service worker (PWA)
+        ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
+        HttpClientModule,
+        NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-'}),
+        NgSelectModule,
+        NgxsModule.forRoot([AppState]),
+        NgxsReduxDevtoolsPluginModule.forRoot(),
+        TagInputModule,
+        BrowserAnimationsModule,
+        NoopAnimationsModule,
+        DropzoneModule
+    ],
   providers: [NgbModule, Title, {provide: LOCALE_ID, useValue: 'en'}, httpInterceptorProviders],
   declarations: [
     AppComponent,

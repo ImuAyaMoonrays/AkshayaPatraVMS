@@ -11,10 +11,16 @@ export class EventService {
 
   private readonly API_PREFIX = '/api/events'
 
-  constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
+  constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {
+  }
 
-  createEvent$(event: EventModel): Observable<EventModel> {
-    return this.http.post<EventModel>(this.applicationConfigService.getEndpointFor(`${this.API_PREFIX}/createEvent`), event);
+  createEvent$(event: EventModel): Observable<any> {
+    const formData: FormData = new FormData();
+    formData.append('file', event.file, event.file.name);
+    formData.append('eventWithoutImage', new Blob([JSON.stringify(event)], {
+      type: "application/json"
+    }));
+    return this.http.post(this.applicationConfigService.getEndpointFor(`${this.API_PREFIX}/createEvent`), formData);
   }
 
   allEvents$(): Observable<EventModel[]> {

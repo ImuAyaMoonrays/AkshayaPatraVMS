@@ -60,12 +60,13 @@ public class EventService {
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
-    public Event createEvent(CreateEventDTO createEventDTO) {
+    public Event createEvent(CreateEventDTO createEventDTO, MultipartFile image) {
         Event event = new Event();
 
-        final MultipartFile image = createEventDTO.getImage();
-        Image persistedImage = this.persistedImage(image);
-        event.setImage(persistedImage);
+        if (image != null) {
+            Image persistedImage = this.persistedImage(image);
+            event.setImage(persistedImage);
+        }
 
 
         if (createEventDTO.getCauses() != null && createEventDTO.getCauses().size() > 0) {
