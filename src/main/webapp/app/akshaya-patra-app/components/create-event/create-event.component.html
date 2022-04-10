@@ -20,7 +20,12 @@
           <div class="form-group">
             <label>Start Date</label>
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="startDate" (click)="d.toggle()" ngbDatepicker
+              <input class="form-control"
+                     placeholder="yyyy-mm-dd"
+                     formControlName="startDate"
+                     (focus)="d.open()"
+                     restoreFocus="false"
+                     ngbDatepicker
                      #d="ngbDatepicker">
             </div>
           </div>
@@ -28,7 +33,12 @@
           <div class="form-group">
             <label>End Date</label>
             <div class="input-group">
-              <input class="form-control" placeholder="yyyy-mm-dd" formControlName="endDate" (click)="d2.toggle()" ngbDatepicker
+              <input class="form-control"
+                     placeholder="yyyy-mm-dd"
+                     formControlName="endDate"
+                     (focus)="d2.open()"
+                     restoreFocus="false"
+                     ngbDatepicker
                      #d2="ngbDatepicker">
             </div>
           </div>
@@ -158,6 +168,23 @@
           </div>
         </div>
         <hr/>
+      </div>
+
+      <div>
+        <h3 class="card-title">Email Filters</h3>
+        <tag-input
+          [(ngModel)]='emailFilters'
+          secondaryPlaceholder="ie. @google.com"
+          placeholder="+Filter"
+          [validators]="[tagValidator]"
+          class="ngx-chips"
+        ></tag-input>
+        <div class="input-information">
+          You may enter email filters, for example @google.com, and only users with an @google.com email will be able to see this event.
+          You may enter multiple filters, typing 'enter' after each. This is optional. If there are no filters, then anyone can see the
+          event.
+        </div>
+
       </div>
 
       <div class="row justify-content-center mt-5">

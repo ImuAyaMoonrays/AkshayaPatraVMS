@@ -1,9 +1,8 @@
 package com.akshayapatravms.c4g.service.dto;
 
 import com.akshayapatravms.c4g.domain.*;
-
+import javax.validation.constraints.Email;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,7 @@ public class EventDTO {
 
     private Set<Cause> causes;
 
-    private Set<Long> corporateSubgroupIds;
+    private Set<String> emailFilters;
 
     private String eventName;
 
@@ -37,6 +36,7 @@ public class EventDTO {
 
     private String contactPhoneNumber;
 
+    @Email
     private String contactEmail;
 
     private String emailBody;
@@ -62,7 +62,7 @@ public class EventDTO {
 
         // Event has Set<Cause>, EventDTO is expecting Set<CauseDTO>
         this.causes = event.getCauses();
-        this.corporateSubgroupIds = event.getCorporateSubgroups().stream().map(CorporateSubgroup::getId).collect(Collectors.toSet());
+        //this.corporateSubgroupIds = event.getCorporateSubgroups().stream().map(CorporateSubgroup::getId).collect(Collectors.toSet());
 
     }
 
@@ -98,12 +98,12 @@ public class EventDTO {
         this.eventName = eventName;
     }
 
-    public Set<Long> getCorporateSubgroupIds() {
-        return corporateSubgroupIds;
+    public Set<String> getEmailFilters() {
+        return emailFilters;
     }
 
-    public void setCorporateSubgroupIds(Set<Long> corporateSubgroupIds) {
-        this.corporateSubgroupIds = corporateSubgroupIds;
+    public void setEmailFilters(Set<String> emailFilters) {
+        this.emailFilters = emailFilters;
     }
 
     public Long getId() {

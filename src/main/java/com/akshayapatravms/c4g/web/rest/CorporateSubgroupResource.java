@@ -5,7 +5,6 @@ import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.CorporateSubgroupService;
 import com.akshayapatravms.c4g.service.dto.CorporateSubgroupDTO;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import com.akshayapatravms.c4g.service.dto.CorproateSubGroupEmailDTO;
 import org.slf4j.Logger;
@@ -57,7 +56,7 @@ public class CorporateSubgroupResource {
 
     @PutMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity addEmail(@RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity addEmail( @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.addEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),
@@ -71,7 +70,7 @@ public class CorporateSubgroupResource {
 
     @DeleteMapping("/emails")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity removeEmail(@RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
+    public ResponseEntity removeEmail( @RequestBody CorproateSubGroupEmailDTO corproateSubGroupEmailDTO){
         try {
             corporateSubgroupService.removeEmailPatternsToCorpSubgroup(
                 corproateSubGroupEmailDTO.getCorporateSubgroupID(),

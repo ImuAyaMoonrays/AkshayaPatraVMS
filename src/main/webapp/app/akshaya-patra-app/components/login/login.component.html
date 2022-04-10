@@ -6,7 +6,7 @@
           <img class="block-display-centered" src="content/images/akshaya-patra-logo.png" alt="logo" />
         </div>
         <h4>Hello! Welcome to the Akshaya Patra Volunteer Portal</h4>
-        <form class="form" role="form" (ngSubmit)="login()" [formGroup]="loginForm">
+        <form class="form" role="form" (ngSubmit)="loginForm.valid && login()" [formGroup]="loginForm">
           <h6 class="font-weight-light">Sign in to continue.</h6>
           <div class="form-group">
             <input formControlName="username" type="email" class="form-control form-control-lg" id="username" placeholder="Username" />

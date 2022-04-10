@@ -30,6 +30,7 @@ import tech.jhipster.web.util.ResponseUtil;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -55,19 +56,20 @@ public class EventResource {
 
     @PostMapping("/createEvent")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Event createEvent(@RequestBody EventDTO eventDTO) throws URISyntaxException {
+    public Event createEvent(@Valid @RequestBody EventDTO eventDTO) throws URISyntaxException {
         return eventService.createEvent(eventDTO);
     }
 
+    //todo: remove /event in pahth
     @GetMapping("/event/{id}")
     public Event eventById(@PathVariable Long id) throws URISyntaxException {
-        return eventRepository.findOneById(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
+        return eventRepository.findAllEventInfoForEvent(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
     }
 
 //    need one for admins which contains all registered users and one for normal user which doesn't
     @GetMapping("/all")
     public List<Event> allEvents() throws URISyntaxException {
-        return this.eventRepository.findAll();
+        return this.eventRepository.findAllEventInfo();
     }
 
     //eventually might want to change this to register to match unregister. my bad for having them separate names at the start.
@@ -94,7 +96,6 @@ public class EventResource {
         }
     }
 
-    //Done
     @GetMapping("/pastEvents")
     public ResponseEntity getAllPastEvents() {
         try{
@@ -104,7 +105,6 @@ public class EventResource {
         }
     }
 
-    //Done
     @GetMapping("/futureEvents")
     public ResponseEntity getAllFutureEvents() {
         try{
@@ -114,9 +114,7 @@ public class EventResource {
         }
     }
 
-    //get completed events (events that the logged in user registered for that are past)
-    //Done
-    @GetMapping("/completedEvents/")
+    @GetMapping("/completed")
     public ResponseEntity getCompletedEvents() {
         try{
             return ResponseEntity.ok().body(eventService.getAllCompletedEventsForUser());
@@ -125,8 +123,7 @@ public class EventResource {
         }
     }
 
-    //Done
-    @GetMapping("/registeredEvents/")
+    @GetMapping("/registered")
     public ResponseEntity getRegisteredEvents() {
         try{
             return ResponseEntity.ok().body(eventService.getAllFutureEventsForUser());
@@ -180,7 +177,7 @@ public class EventResource {
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getEventVolunteersCSC(@RequestParam Long eventID) {
+    public ResponseEntity getEventVolunteersCSV(@RequestParam Long eventID) {
         try{
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
             HttpHeaders headers = new HttpHeaders();
@@ -195,6 +192,41 @@ public class EventResource {
         }
     }
 
+    @GetMapping(value = "/exportAll", produces = "text/csv")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity getAllEventInfoEventVolunteersCSV() {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
+            headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return  ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(csvDTO.getDataStream());
+
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity getAllEventVolunteersCSV() {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
+            headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+            return  ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(csvDTO.getDataStream());
+
+        } catch (Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 
 
 }

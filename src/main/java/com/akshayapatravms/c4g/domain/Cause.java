@@ -43,4 +43,9 @@ public class Cause extends AbstractAuditingEntity implements Serializable {
     public void setCauseName(String causeName) {
         this.causeName = causeName;
     }
+
+    @Override
+    public String toString() {
+        return causeName;
+    }
 }
