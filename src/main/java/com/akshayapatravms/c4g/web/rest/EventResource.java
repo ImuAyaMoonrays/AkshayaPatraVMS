@@ -1,21 +1,29 @@
 package com.akshayapatravms.c4g.web.rest;
 
 import com.akshayapatravms.c4g.domain.Event;
+import com.akshayapatravms.c4g.domain.User;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
+import com.akshayapatravms.c4g.service.dto.AdminUserDTO;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.web.rest.errors.EmailAlreadyUsedException;
+import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.reactive.ResponseUtil;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 //todo: have controllers return response entities
 @RestController
@@ -27,6 +35,9 @@ public class EventResource {
     private final EventService eventService;
 
     private final EventRepository eventRepository;
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     public EventResource(EventService eventService,
                          EventRepository eventRepository) {
@@ -83,6 +94,18 @@ public class EventResource {
         } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @PatchMapping("/updateEvent")
+    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+        log.debug("REST request to update Event : {}", eventDTO);
+        Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
+        Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
+
+        return tech.jhipster.web.util.ResponseUtil.wrapOrNotFound(
+            updatedEvent,
+            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId().toString())
+        );
     }
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")

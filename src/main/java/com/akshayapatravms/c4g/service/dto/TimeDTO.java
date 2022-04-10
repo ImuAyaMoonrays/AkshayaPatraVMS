@@ -1,5 +1,7 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.Time;
+
 public class TimeDTO {
 
     private Integer hours;
@@ -7,6 +9,15 @@ public class TimeDTO {
     private Integer minutes;
 
     public TimeDTO() {
+    }
+
+    public TimeDTO(Time time) {
+        if (time.getHours() != null) {
+            this.hours = time.getHours();
+        }
+        if (time.getMinutes() != null) {
+            this.minutes = time.getMinutes();
+        }
     }
 
     public Integer getHours() {

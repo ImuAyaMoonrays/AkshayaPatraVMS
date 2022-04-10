@@ -6,6 +6,7 @@ import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
+import com.akshayapatravms.c4g.service.dto.CauseDTO;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.EventDTO;
 import org.apache.commons.csv.CSVFormat;
@@ -240,6 +241,80 @@ public class EventService {
         } else {
             return eventRepository.findAll();
         }
+    }
+
+        public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
+        return Optional
+            .of(eventRepository.findById(eventDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(event -> {
+                Set<Cause> causes = event.getCauses();
+                causes.clear();
+                if (eventDTO.getCauses() != null) {
+                    eventDTO
+                        .getCauses()
+                        .stream()
+                        .map(CauseDTO::getId)
+                        .map(causeRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .forEach(causes::add);
+                }
+
+
+                Set<CorporateSubgroup> corporateSubgroups = event.getCorporateSubgroups();
+                corporateSubgroups.clear();
+                if (eventDTO.getCorporateSubgroups() != null) {
+                    eventDTO
+                        .getCorporateSubgroups()
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(CorporateSubgroup::getId)
+                        .map(corporateSubgroupRepository::findById)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .forEach(corporateSubgroups::add);
+                }
+                if (eventDTO.getEventName() != null) {
+                    event.setEventName(eventDTO.getEventName());
+                }
+                if (eventDTO.getDescription() != null) {
+                    event.setDescription(eventDTO.getDescription());
+                }
+                if (eventDTO.getContactEmail() != null) {
+                    event.setContactEmail(eventDTO.getContactEmail());
+                }
+                if (eventDTO.getContactName() != null) {
+                    event.setContactName(eventDTO.getContactName());
+                }
+                if (eventDTO.getContactPhoneNumber() != null) {
+                    event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
+                }
+                if (eventDTO.getEmailBody() != null) {
+                    event.setEmailBody(eventDTO.getEmailBody());
+                }
+                if (eventDTO.getEndDate() != null) {
+                    event.setEndDate(eventDTO.getEndDate());
+                }
+                if (eventDTO.getStartDate() != null) {
+                    event.setStartDate(eventDTO.getStartDate());
+                }
+                if (eventDTO.getStartTime() != null) {
+                    event.setStartTime(new Time(eventDTO.getStartTime()));
+                }
+                if (eventDTO.getPhysicalLocation() != null) {
+                    event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
+                }
+                if (eventDTO.getVirtualLocation() != null) {
+                    event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
+                }
+                if (eventDTO.getVolunteersNeededAmount() != null) {
+                    event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
+                }
+                return event;
+            })
+            .map(EventDTO::new);
     }
 
 

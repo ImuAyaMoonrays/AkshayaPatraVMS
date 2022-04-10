@@ -1,7 +1,10 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.*;
+
 import javax.validation.constraints.Email;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 public class EventDTO {
@@ -39,8 +42,40 @@ public class EventDTO {
 
     private String emailBody;
 
+    private Set<CorporateSubgroup> corporateSubgroups;
 
     public EventDTO() {}
+
+    public EventDTO(Event event) {
+
+        Set<CauseDTO> causeDTOSet = new HashSet<>();
+        event.getCauses().forEach(cause ->
+            causeDTOSet.add(new CauseDTO(cause))
+            );
+
+        this.causes = causeDTOSet;
+        if (event.getCorporateSubgroups() != null) {
+            this.corporateSubgroups = event.getCorporateSubgroups();
+        }
+        this.setEventName(event.getEventName());
+        this.setDescription(event.getDescription());
+        this.setContactEmail(event.getContactEmail());
+        this.setContactName(event.getContactName());
+        this.setContactPhoneNumber(event.getContactPhoneNumber());
+        this.setEmailBody(event.getEmailBody());
+        this.setEndDate(event.getEndDate());
+        this.setStartDate(event.getStartDate());
+        if (event.getStartTime() != null) {
+            this.setStartTime(new TimeDTO(event.getStartTime()));
+        }
+        if (event.getPhysicalLocation() != null) {
+            this.setPhysicalLocation(new PhysicalLocationDTO(event.getPhysicalLocation()));
+        }
+        if (event.getVirtualLocation() != null) {
+            this.setVirtualLocation(new VirtualLocationDTO(event.getVirtualLocation()));
+        }
+        this.setVolunteersNeededAmount(event.getVolunteersNeededAmount());
+    }
 
     public VirtualLocationDTO getVirtualLocation() {
         return virtualLocation;
@@ -169,5 +204,9 @@ public class EventDTO {
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
     }
+
+    public Set<CorporateSubgroup> getCorporateSubgroups() { return corporateSubgroups; }
+
+    public void setCorporateSubgroups(Set<CorporateSubgroup> corporateSubgroups) { this.corporateSubgroups = corporateSubgroups;  }
 
 }
