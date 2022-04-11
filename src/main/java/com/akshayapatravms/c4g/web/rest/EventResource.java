@@ -5,16 +5,7 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
-import com.akshayapatravms.c4g.service.dto.event.EventResponseDTO;
-
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import com.akshayapatravms.c4g.web.rest.errors.EmailAlreadyUsedException;
-import com.akshayapatravms.c4g.web.rest.errors.LoginAlreadyUsedException;
-import org.h2.tools.Csv;
+import com.akshayapatravms.c4g.service.dto.EventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -75,10 +66,10 @@ public class EventResource {
     //update request body to be a request parameter?
     @PostMapping("/volunteer")
     public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
-        try {
+        try{
             eventService.volunteerForEvent(eventID);
             return ResponseEntity.ok().build();
-        } catch (Exception e) {
+        } catch(Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
 
@@ -87,7 +78,7 @@ public class EventResource {
     //should this be a delete? and change @pathVariable to RequestParam?
     @GetMapping("/unregister/{id}")
     public ResponseEntity unregisterForEvent(@PathVariable Long id) {
-        try {
+        try{
             eventService.unRegisterForEvent(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -167,26 +158,38 @@ public class EventResource {
 
     @GetMapping("/getAll")
     public ResponseEntity getAllEvents() {
-        try {
+        try{
             return ResponseEntity.ok().body(eventService.getAll());
-        } catch (Exception e) {
+        } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @PatchMapping("/updateEvent")
+    public ResponseEntity<EventDTO> updateEvent(@Valid @RequestBody EventDTO eventDTO) {
+        log.debug("REST request to update Event : {}", eventDTO);
+        Optional<Event> existingEvent = eventRepository.findOneById(eventDTO.getId());
+        Optional<EventDTO> updatedEvent = eventService.updateEvent(eventDTO);
+
+        return tech.jhipster.web.util.ResponseUtil.wrapOrNotFound(
+            updatedEvent,
+            HeaderUtil.createAlert(applicationName, "eventManagement.updated", eventDTO.getId().toString())
+        );
     }
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getEventVolunteersCSV(@RequestParam Long eventID) {
-        try {
+        try{
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            return ResponseEntity
+            return  ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
-        } catch (Exception e) {
+        } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
