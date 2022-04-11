@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 //todo: have controllers return response entities
@@ -102,11 +104,22 @@ public class EventResource {
         }
     }
 
+
+    //input date is YYYY-MM-DD. leading zeros must be included
     @GetMapping(value = "/exportAll", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getAllEventInfoEventVolunteersCSV() {
+    public ResponseEntity getAllEventInfoEventVolunteersCSV(
+        @RequestParam(value = "startDate",
+            required = false,
+            defaultValue ="#{T(java.time.LocalDate).now().minusYears(1)}"
+        ) LocalDate startDate,
+        @RequestParam(value = "endDate",
+            required = false,
+            defaultValue = "#{T(java.time.LocalDate).now()}"
+        ) LocalDate endDate
+    ) {
         try{
-            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription();
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription(startDate,endDate);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
@@ -114,7 +127,6 @@ public class EventResource {
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
-
         } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
