@@ -1,15 +1,15 @@
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { Injectable } from "@angular/core";
-import { EventModel } from "../../models/event.model";
 import { EventService } from "../../services/event/event.service";
 import { tap } from "rxjs";
 import { AppActions } from "../actions/app.actions";
 import { AccountService } from "../../services/auth/account.service";
 import { Account } from "../../services/auth/account.model";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 
 export interface AppStateInterface {
-  allEvents: EventModel[];
+  allEvents: EventResponseInterface[];
   authenticatedUser: Account;
 
 }
@@ -33,29 +33,29 @@ export class AppState {
   }
 
   @Selector()
-  static allFutureEvents(state: AppStateInterface): EventModel[] {
+  static allFutureEvents(state: AppStateInterface): EventResponseInterface[] {
     return state.allEvents.filter(event => (new Date(event.endDate)) >= new Date());
   }
 
   @Selector()
-  static allPastEvents(state: AppStateInterface): EventModel[] {
+  static allPastEvents(state: AppStateInterface): EventResponseInterface[] {
     return state.allEvents.filter(event => (new Date(event.endDate)) < new Date());
   }
 
 
   @Selector()
-  static upcomingUnregisteredEvents(state: AppStateInterface): EventModel[] {
+  static upcomingUnregisteredEvents(state: AppStateInterface): EventResponseInterface[] {
     const registeredUpcomingEventsIds = this.upcomingRegisteredEvents(state).map(event => event.id);
     return this.allFutureEvents(state).filter(event => !registeredUpcomingEventsIds.includes(event.id));
   }
 
   @Selector()
-  static upcomingRegisteredEvents(state: AppStateInterface): EventModel[] {
+  static upcomingRegisteredEvents(state: AppStateInterface): EventResponseInterface[] {
     return this.allFutureEvents(state).filter(event => (event.volunteers.map(volunteer => volunteer.id)).includes(state.authenticatedUser.id));
   }
 
   @Selector()
-  static pastRegisteredEvents(state: AppStateInterface): EventModel[] {
+  static pastRegisteredEvents(state: AppStateInterface): EventResponseInterface[] {
     return this.allPastEvents(state).filter(event => (event.volunteers.map(volunteer => volunteer.id)).includes(state.authenticatedUser.id));
   }
 

@@ -23,7 +23,8 @@ export class EventModel {
     public emailFilters: string[] = [],
     public corporateSubgroupIds: number[] =[],
     public id: string = null,
-    public volunteers: Account[] = []
+    public volunteers: Account[] = [],
+    public file: File = null
   ) {
   }
 
@@ -34,6 +35,11 @@ export class EventModel {
 
   withEmailFilters(emailFilters: string[]): EventModel {
     this.emailFilters = emailFilters;
+    return this;
+  }
+
+  withFile(file: File): EventModel {
+    this.file = file;
     return this;
   }
 

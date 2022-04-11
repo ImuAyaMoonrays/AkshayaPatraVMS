@@ -5,19 +5,23 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
+import com.akshayapatravms.c4g.service.dto.event.EventResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 //todo: have controllers return response entities
 @RestController
@@ -36,19 +40,26 @@ public class EventResource {
         this.eventRepository = eventRepository;
     }
 
-    @PostMapping("/createEvent")
+    @PostMapping(value = "/createEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Event createEvent(@Valid @RequestBody EventDTO eventDTO) throws URISyntaxException {
-        return eventService.createEvent(eventDTO);
+    public Event createEvent(
+        @RequestPart("eventWithoutImage") @Valid CreateEventDTO createEventDTO,
+        @RequestPart("file") @Valid MultipartFile image) throws URISyntaxException {
+        return eventService.createEvent(createEventDTO, image);
     }
 
     //todo: remove /event in pahth
     @GetMapping("/event/{id}")
-    public Event eventById(@PathVariable Long id) throws URISyntaxException {
-        return eventRepository.findAllEventInfoForEvent(id).orElseThrow(() -> new RuntimeException("could not find an event by this id"));
+    public EventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
+        Optional<Event> event = eventRepository.findAllEventInfoForEvent(id);
+        if (event.isPresent()) {
+            return new EventResponseDTO(event.get());
+        } else  {
+            throw new RuntimeException("could not find an event by this id");
+        }
     }
 
-//    need one for admins which contains all registered users and one for normal user which doesn't
+    //    need one for admins which contains all registered users and one for normal user which doesn't
     @GetMapping("/all")
     public List<Event> allEvents() throws URISyntaxException {
         return this.eventRepository.findAllEventInfo();
@@ -58,10 +69,10 @@ public class EventResource {
     //update request body to be a request parameter?
     @PostMapping("/volunteer")
     public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
-        try{
+        try {
             eventService.volunteerForEvent(eventID);
             return ResponseEntity.ok().build();
-        } catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
 
@@ -70,19 +81,19 @@ public class EventResource {
     //should this be a delete? and change @pathVariable to RequestParam?
     @GetMapping("/unregister/{id}")
     public ResponseEntity unregisterForEvent(@PathVariable Long id) {
-        try{
+        try {
             eventService.unRegisterForEvent(id);
             return ResponseEntity.ok().build();
-        } catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
     @GetMapping("/getAll")
     public ResponseEntity getAllEvents() {
-        try{
+        try {
             return ResponseEntity.ok().body(eventService.getAll());
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -90,16 +101,16 @@ public class EventResource {
     @GetMapping(value = "/exportCSV", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getEventVolunteersCSV(@RequestParam Long eventID) {
-        try{
+        try {
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            return  ResponseEntity
+            return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -123,7 +134,7 @@ public class EventResource {
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            return  ResponseEntity
+            return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
@@ -149,12 +160,12 @@ public class EventResource {
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            return  ResponseEntity
+            return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

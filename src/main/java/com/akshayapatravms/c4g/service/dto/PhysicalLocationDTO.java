@@ -20,6 +20,16 @@ public class PhysicalLocationDTO {
         // Empty constructor needed for Jackson.
     }
 
+    public PhysicalLocationDTO(PhysicalLocation physicalLocation) {
+        this.address = physicalLocation.getAddress();
+        this.state = physicalLocation.getState();
+        this.city = physicalLocation.getCity();
+        this.locality = physicalLocation.getLocality();
+        this.region = physicalLocation.getRegion();
+        this.country = physicalLocation.getCountry();
+
+    }
+
     public String getAddress() {
         return address;
     }
