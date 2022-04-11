@@ -286,7 +286,11 @@ public class EventService {
         if (!userOptional.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        return eventRepository.allFutureUnregisteredEventsForUser(userOptional.get().getId());
+        return eventRepository.findAllFutureEvents().stream()
+            .filter(event -> {
+                event.getVolunteers().stream()
+                    .anyMatch(volunteer -> volunteer.getId().equals(userOptional.get().getId()));
+            });
     }
 
 
