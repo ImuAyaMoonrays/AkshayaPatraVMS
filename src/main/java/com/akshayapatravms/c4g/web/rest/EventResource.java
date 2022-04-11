@@ -134,9 +134,18 @@ public class EventResource {
 
     @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getAllEventVolunteersCSV() {
+    public ResponseEntity getAllEventVolunteersCSV(
+        @RequestParam(value = "startDate",
+            required = false,
+            defaultValue ="#{T(java.time.LocalDate).now()}"
+        ) LocalDate startDate,
+        @RequestParam(value = "endDate",
+            required = false,
+            defaultValue = "#{T(java.time.LocalDate).now().plusYears(1000)}"
+        ) LocalDate endDate
+    ) {
         try{
-            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers();
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers(startDate,endDate);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");

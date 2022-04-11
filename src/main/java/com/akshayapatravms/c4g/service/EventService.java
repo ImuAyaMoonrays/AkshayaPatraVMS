@@ -354,7 +354,7 @@ public class EventService {
         return csvDTO;
     }
 
-    public CsvDTO createCSVFileOfAllEventVolunteers() throws RuntimeException {
+    public CsvDTO createCSVFileOfAllEventVolunteers(LocalDate startDate, LocalDate endDate) throws RuntimeException {
         String[] csvHeader = {
             "eventID",
             "eventName",
@@ -363,7 +363,11 @@ public class EventService {
         };
 
 
-        List<Event> events = eventRepository.findAllEventsAndVolunteers();
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        Instant startDateInstant = startDate.atStartOfDay().atZone(zone).toInstant();
+        Instant endDateInstant = endDate.atStartOfDay().atZone(zone).toInstant();
+
+        List<Event> events = eventRepository.findAllEventsAndVolunteers(startDateInstant,endDateInstant);
         List<List<String>> csvBody = new ArrayList<>(events.size());
 
         for (Event event : events) {
