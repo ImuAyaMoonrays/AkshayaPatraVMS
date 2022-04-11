@@ -25,7 +25,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Set<Cause> causes = new HashSet<>();
 
     // double check CascadeType persist
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
         name = "event_corporate_subgroup",
         joinColumns = @JoinColumn(name = "event_id"),

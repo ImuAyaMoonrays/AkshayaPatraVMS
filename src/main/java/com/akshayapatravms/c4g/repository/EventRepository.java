@@ -30,7 +30,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         "FROM Event e " +
         "LEFT JOIN USER_EVENT ue ON e.id = ue.event_id " +
         "WHERE ue.user_id =:userId and e.end_date > CURRENT_TIMESTAMP", nativeQuery = true)
-    List<Event> findAllFutureEventsForUser(@Param("userId") long userId);
+    List<Event> allRegisteredEventsForUser(@Param("userId") long userId);
 
     @Query(value = "SELECT * " +
         "FROM Event e " +
@@ -41,17 +41,17 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         "LEFT JOIN SUBGROUP_EMAIL_PATTERN sep ON sep.corporate_subgroup_id = cs.id " +
         "WHERE ue.user_id IS DISTINCT FROM :userId and e.end_date > CURRENT_TIMESTAMP and u.email LIKE '%' || sep.subgroup_email_patterns || '%'",
         nativeQuery = true)
-    List<Event> allFutureUnregisteredEventsForUser(@Param("userId") long userId);
+    List<Event> allRegisterableEventsForUser(@Param("userId") long userId);
 
     @Query(value = "SELECT * " +
         "FROM Event e " +
         "LEFT JOIN USER_EVENT ue ON e.id = ue.event_id " +
         "WHERE ue.user_id =:userId and e.end_date < CURRENT_TIMESTAMP", nativeQuery = true)
-    List<Event> findAllCompletedEventsForUser(@Param("userId") long userId);
+    List<Event> allCompletedEventsForUser(@Param("userId") long userId);
 
     @Modifying
-    @Query(value = "DELETE FROM Event e WHERE e.id =:eventId and e.event_creator_id =:event_creator_id", nativeQuery = true)
-    void deleteEventByCreator(@Param("eventId") long eventId, @Param("event_creator_id") long userId);
+    @Query(value = "DELETE FROM Event e WHERE e.id =:eventId", nativeQuery = true)
+    void deleteEventByCreator(@Param("eventId") long eventId);
 
     @Query(value = "Select e from Event e left JOIN FETCH e.volunteers v " +
         "left JOIN FETCH e.physicalLocation p " +

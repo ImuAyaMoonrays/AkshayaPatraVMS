@@ -41,9 +41,9 @@ public class UserEventResource {
 
     @GetMapping("/{id}")
     public UserEventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
-        Optional<Event> event = eventRepository.findAllEventInfoForEvent(id);
+        Optional<Event> event = eventRepository.findOneById(id);
         if (event.isPresent()) {
-            return new UserEventResponseDTO(event.get());
+            return eventMapper.eventToUserEventResponseDTO(event.get());
         } else  {
             throw new RuntimeException("could not find an event by this id");
         }
@@ -57,6 +57,11 @@ public class UserEventResource {
     @GetMapping("/registered")
     public List<UserEventResponseDTO> registeredEvents() {
         return eventMapper.eventsToUserEventResponseDTOS(eventService.allRegisteredEventsForLoggedInUser());
+    }
+
+    @GetMapping("/registerable")
+    public List<UserEventResponseDTO> registerableEvents() {
+        return eventMapper.eventsToUserEventResponseDTOS(eventService.allRegisterableEventsForLoggedInUser());
     }
 
     @PostMapping("/volunteer")

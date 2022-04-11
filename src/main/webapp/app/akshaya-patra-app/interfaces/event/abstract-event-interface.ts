@@ -1,15 +1,12 @@
 import { Time } from "@angular/common";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
-import { CauseModel } from "../../models/cause.model";
 
 export interface AbstractEventInterface {
-  id: string;
-  causes: CauseModel[];
-  emailFilters: string[];
+  emailFilters?: string[];
   eventName: string,
-  physicalLocation: PhysicalLocationModel;
-  virtualLocation: VirtualLocationModel;
+  physicalLocation?: PhysicalLocationModel;
+  virtualLocation?: VirtualLocationModel;
   description: string,
   volunteersNeededAmount: number,
   startDate: Date | string,
@@ -19,5 +16,5 @@ export interface AbstractEventInterface {
   contactName: string,
   contactPhoneNumber: string,
   contactEmail: string,
-  emailBody: string,
+  emailBody?: string,
 }

@@ -30,6 +30,7 @@ public class UserEventResponseDTO extends AbstractEventDTO {
                 .map(CauseDTO::new)
                 .collect(Collectors.toSet());
         }
+
     }
 
     public boolean isRegistered() {

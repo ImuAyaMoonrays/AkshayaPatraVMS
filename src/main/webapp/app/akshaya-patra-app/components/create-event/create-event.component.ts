@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EventModel } from '../../models/event.model';
 import { Router } from '@angular/router';
 import { mergeMap } from "rxjs/operators";
 import { merge, Observable, of } from "rxjs";
 import { EventService } from "../../services/event/event.service";
 import { PhysicalLocationModel } from "../../models/physical-location.model";
 import { VirtualLocationModel } from "../../models/virtual-location.model";
-import { CauseModel } from "../../models/cause.model";
 import { CauseService } from "../../services/cause/cause.service";
 import { AccountService } from "../../services/auth/account.service";
 import { TemporalUtil } from "../../utils/temporal.util";
+import { CreateEventInterface } from "../../interfaces/event/create-event.interface";
 
 @Component({
   selector: 'jhi-create-event',
@@ -22,7 +21,7 @@ export class CreateEventComponent implements OnInit {
   causes: { causeName: string, id: number }[] = [];
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
-  emailFilters: {display: string, value: string}[] = [];
+  emailFilters: { display: string, value: string }[] = [];
   uploadFile: File | null;
   tagValidator = Validators.pattern('^@\\w+.\\w+');
 
@@ -111,21 +110,24 @@ export class CreateEventComponent implements OnInit {
     const virtualLocationForm = this.virtualLocationForm;
 
     if (createEventForm.valid && this.physicalLocationSelectedAndFormValid(physicalLocationForm) || this.virtualLocationSelectedAndFormValid(virtualLocationForm)) {
-      const event = new EventModel(
-        createEventForm.get('eventName').value,
-        createEventForm.get('description').value,
-        Number(createEventForm.get('volunteersNeededAmount').value),
-        TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
-        TemporalUtil.dateFromDatePicker(createEventForm.get('endDate').value),
-        TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
-        TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
-        createEventForm.get('contactName').value,
-        createEventForm.get('contactPhoneNumber').value,
-        createEventForm.get('contactEmail').value,
-        createEventForm.get('emailBody').value,
-      ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)))
-        .withEmailFilters(this.emailFilters.map(emailFilter => emailFilter.value))
-        .withFile(this.uploadFile);
+      const event: CreateEventInterface = {
+          contactEmail: createEventForm.get('contactEmail').value,
+          contactName: createEventForm.get('contactName').value,
+          contactPhoneNumber: createEventForm.get('contactPhoneNumber').value,
+          description: createEventForm.get('description').value,
+          emailBody: createEventForm.get('emailBody').value,
+          emailFilters: this.emailFilters.map(emailFilter => emailFilter.value),
+          endDate: TemporalUtil.dateFromDatePicker(createEventForm.get('endDate').value),
+          endTime: TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
+          eventName: createEventForm.get('eventName').value,
+          existingCauseIDs: this.causes.filter(cause => cause.id).map(cause => cause.id),
+          newCauses: this.causes.filter(cause => !!cause.id).map(cause => cause.causeName),
+          startDate: TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
+          startTime: TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
+          volunteersNeededAmount: Number(createEventForm.get('volunteersNeededAmount').value),
+          physicalLocation: undefined,
+          virtualLocation: undefined,
+        }
 
       if (this.isPhysicalLocationTypeSelected()) {
         event.physicalLocation = new PhysicalLocationModel(
@@ -143,7 +145,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent$(event).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
+      this.eventService.createEvent$(event, this.uploadFile).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
 
     } else {
       this.markAllFormFieldsAsDirty(createEventForm);

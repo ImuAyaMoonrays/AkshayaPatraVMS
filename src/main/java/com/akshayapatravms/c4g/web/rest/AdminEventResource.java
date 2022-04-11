@@ -54,7 +54,7 @@ public class AdminEventResource {
 
     @GetMapping("/{id}")
     public AdminEventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
-        Optional<Event> event = eventRepository.findAllEventInfoForEvent(id);
+        Optional<Event> event = eventRepository.findOneById(id);
         if (event.isPresent()) {
             return new AdminEventResponseDTO(event.get());
         } else {
@@ -71,11 +71,6 @@ public class AdminEventResource {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
-    }
-
-    @GetMapping("/all")
-    public List<AdminEventResponseDTO> allEvents() {
-        return this.eventMapper.eventsToAdminEventResponseDTOS(this.eventRepository.findAllEventInfo());
     }
 
     @GetMapping("/allPast")

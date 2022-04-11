@@ -4,8 +4,6 @@ import com.akshayapatravms.c4g.domain.*;
 import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
-import com.akshayapatravms.c4g.security.AuthoritiesConstants;
-import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
 import com.akshayapatravms.c4g.service.dto.event.AdminCreateOrUpdateEventDTO;
 import com.akshayapatravms.c4g.service.mapper.EventMapper;
@@ -279,18 +277,17 @@ public class EventService {
     }
 
     public List<Event> allFutureEvents() throws RuntimeException {
-        return eventRepository.findAllFutureEvents();
+        final List<Event> test =  eventRepository.findAllFutureEvents();
+        return test;
     }
+
     public List<Event> allRegisterableEventsForLoggedInUser() throws RuntimeException {
         final Optional<User> userOptional = userService.getUserWithAuthorities();
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             throw new RuntimeException("unable to find user");
         }
-        return eventRepository.findAllFutureEvents().stream()
-            .filter(event -> {
-                event.getVolunteers().stream()
-                    .anyMatch(volunteer -> volunteer.getId().equals(userOptional.get().getId()));
-            });
+
+        return eventRepository.allRegisterableEventsForUser(userOptional.get().getId());
     }
 
 
@@ -301,7 +298,7 @@ public class EventService {
         if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        return eventRepository.findAllFutureEventsForUser(isUser.get().getId());
+        return eventRepository.allRegisteredEventsForUser(isUser.get().getId());
     }
 
     public List<Event> getAllCompletedEventsForUser() throws RuntimeException {
@@ -309,31 +306,14 @@ public class EventService {
         if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        return eventRepository.findAllCompletedEventsForUser(isUser.get().getId());
+        return eventRepository.allCompletedEventsForUser(isUser.get().getId());
     }
 
     public void deleteEvent(Long eventID) throws RuntimeException {
-        final Optional<User> isUser = userService.getUserWithAuthorities();
-        if (!isUser.isPresent()) {
-            throw new RuntimeException("unable to find user");
-        }
-        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
-            eventRepository.deleteEventByCreator(eventID, isUser.get().getId());
-            log.debug("Deleted Event: {}", eventID);
-        }
+        eventRepository.deleteById(eventID);
     }
 
-    public List<Event> getAll() throws RuntimeException {
-        final Optional<User> isUser = userService.getUserWithAuthorities();
-        if (!isUser.isPresent()) {
-            throw new RuntimeException("unable to find user");
-        }
-        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
-            return eventRepository.findAllEventInfo();
-        } else {
-            return eventRepository.findAll();
-        }
-    }
+
 
 
 

@@ -1,4 +1,4 @@
-import { Action, Selector, State, StateContext } from "@ngxs/store";
+import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { Injectable } from "@angular/core";
 import { EventService } from "../../services/event/event.service";
 import { tap } from "rxjs";
@@ -6,24 +6,49 @@ import { AppActions } from "../actions/app.actions";
 import { AccountService } from "../../services/auth/account.service";
 import { Account } from "../../services/auth/account.model";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { AuthoiritiesEnum } from "../../enums/authoirities.enum";
+import UpdateNormalUserCompletedEvents = AppActions.UpdateNormalUserCompletedEvents;
+import UpdateNormalUserRegisteredEvents = AppActions.UpdateNormalUserRegisteredEvents;
+import UpdateNormalUserRegisterableEvents = AppActions.UpdateNormalUserRegisterableEvents;
+import UpdateAdminPastEvents = AppActions.UpdateAdminPastEvents;
+import UpdateAdminFutureEvents = AppActions.UpdateAdminFutureEvents;
 
 
 export interface AppStateInterface {
-  allEvents: EventResponseInterface[];
   authenticatedUser: Account;
+  normalUser: {
+    registerableEvents: EventResponseInterface[];
+    registeredEvents: EventResponseInterface[];
+    completedEvents: EventResponseInterface[];
+  },
+  adminUser:
+    {
+      allFutureEvents: EventResponseInterface[];
+      allCompletedEvents: EventResponseInterface[];
+    }
+
 
 }
 
 @State<AppStateInterface>({
   name: 'app',
   defaults: {
-    allEvents: null,
-    authenticatedUser: null
+    authenticatedUser: null,
+    normalUser: {
+      registerableEvents: null,
+      registeredEvents: null,
+      completedEvents: null
+    },
+    adminUser: {
+      allFutureEvents: null,
+      allCompletedEvents: null
+    }
   }
 })
 @Injectable()
 export class AppState {
   constructor(private eventService: EventService,
+              private store: Store,
               private accountService: AccountService) {
   }
 
@@ -33,38 +58,102 @@ export class AppState {
   }
 
   @Selector()
-  static allFutureEvents(state: AppStateInterface): EventResponseInterface[] {
-    return state.allEvents.filter(event => (new Date(event.endDate)) >= new Date());
-  }
-
-  @Selector()
-  static allPastEvents(state: AppStateInterface): EventResponseInterface[] {
-    return state.allEvents.filter(event => (new Date(event.endDate)) < new Date());
+  static isAdminLoggedIn(state: AppStateInterface): boolean {
+    return state.authenticatedUser?.authorities.includes(AuthoiritiesEnum.ROLE_ADMIN);
   }
 
 
   @Selector()
-  static upcomingUnregisteredEvents(state: AppStateInterface): EventResponseInterface[] {
-    const registeredUpcomingEventsIds = this.upcomingRegisteredEvents(state).map(event => event.id);
-    return this.allFutureEvents(state).filter(event => !registeredUpcomingEventsIds.includes(event.id));
+  static adminAllFutureEvents(state: AppStateInterface): EventResponseInterface[] {
+    return state.adminUser.allFutureEvents;
   }
 
   @Selector()
-  static upcomingRegisteredEvents(state: AppStateInterface): EventResponseInterface[] {
-    return this.allFutureEvents(state).filter(event => (event.volunteers.map(volunteer => volunteer.id)).includes(state.authenticatedUser.id));
+  static adminAllPastEvents(state: AppStateInterface): EventResponseInterface[] {
+    return state.adminUser.allCompletedEvents;
+  }
+
+
+  @Selector()
+  static normalUserRegisterableEvents(state: AppStateInterface): EventResponseInterface[] {
+    return state.normalUser.registerableEvents;
   }
 
   @Selector()
-  static pastRegisteredEvents(state: AppStateInterface): EventResponseInterface[] {
-    return this.allPastEvents(state).filter(event => (event.volunteers.map(volunteer => volunteer.id)).includes(state.authenticatedUser.id));
+  static normalUserRegisteredEvents(state: AppStateInterface): EventResponseInterface[] {
+    return state.normalUser.registeredEvents;
   }
 
-  @Action(AppActions.UpdateAllEventsAction)
-  updateUpcomingEvents(ctx: StateContext<AppStateInterface>) {
-    return this.eventService.allEvents$().pipe(
+  @Selector()
+  static normalUserCompletedEvents(state: AppStateInterface): EventResponseInterface[] {
+    return state.normalUser.completedEvents;
+  }
+
+  @Action(AppActions.UpdateAdminFutureEvents)
+  updateAdminFutureEvents(ctx: StateContext<AppStateInterface>) {
+    return this.eventService.adminAllFutureEvents$().pipe(
       tap((events) => {
         ctx.patchState({
-          allEvents: events
+          adminUser: {
+            ...ctx.getState().adminUser,
+            allFutureEvents: events
+          }
+        })
+      })
+    )
+  }
+
+  @Action(AppActions.UpdateAdminPastEvents)
+  updateAdminPastEvents(ctx: StateContext<AppStateInterface>) {
+    return this.eventService.adminAllPastEvents$().pipe(
+      tap((events) => {
+        ctx.patchState({
+          adminUser: {
+            ...ctx.getState().adminUser,
+            allCompletedEvents: events
+          }
+        })
+      })
+    )
+  }
+
+  @Action(AppActions.UpdateNormalUserRegisterableEvents)
+  updateNormalUserRegisterableEvents(ctx: StateContext<AppStateInterface>) {
+    return this.eventService.userAllRegisterableEvents$().pipe(
+      tap((events) => {
+        ctx.patchState({
+          normalUser: {
+            ...ctx.getState().normalUser,
+            registerableEvents: events
+          }
+        })
+      })
+    )
+  }
+
+  @Action(AppActions.UpdateNormalUserRegisteredEvents)
+  updateNormalUserRegisteredEvents(ctx: StateContext<AppStateInterface>) {
+    return this.eventService.userAllRegisteredEvents$().pipe(
+      tap((events) => {
+        ctx.patchState({
+          normalUser: {
+            ...ctx.getState().normalUser,
+            registeredEvents: events
+          }
+        })
+      })
+    )
+  }
+
+  @Action(AppActions.UpdateNormalUserCompletedEvents)
+  updateNormalUserCompletedEvents(ctx: StateContext<AppStateInterface>) {
+    return this.eventService.userAllCompletedEvents$().pipe(
+      tap((events) => {
+        ctx.patchState({
+          normalUser: {
+            ...ctx.getState().normalUser,
+            completedEvents: events
+          }
         })
       })
     )
@@ -75,6 +164,23 @@ export class AppState {
     ctx.patchState({
       authenticatedUser: action.authenticatedUser
     });
+  }
+
+  @Action(AppActions.UpdateAllNormalUserEvents)
+  updateAllNormalUserEvents() {
+    return this.store.dispatch([
+      new UpdateNormalUserCompletedEvents(),
+      new UpdateNormalUserRegisteredEvents(),
+      new UpdateNormalUserRegisterableEvents()
+    ]);
+  }
+
+  @Action(AppActions.UpdateAllAdminEvents)
+  updateAllAdminUserEvents() {
+    return this.store.dispatch([
+      new UpdateAdminPastEvents(),
+      new UpdateAdminFutureEvents(),
+    ]);
   }
 
 
