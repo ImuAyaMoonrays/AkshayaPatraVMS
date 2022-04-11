@@ -8,4 +8,5 @@ export interface EventResponseInterface extends AbstractEventInterface {
   image?: ImageResponseInterface;
   volunteers?: Account[];
   causes?: CauseInterface[]
+  registered?: boolean;
 }

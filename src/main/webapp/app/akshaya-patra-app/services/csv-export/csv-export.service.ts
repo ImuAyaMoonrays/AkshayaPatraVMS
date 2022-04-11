@@ -11,7 +11,7 @@ export class CsvExportService {
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   csvOfCurrentlyRegisteredVolunteers$(eventId: number) {
-    this.http.get(this.applicationConfigService.getEndpointFor('/api/events/exportCSV' + `?eventID=${eventId}`), { responseType: 'blob' })
+    this.http.get(this.applicationConfigService.getEndpointFor('/api/admin/events/exportCSV' + `?eventID=${eventId}`), { responseType: 'blob' })
       .subscribe((resp: any) => {
         FileSaver.saveAs(resp, `Registered Volunteers.csv`)
       });

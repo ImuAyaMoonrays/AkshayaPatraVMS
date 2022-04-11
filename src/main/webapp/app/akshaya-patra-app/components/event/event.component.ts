@@ -43,7 +43,7 @@ export class EventComponent implements OnInit {
     // this is psychotic. Refactor this.
     this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
       tap((eventAndAccount: [EventResponseInterface, Account]) => {
-        if (eventAndAccount[0].volunteers?.map(volunteer => volunteer.id).includes(eventAndAccount[1].id)) {
+        if (eventAndAccount[0].registered) {
           this.buttonText = 'Unregister';
           this.buttonFunction = this.unregister;
         } else {
