@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,11 +115,22 @@ public class EventResource {
         }
     }
 
+
+    //input date is YYYY-MM-DD. leading zeros must be included
     @GetMapping(value = "/exportAll", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getAllEventInfoEventVolunteersCSV() {
-        try {
-            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription();
+    public ResponseEntity getAllEventInfoEventVolunteersCSV(
+        @RequestParam(value = "startDate",
+            required = false,
+            defaultValue ="#{T(java.time.LocalDate).now().minusYears(1)}"
+        ) LocalDate startDate,
+        @RequestParam(value = "endDate",
+            required = false,
+            defaultValue = "#{T(java.time.LocalDate).now()}"
+        ) LocalDate endDate
+    ) {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventDescription(startDate,endDate);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
@@ -125,17 +138,25 @@ public class EventResource {
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
-
-        } catch (Exception e) {
+        } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
     @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity getAllEventVolunteersCSV() {
-        try {
-            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers();
+    public ResponseEntity getAllEventVolunteersCSV(
+        @RequestParam(value = "startDate",
+            required = false,
+            defaultValue ="#{T(java.time.LocalDate).now()}"
+        ) LocalDate startDate,
+        @RequestParam(value = "endDate",
+            required = false,
+            defaultValue = "#{T(java.time.LocalDate).now().plusYears(1000)}"
+        ) LocalDate endDate
+    ) {
+        try{
+            CsvDTO csvDTO = eventService.createCSVFileOfAllEventVolunteers(startDate,endDate);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
