@@ -99,7 +99,6 @@
     "@ngxs/store": "^3.7.3",
     "@sweetalert2/ngx-sweetalert2": "^8.1.1",
     "@tinymce/tinymce-angular": "^4.1.0",
-    "amazing-time-picker": "^1.8.0",
     "angular-datatables": "^9.0.2",
     "angular-morris-js": "^1.1.0",
     "angular2-datetimepicker": "^1.1.1",
