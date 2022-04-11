@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EventModel } from "../../models/event.model";
 import { Router } from "@angular/router";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 @Component({
   selector: 'jhi-event-preview',
@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 })
 export class EventPreviewComponent implements OnInit {
 
-  @Input() event: EventModel
+  @Input() event: EventResponseInterface
 
   constructor(private router: Router) { }
 

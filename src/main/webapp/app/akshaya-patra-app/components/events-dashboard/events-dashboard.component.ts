@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, startWith, tap } from 'rxjs';
-import { EventModel } from '../../models/event.model';
 import { Store } from "@ngxs/store";
 import { AppActions } from "../../store/actions/app.actions";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
 import { TemporalUtil } from "../../utils/temporal.util";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -15,9 +15,9 @@ import { TemporalUtil } from "../../utils/temporal.util";
 })
 export class EventsDashboardComponent implements OnInit {
 
-  @Input() events$: Observable<EventModel[]>
+  @Input() events$: Observable<EventResponseInterface[]>
 
-  eventsAfterFilters$: Observable<EventModel[]>;
+  eventsAfterFilters$: Observable<EventResponseInterface[]>;
   physicalLocationSearchEntryFormControl = new FormControl('');
   selectedCauseTagsFormControl = new FormControl([]);
   locationTypeFormControl = new FormControl(null);
@@ -48,7 +48,7 @@ export class EventsDashboardComponent implements OnInit {
       startWith(null),
       map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventModel[]]) => {
+      map(([date, events]: [Date, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
             return (new Date(event.startDate)) >= date;
@@ -63,7 +63,7 @@ export class EventsDashboardComponent implements OnInit {
       startWith(null),
       map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventModel[]]) => {
+      map(([date, events]: [Date, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
             return (new Date(event.endDate)) <= date;
@@ -85,7 +85,7 @@ export class EventsDashboardComponent implements OnInit {
         }
       }),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([locationType, events]: [LocationTypeEnum, EventModel[]]) => {
+      map(([locationType, events]: [LocationTypeEnum, EventResponseInterface[]]) => {
         if (locationType) {
           return events.filter((event) => {
             if (locationType === LocationTypeEnum.VIRTUAL) {
@@ -103,7 +103,7 @@ export class EventsDashboardComponent implements OnInit {
     const eventsFilteredByTags$ = this.selectedCauseTagsFormControl.valueChanges.pipe(
       startWith([]),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([causeTags, events]: [string[], EventModel[]]) => {
+      map(([causeTags, events]: [string[], EventResponseInterface[]]) => {
         return events.filter((event) => {
           const eventCauseTags = event.causes.map(cause => cause.causeName);
           return causeTags.every(causeTag => eventCauseTags.includes(causeTag));
@@ -114,7 +114,7 @@ export class EventsDashboardComponent implements OnInit {
     const eventsFilteredByPhysicalLocation$ = this.physicalLocationSearchEntryFormControl.valueChanges.pipe(
       startWith(''),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([locationSearchEntry, events]: [string, EventModel[]]) => {
+      map(([locationSearchEntry, events]: [string, EventResponseInterface[]]) => {
         if (locationSearchEntry === '') return events;
         const lowercaseLocationSearchEntry = locationSearchEntry.toLowerCase();
         return events.filter((event) => {
@@ -132,19 +132,19 @@ export class EventsDashboardComponent implements OnInit {
 
     this.eventsAfterFilters$ = eventsFilteredByTags$.pipe(
       combineLatestWith(eventsFilteredByLocationType$),
-      map(([eventsFilteredByTag, eventsFilteredByLocationType]: [EventModel[], EventModel[]]) => {
+      map(([eventsFilteredByTag, eventsFilteredByLocationType]: [EventResponseInterface[], EventResponseInterface[]]) => {
         return this.intersection(eventsFilteredByLocationType, eventsFilteredByTag);
       }),
       combineLatestWith(eventsFilteredByPhysicalLocation$),
-      map(([eventsFilteredByTagAndLocationType, eventsFilteredByLocation]: [EventModel[], EventModel[]]) => {
+      map(([eventsFilteredByTagAndLocationType, eventsFilteredByLocation]: [EventResponseInterface[], EventResponseInterface[]]) => {
         return this.intersection(eventsFilteredByTagAndLocationType, eventsFilteredByLocation)
       }),
       combineLatestWith(eventsFilteredByMinimumDate$),
-      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocation, eventsFilteredByMinimumDate$]: [EventModel[], EventModel[]]) => {
+      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocation, eventsFilteredByMinimumDate$]: [EventResponseInterface[], EventResponseInterface[]]) => {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocation, eventsFilteredByMinimumDate$)
       }),
       combineLatestWith(eventsFilteredByMaximumDate$),
-      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$]: [EventModel[], EventModel[]]) => {
+      map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$]: [EventResponseInterface[], EventResponseInterface[]]) => {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
     )
@@ -153,12 +153,12 @@ export class EventsDashboardComponent implements OnInit {
   }
 
 
-  private intersection(eventsFilteredByLocationType: EventModel[], eventsFilteredByTag: EventModel[]): EventModel[] {
+  private intersection(eventsFilteredByLocationType: EventResponseInterface[], eventsFilteredByTag: EventResponseInterface[]): EventResponseInterface[] {
     const eventsByLocationType = new Set(eventsFilteredByLocationType);
     return [...new Set(eventsFilteredByTag)].filter(x => eventsByLocationType.has(x));
   }
 
-  private addEventPhysicalLocations(events: EventModel[]) {
+  private addEventPhysicalLocations(events: EventResponseInterface[]) {
     let locations = [];
     events.forEach(event => {
       if (event.physicalLocation) {
@@ -175,7 +175,7 @@ export class EventsDashboardComponent implements OnInit {
     this.locations = [...new Set(locations)];
   }
 
-  private addCauseTags(events: EventModel[]) {
+  private addCauseTags(events: EventResponseInterface[]) {
     let causeTags = [];
     events.forEach(event => {
       if (event.causes) {

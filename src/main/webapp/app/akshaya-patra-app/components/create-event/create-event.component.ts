@@ -23,8 +23,12 @@ export class CreateEventComponent implements OnInit {
   selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
   emailFilters: {display: string, value: string}[] = [];
+  uploadFile: File | null;
   tagValidator = Validators.pattern('^@\\w+.\\w+');
 
+  handleFileInput(files: FileList) {
+    this.uploadFile = files.item(0);
+  }
 
   createEventForm = this.fb.group({
     eventName: ['', Validators.required],
@@ -37,7 +41,7 @@ export class CreateEventComponent implements OnInit {
     contactName: [''],
     contactPhoneNumber: [''],
     contactEmail: ['', Validators.email],
-    emailBody: [''],
+    emailBody: ['']
   });
 
   phyiscalLocationForm = this.fb.group({
@@ -120,7 +124,8 @@ export class CreateEventComponent implements OnInit {
         createEventForm.get('contactEmail').value,
         createEventForm.get('emailBody').value,
       ).withCauses(this.causes.map(cause => new CauseModel(cause.id, cause.causeName)))
-        .withEmailFilters(this.emailFilters.map(emailFilter => emailFilter.value));
+        .withEmailFilters(this.emailFilters.map(emailFilter => emailFilter.value))
+        .withFile(this.uploadFile);
 
       if (this.isPhysicalLocationTypeSelected()) {
         event.physicalLocation = new PhysicalLocationModel(

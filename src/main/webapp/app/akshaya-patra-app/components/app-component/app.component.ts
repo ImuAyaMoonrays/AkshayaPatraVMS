@@ -1,4 +1,4 @@
-import { Component, isDevMode, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { EventService } from "../../services/event/event.service";
 import { EventModel } from "../../models/event.model";
@@ -17,11 +17,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    if (isDevMode()) {
-      this.accountService.isAdminLoggedIn$().subscribe((isAdminLoggedIn) => {
-        isAdminLoggedIn && this.addTestData();
-      })
-    }
+    // if (isDevMode()) {
+    //   this.accountService.isAdminLoggedIn$().subscribe((isAdminLoggedIn) => {
+    //     isAdminLoggedIn && this.addTestData();
+    //   })
+    // }
 
     // Scroll to top after route change
     this.router.events.subscribe(evt => {

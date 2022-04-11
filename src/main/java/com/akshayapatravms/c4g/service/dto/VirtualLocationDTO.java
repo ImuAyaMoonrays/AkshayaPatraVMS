@@ -1,5 +1,7 @@
 package com.akshayapatravms.c4g.service.dto;
 
+import com.akshayapatravms.c4g.domain.VirtualLocation;
+
 public class VirtualLocationDTO {
 
     private String url;
@@ -7,6 +9,11 @@ public class VirtualLocationDTO {
     private String passcode;
 
     public VirtualLocationDTO() {
+    }
+
+    public VirtualLocationDTO(VirtualLocation virtualLocation) {
+        this.url = virtualLocation.getUrl();
+        this.passcode = virtualLocation.getPasscode();
     }
 
     public String getUrl() {

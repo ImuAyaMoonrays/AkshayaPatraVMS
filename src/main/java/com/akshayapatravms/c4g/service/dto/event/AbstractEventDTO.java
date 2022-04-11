@@ -1,16 +1,22 @@
-package com.akshayapatravms.c4g.service.dto;
+package com.akshayapatravms.c4g.service.dto.event;
 
 import com.akshayapatravms.c4g.domain.*;
+import com.akshayapatravms.c4g.service.dto.CauseDTO;
+import com.akshayapatravms.c4g.service.dto.PhysicalLocationDTO;
+import com.akshayapatravms.c4g.service.dto.TimeDTO;
+import com.akshayapatravms.c4g.service.dto.VirtualLocationDTO;
+
 import javax.validation.constraints.Email;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EventDTO {
+public abstract class AbstractEventDTO {
 
     private Long id;
 
-    private Set<Cause> causes;
+    private Set<CauseDTO> causes;
 
     private Set<String> emailFilters;
 
@@ -41,29 +47,49 @@ public class EventDTO {
 
     private String emailBody;
 
-    public EventDTO() {}
+    public AbstractEventDTO() {
+    }
 
-    public EventDTO(Event event) {
+    public AbstractEventDTO(Event event) {
         this.id = event.getId();
+
+        final Set<Cause> causes = event.getCauses();
+        if (causes != null && causes.size() > 0) {
+            this.causes = event.getCauses().stream()
+                .map(CauseDTO::new)
+                .collect(Collectors.toSet());
+        }
+
+        final Set<CorporateSubgroup> corporateSubgroups = event.getCorporateSubgroups();
+        if (corporateSubgroups != null && corporateSubgroups.size() > 0) {
+            this.emailFilters = event.getCorporateSubgroups().stream()
+                .map(CorporateSubgroup::getSubgroupEmailPatterns)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+        }
+
         this.eventName = event.getEventName();
+
+        final PhysicalLocation physicalLocation = event.getPhysicalLocation();
+        if (physicalLocation != null) {
+            this.physicalLocation = new PhysicalLocationDTO(physicalLocation);
+        }
+
+        final VirtualLocation virtualLocation = event.getVirtualLocation();
+        if (virtualLocation != null) {
+            this.virtualLocation = new VirtualLocationDTO(virtualLocation);
+        }
+
         this.description = event.getDescription();
         this.volunteersNeededAmount = event.getVolunteersNeededAmount();
         this.startDate = event.getStartDate();
         this.endDate = event.getEndDate();
+        this.startTime = new TimeDTO(event.getStartTime());
+        this.endTime = new TimeDTO(event.getEndTime());
         this.contactName = event.getContactName();
         this.contactPhoneNumber = event.getContactPhoneNumber();
         this.contactEmail = event.getContactEmail();
         this.emailBody = event.getEmailBody();
-
-        // Need to find out why are these DTO's?
-        //this.physicalLocation = new PhysicalLocationDTO(event.getPhysicalLocation());
-        //this.startTime = new TimeDTO(event.getStartTime());
-        //this.endTime = new TimeDTO(event.getEndTime());
-
-        // Event has Set<Cause>, EventDTO is expecting Set<CauseDTO>
-        this.causes = event.getCauses();
-        //this.corporateSubgroupIds = event.getCorporateSubgroups().stream().map(CorporateSubgroup::getId).collect(Collectors.toSet());
-
     }
 
     public VirtualLocationDTO getVirtualLocation() {
@@ -114,11 +140,11 @@ public class EventDTO {
         this.id = id;
     }
 
-    public Set<Cause> getCauses() {
+    public Set<CauseDTO> getCauses() {
         return causes;
     }
 
-    public void setCauses(Set<Cause> causes) {
+    public void setCauses(Set<CauseDTO> causes) {
         this.causes = causes;
     }
 
