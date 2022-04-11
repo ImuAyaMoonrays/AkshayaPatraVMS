@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Select } from "@ngxs/store";
 import { AppState } from "../../store/states/App.state";
 import { Observable } from "rxjs";
-import { EventModel } from "../../models/event.model";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 @Component({
   selector: 'jhi-admin-upcoming-events',
@@ -11,7 +11,7 @@ import { EventModel } from "../../models/event.model";
 })
 export class AdminUpcomingEventsComponent implements OnInit {
 
-  @Select(AppState.allFutureEvents) futureEvents$: Observable<EventModel[]>
+  @Select(AppState.allFutureEvents) futureEvents$: Observable<EventResponseInterface[]>
 
   constructor() { }
 

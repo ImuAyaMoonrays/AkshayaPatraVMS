@@ -54,6 +54,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name = "virtual_location_id", referencedColumnName = "id")
     private VirtualLocation virtualLocation;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;
+
     @Size(max = 100)
     @Column(name = "eventName", length = 100)
     private String eventName;
@@ -145,6 +149,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public void setId(Long id) {

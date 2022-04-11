@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppState } from "../../store/states/App.state";
 import { Observable } from "rxjs";
-import { EventModel } from "../../models/event.model";
 import { Select } from "@ngxs/store";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 @Component({
   selector: 'jhi-upcoming-events',
@@ -11,7 +11,7 @@ import { Select } from "@ngxs/store";
 })
 export class UpcomingUnregisteredEventsComponent implements OnInit {
 
-  @Select(AppState.upcomingUnregisteredEvents) upcomingEvents$: Observable<EventModel[]>
+  @Select(AppState.upcomingUnregisteredEvents) upcomingEvents$: Observable<EventResponseInterface[]>
 
   constructor() { }
 

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, merge, Observable, Subject } from 'rxjs';
-import { EventModel } from "../../models/event.model";
 import { EventService } from "../../services/event/event.service";
 import { Router } from "@angular/router";
 import { AccountService } from "../../services/auth/account.service";
@@ -9,6 +8,7 @@ import { Account } from "../../services/auth/account.model";
 import { CsvExportService } from "../../services/csv-export/csv-export.service";
 import { Store } from "@ngxs/store";
 import { AppActions } from "../../store/actions/app.actions";
+import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 
 @Component({
   selector: 'jhi-event',
@@ -17,14 +17,14 @@ import { AppActions } from "../../store/actions/app.actions";
 })
 export class EventComponent implements OnInit {
 
-  event$: Observable<EventModel>;
+  event$: Observable<EventResponseInterface>;
   isPastEvent: boolean;
   @Input() hideButton: boolean = false;
   @Input() isExpandedView: boolean = true;
   isCompleted: boolean;
   buttonText: 'Register' | 'Unregister';
   buttonFunction: Function;
-  forceEvent$: Subject<EventModel> = new Subject<EventModel>();
+  forceEvent$: Subject<EventResponseInterface> = new Subject<EventResponseInterface>();
 
   constructor(private router: Router,
               private store: Store,
@@ -41,8 +41,8 @@ export class EventComponent implements OnInit {
 
     // this is psychotic. Refactor this.
     this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
-      tap((eventAndAccount: [EventModel, Account]) => {
-        if (eventAndAccount[0].volunteers.map(volunteer => volunteer.id).includes(eventAndAccount[1].id)) {
+      tap((eventAndAccount: [EventResponseInterface, Account]) => {
+        if (eventAndAccount[0].volunteers?.map(volunteer => volunteer.id).includes(eventAndAccount[1].id)) {
           this.buttonText = 'Unregister';
           this.buttonFunction = this.unregister;
         } else {
