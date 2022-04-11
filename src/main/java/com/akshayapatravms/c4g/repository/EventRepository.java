@@ -35,6 +35,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT * " +
         "FROM Event e " +
         "LEFT JOIN USER_EVENT ue ON e.id = ue.event_id " +
+        "LEFT JOIN USER u ON ue.user_id = u.id " +
+        "LEFT JOIN EVENT_CORPORATE_SUBGROUP ecs ON ecs.event_id = e.id " +
+        "LEFT JOIN CORPORATE_SUBGROUP cs ON ecs.corporate_subgroup_id = cs.id " +
+        "LEFT JOIN SUBGROUP_EMAIL_PATTERN sep ON sep.corporate_subgroup_id = cs.id " +
+        "WHERE ue.user_id <> :userId and e.end_date > CURRENT_TIMESTAMP", nativeQuery = true)
+    List<Event> allFutureUnregisteredEventsForUser(@Param("userId")long userId);
+
+    @Query(value = "SELECT * " +
+        "FROM Event e " +
+        "LEFT JOIN USER_EVENT ue ON e.id = ue.event_id " +
         "WHERE ue.user_id =:userId and e.end_date < CURRENT_TIMESTAMP", nativeQuery = true)
     List<Event> findAllCompletedEventsForUser(@Param("userId")long userId);
 

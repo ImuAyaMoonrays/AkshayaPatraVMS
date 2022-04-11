@@ -31,6 +31,10 @@ public class Cause extends AbstractAuditingEntity implements Serializable {
 
     public Cause() {}
 
+    public Cause(String name) {
+        this.causeName = name;
+    }
+
     public Cause(CauseDTO causeDTO) {
         this.causeName = causeDTO.getCauseName();
         this.id = causeDTO.getId();

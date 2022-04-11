@@ -7,7 +7,8 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.EventDTO;
+import com.akshayapatravms.c4g.service.dto.event.AdminCreateOrUpdateEventDTO;
+import com.akshayapatravms.c4g.service.mapper.EventMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,6 +40,8 @@ public class EventService {
 
     private final UserService userService;
 
+    private final EventMapper eventMapper;
+
     private final ImageService imageService;
 
     private final CacheManager cacheManager;
@@ -48,169 +52,38 @@ public class EventService {
         UserService userService,
         ImageService imageService,
         CauseRepository causeRepository,
-        CorporateSubgroupRepository corporateSubgroupRepository
+        CorporateSubgroupRepository corporateSubgroupRepository,
+        EventMapper eventMapper
     ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
         this.imageService = imageService;
         this.causeRepository = causeRepository;
+        this.eventMapper = eventMapper;
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
-    public Event createEvent(CreateEventDTO createEventDTO, MultipartFile image) {
+    public Event createEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image) {
         Event event = new Event();
-
-        if (image != null) {
-            Image persistedImage = this.persistedImage(image);
-            event.setImage(persistedImage);
-        }
-
-
-        if (createEventDTO.getCauses() != null && createEventDTO.getCauses().size() > 0) {
-            Set<Cause> causes = existingAndNewCauses(createEventDTO);
-            event.setCauses(causes);
-        }
-
-
-        if (createEventDTO.getEmailFilters() != null && createEventDTO.getEmailFilters().size() > 0) {
-            CorporateSubgroup corporateSubgroup = newCorporateSubgroup(createEventDTO.getEmailFilters());
-            event.setCorporateSubgroups(Collections.singleton(corporateSubgroup));
-        }
-
-
-        event.setEventName(createEventDTO.getEventName());
-
-        if (createEventDTO.getPhysicalLocation() != null) {
-            event.setLocation(new PhysicalLocation(createEventDTO.getPhysicalLocation()));
-        } else if (createEventDTO.getVirtualLocation() != null) {
-            event.setVirtualLocation(new VirtualLocation(createEventDTO.getVirtualLocation()));
-        }
-
-        event.setDescription(createEventDTO.getDescription());
-        event.setVolunteersNeededAmount(createEventDTO.getVolunteersNeededAmount());
-        event.setStartDate(createEventDTO.getStartDate());
-        event.setEndDate(createEventDTO.getEndDate());
-        event.setStartTime(new Time(createEventDTO.getStartTime()));
-        event.setEndTime(new Time(createEventDTO.getEndTime()));
-        event.setContactName(createEventDTO.getContactName());
-        event.setContactPhoneNumber(createEventDTO.getContactPhoneNumber());
-        event.setContactEmail(createEventDTO.getContactEmail());
-        event.setEmailBody(createEventDTO.getEmailBody());
-
         User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
         event.setEventCreator(user);
+
+        setEventDTOAndImageRequestOnEvent(createEventDTO, image, event);
 
         return eventRepository.save(event);
     }
 
-    //saves new causes to db
-    private Set<Cause> existingAndNewCauses(AbstractEventDTO abstractEventDTO) throws RuntimeException {
-        return abstractEventDTO
-            .getCauses()
-            .stream()
-            .map(causeDTO -> {
-                if (causeDTO.getId() != null) {
-                    return causeRepository
-                        .findOneById(causeDTO.getId())
-                        .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
-                } else {
-                    //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
-                    if (causeRepository.findOneByCauseName(causeDTO.getCauseName().toUpperCase()).isPresent()) {
-                        log.error("cause + " + causeDTO.getCauseName() + " already exists");
-                        throw new RuntimeException(
-                            "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
-                        );
-                    } else {
-                        Cause cause = new Cause();
-                        cause.setCauseName(causeDTO.getCauseName().toUpperCase());
-                        return causeRepository.save(cause);
-                    }
-                }
-            })
-            .collect(Collectors.toSet());
-    }
-
-//    temporarily only sending events with a list of email filters, ie @google.com, @apple.com
-    private CorporateSubgroup newCorporateSubgroup(Set<String> emailFilters) {
-        CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
-        corporateSubgroup.setSubgroupEmailPatterns(emailFilters);
-        return corporateSubgroupRepository.save(corporateSubgroup);
-    }
-
-    private Image persistedImage(MultipartFile image) throws RuntimeException {
-        try {
-            return imageService.saveImage(image);
-        } catch (IOException ioException) {
-            throw new RuntimeException("Cannot accept this filetype");
+    public Event updatedEvent(AdminCreateOrUpdateEventDTO adminUpdateEventDTO, MultipartFile image) {
+        Optional<Event> existingEventOptional = eventRepository.findOneById(adminUpdateEventDTO.getId());
+        if (existingEventOptional.isEmpty()) {
+            throw new RuntimeException(String.format("Could not find event with id %d", adminUpdateEventDTO.getId()));
         }
 
-
-        event.setEventName(eventDTO.getEventName());
-
-        if (eventDTO.getPhysicalLocation() != null) {
-            event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
-        } else if (eventDTO.getVirtualLocation() != null) {
-            event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
-        }
-
-        event.setDescription(eventDTO.getDescription());
-        event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-        event.setStartDate(eventDTO.getStartDate());
-        event.setEndDate(eventDTO.getEndDate());
-        event.setStartTime(new Time(eventDTO.getStartTime()));
-        event.setEndTime(new Time(eventDTO.getEndTime()));
-        event.setContactName(eventDTO.getContactName());
-        event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
-        event.setContactEmail(eventDTO.getContactEmail());
-        event.setEmailBody(eventDTO.getEmailBody());
-
-        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
-        event.setEventCreator(user);
-
-        return eventRepository.save(event);
+        Event existingEvent = existingEventOptional.get();
+        setEventDTOAndImageRequestOnEvent(adminUpdateEventDTO, image, existingEvent);
+        return existingEvent;
     }
-
-    private HashSet<String> getEmailPatternsForEvent(Event event) {
-        HashSet<String> emailPatterns = new HashSet<>();
-        for (CorporateSubgroup corp : event.getCorporateSubgroups()) {
-            emailPatterns.addAll(corp.getSubgroupEmailPatterns());
-        }
-
-        return emailPatterns;
-    }
-
-    private Boolean isEmailMatch(Set<String> emailPatterns, String email) {
-        for (String emailPattern : emailPatterns) {
-            if (email.endsWith(emailPattern)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void checkEligibility(User user, Event event) throws RuntimeException {
-//          Turned off until we have TOS set up
-//        if (user.getAcceptedTOS() != true){
-//            throw new RuntimeException("User has not accepted TOS");
-//        }
-
-        //have volunteers spots left
-        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()) {
-            throw new RuntimeException("volunteering event is full");
-        }
-
-        //does user have an email that is eligible for event
-        if (event.getCorporateSubgroups().size() > 0) {
-            HashSet<String> emailPatterns = getEmailPatternsForEvent(event);
-            if (!isEmailMatch(emailPatterns, user.getEmail())) {
-                throw new RuntimeException("user does not have an allowed corporate email");
-            }
-        }
-
-        log.info("user is eligible for event");
-    }
-
 
     public void volunteerForEvent(Long eventID) throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();
@@ -237,6 +110,145 @@ public class EventService {
 
     }
 
+    private void setEventDTOAndImageRequestOnEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image, Event event) {
+        if (image != null) {
+            Image persistedImage = this.persistedImage(image);
+            event.setImage(persistedImage);
+        }
+
+
+        addDTOCausesToEvent(createEventDTO, event);
+
+
+        addDTOCorporateSubgroupsToEvent(createEventDTO, event);
+
+
+        event.setEventName(createEventDTO.getEventName());
+
+        if (createEventDTO.getPhysicalLocation() != null) {
+            event.setLocation(new PhysicalLocation(createEventDTO.getPhysicalLocation()));
+        } else if (createEventDTO.getVirtualLocation() != null) {
+            event.setVirtualLocation(new VirtualLocation(createEventDTO.getVirtualLocation()));
+        }
+
+        event.setDescription(createEventDTO.getDescription());
+        event.setVolunteersNeededAmount(createEventDTO.getVolunteersNeededAmount());
+        event.setStartDate(createEventDTO.getStartDate());
+        event.setEndDate(createEventDTO.getEndDate());
+        event.setStartTime(new Time(createEventDTO.getStartTime()));
+        event.setEndTime(new Time(createEventDTO.getEndTime()));
+        event.setContactName(createEventDTO.getContactName());
+        event.setContactPhoneNumber(createEventDTO.getContactPhoneNumber());
+        event.setContactEmail(createEventDTO.getContactEmail());
+        event.setEmailBody(createEventDTO.getEmailBody());
+    }
+
+
+    private void addDTOCorporateSubgroupsToEvent(AdminCreateOrUpdateEventDTO createEventDTO, Event event) {
+        if (createEventDTO.getEmailFilters() != null && createEventDTO.getEmailFilters().size() > 0) {
+            CorporateSubgroup corporateSubgroup = newCorporateSubgroup(createEventDTO.getEmailFilters());
+            event.setCorporateSubgroups(Collections.singleton(corporateSubgroup));
+        }
+    }
+
+    private void addDTOCausesToEvent(AdminCreateOrUpdateEventDTO createEventDTO, Event event) {
+        Set<String> newCauseNames = createEventDTO.getNewCauses();
+        Set<Long> existingCauseIDs = createEventDTO.getExistingCauseIDs();
+        if (( newCauseNames != null && newCauseNames.size() > 0 ) || ( existingCauseIDs != null && existingCauseIDs.size() > 0 ) ) {
+            Set<Cause> causes = existingAndNewCauses(newCauseNames, existingCauseIDs);
+            event.setCauses(causes);
+        }
+    }
+    //    saves new causes to the db and retrieves existing causes from the db. Returns a set of them all.
+
+    private Set<Cause> existingAndNewCauses(Set<String> newCauseNames, Set<Long> existingCauseIDs) throws RuntimeException {
+        final Set<Cause> causes = new HashSet<>();
+
+        if (newCauseNames != null && newCauseNames.size() > 0) {
+            final Set<Cause> newCauses = newCauseNames.stream()
+                .map(causeName -> {
+                    if (causeRepository.findOneByCauseName(causeName).isPresent()) {
+                        throw new RuntimeException(String.format("Cause with cause name %s already exists", causeName));
+                    } else {
+                        return causeRepository.save(new Cause(causeName));
+                    }
+                })
+                .collect(Collectors.toSet());
+
+            causes.addAll(newCauses);
+        }
+
+
+        if (existingCauseIDs != null && existingCauseIDs.size() > 0) {
+            final Set<Cause> existingCauses = existingCauseIDs.stream()
+                .map(existingCauseID -> {
+                    return causeRepository.findOneById(existingCauseID).orElseThrow(() -> {
+                        return new RuntimeException(String.format("no cause with id %d exists", existingCauseID));
+                    });
+                })
+                .collect(Collectors.toSet());
+            causes.addAll(existingCauses);
+        }
+
+        return causes;
+    }
+    //    temporarily only sending events with a list of email filters, ie @google.com, @apple.com
+
+    private CorporateSubgroup newCorporateSubgroup(Set<String> emailFilters) {
+        CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
+        corporateSubgroup.setSubgroupEmailPatterns(emailFilters);
+        return corporateSubgroupRepository.save(corporateSubgroup);
+    }
+
+    private Image persistedImage(MultipartFile image) throws RuntimeException {
+        try {
+            return imageService.saveImage(image);
+        } catch (IOException ioException) {
+            throw new RuntimeException("Cannot accept this filetype");
+        }
+    }
+
+    private HashSet<String> getEmailPatternsForEvent(Event event) {
+        HashSet<String> emailPatterns = new HashSet<>();
+        for (CorporateSubgroup corp : event.getCorporateSubgroups()) {
+            emailPatterns.addAll(corp.getSubgroupEmailPatterns());
+        }
+
+        return emailPatterns;
+    }
+
+    private Boolean isEmailMatch(Set<String> emailPatterns, String email) {
+        for (String emailPattern : emailPatterns) {
+            if (email.endsWith(emailPattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void checkEligibility(User user, Event event) throws RuntimeException {
+//          Turned off until we have TOS set up
+//        if (user.getAcceptedTOS() != true){
+//            throw new RuntimeException("User has not accepted TOS");
+//        }
+
+        //have volunteers spots left
+        if (event.getVolunteers().size() >= event.getVolunteersNeededAmount()) {
+            throw new RuntimeException("volunteering event is full");
+        }
+
+        //does user have an email that is eligible for event
+        if (event.getCorporateSubgroups().size() > 0) {
+            HashSet<String> emailPatterns = getEmailPatternsForEvent(event);
+            if (!isEmailMatch(emailPatterns, user.getEmail())) {
+                throw new RuntimeException("user does not have an allowed corporate email");
+            }
+        }
+
+        log.info("user is eligible for event");
+    }
+
+
     public void unRegisterForEvent(Long eventID) throws RuntimeException {
 
         final Optional<User> isUser = userService.getUserWithAuthorities();
@@ -249,23 +261,61 @@ public class EventService {
 
         if (event.isPresent()) {
             try {
-//                log.info("event" + event.get());
-//                log.info("volunteer count before " + event.get().getVolunteers().size());
                 event.get().getVolunteers().remove(isUser.get());
-//                log.info("volunteer count after " + event.get().getVolunteers().size());
-//                log.info("user id " + user.getId() + " event id " + event.get().getId());
                 eventRepository.save(event.get());
 
-//                log.info("num of volunteers " + event.get().getVolunteers().size());
-//                log.info("num of events vol for " + user.getEvents().size());
-//                log.info("volunteers for event " + event.get().getVolunteers());
-//                log.info("events volunteering for " + user.getEvents());
                 //join table is emptied, but user is still showing events.
             } catch (Exception e) {
                 throw new RuntimeException("unable to save event");
             }
         } else {
             throw new RuntimeException("unable to find event");
+        }
+    }
+
+
+    public List<Event> allPastEvents() throws RuntimeException {
+        return eventRepository.findAllPastEvents();
+    }
+
+    public List<Event> allFutureEvents() throws RuntimeException {
+        return eventRepository.findAllFutureEvents();
+    }
+    public List<Event> allRegisterableEventsForLoggedInUser() throws RuntimeException {
+        final Optional<User> userOptional = userService.getUserWithAuthorities();
+        if (!userOptional.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        return eventRepository.allFutureUnregisteredEventsForUser(userOptional.get().getId());
+    }
+
+
+
+
+    public List<Event> allRegisteredEventsForLoggedInUser() throws RuntimeException {
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        return eventRepository.findAllFutureEventsForUser(isUser.get().getId());
+    }
+
+    public List<Event> getAllCompletedEventsForUser() throws RuntimeException {
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        return eventRepository.findAllCompletedEventsForUser(isUser.get().getId());
+    }
+
+    public void deleteEvent(Long eventID) throws RuntimeException {
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            eventRepository.deleteEventByCreator(eventID, isUser.get().getId());
+            log.debug("Deleted Event: {}", eventID);
         }
     }
 
@@ -281,79 +331,6 @@ public class EventService {
         }
     }
 
-        public Optional<EventDTO> updateEvent(EventDTO eventDTO) {
-        return Optional
-            .of(eventRepository.findById(eventDTO.getId()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(event -> {
-                Set<Cause> causes = event.getCauses();
-                causes.clear();
-                if (eventDTO.getCauses() != null) {
-                    eventDTO
-                        .getCauses()
-                        .stream()
-                        .map(CauseDTO::getId)
-                        .map(causeRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .forEach(causes::add);
-                }
-
-
-                Set<CorporateSubgroup> corporateSubgroups = event.getCorporateSubgroups();
-                corporateSubgroups.clear();
-                if (eventDTO.getCorporateSubgroups() != null) {
-                    eventDTO
-                        .getCorporateSubgroups()
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .map(CorporateSubgroup::getId)
-                        .map(corporateSubgroupRepository::findById)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .forEach(corporateSubgroups::add);
-                }
-                if (eventDTO.getEventName() != null) {
-                    event.setEventName(eventDTO.getEventName());
-                }
-                if (eventDTO.getDescription() != null) {
-                    event.setDescription(eventDTO.getDescription());
-                }
-                if (eventDTO.getContactEmail() != null) {
-                    event.setContactEmail(eventDTO.getContactEmail());
-                }
-                if (eventDTO.getContactName() != null) {
-                    event.setContactName(eventDTO.getContactName());
-                }
-                if (eventDTO.getContactPhoneNumber() != null) {
-                    event.setContactPhoneNumber(eventDTO.getContactPhoneNumber());
-                }
-                if (eventDTO.getEmailBody() != null) {
-                    event.setEmailBody(eventDTO.getEmailBody());
-                }
-                if (eventDTO.getEndDate() != null) {
-                    event.setEndDate(eventDTO.getEndDate());
-                }
-                if (eventDTO.getStartDate() != null) {
-                    event.setStartDate(eventDTO.getStartDate());
-                }
-                if (eventDTO.getStartTime() != null) {
-                    event.setStartTime(new Time(eventDTO.getStartTime()));
-                }
-                if (eventDTO.getPhysicalLocation() != null) {
-                    event.setLocation(new PhysicalLocation(eventDTO.getPhysicalLocation()));
-                }
-                if (eventDTO.getVirtualLocation() != null) {
-                    event.setVirtualLocation(new VirtualLocation(eventDTO.getVirtualLocation()));
-                }
-                if (eventDTO.getVolunteersNeededAmount() != null) {
-                    event.setVolunteersNeededAmount(eventDTO.getVolunteersNeededAmount());
-                }
-                return event;
-            })
-            .map(EventDTO::new);
-    }
 
 
     //code from https://codeburst.io/returning-csv-content-from-an-api-in-spring-boot-63ea82bbcf0f
@@ -369,7 +346,7 @@ public class EventService {
             csvBody.add(Arrays.asList(volunteer.getFullName(), volunteer.getEmail()));
         }
 
-        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader, csvBody);
         CsvDTO csvDTO = new CsvDTO();
         //add date as well to name?
         //may need to validate event name in case there's some character in the name that doesn't play well with filenames
@@ -416,15 +393,15 @@ public class EventService {
             String country = null;
             String passcode = null;
             String url = null;
-            if (event.getPhysicalLocation() != null){
-                address= event.getPhysicalLocation().getAddress();
-                state  =  event.getPhysicalLocation().getState();
-                city =  event.getPhysicalLocation().getCity();
+            if (event.getPhysicalLocation() != null) {
+                address = event.getPhysicalLocation().getAddress();
+                state = event.getPhysicalLocation().getState();
+                city = event.getPhysicalLocation().getCity();
                 locality = event.getPhysicalLocation().getLocality();
                 region = event.getPhysicalLocation().getRegion();
                 country = event.getPhysicalLocation().getCountry();
             }
-            if (event.getVirtualLocation() != null){
+            if (event.getVirtualLocation() != null) {
                 passcode = event.getVirtualLocation().getPasscode();
                 url = event.getVirtualLocation().getUrl();
             }
@@ -433,7 +410,7 @@ public class EventService {
                 String.valueOf(event.getId()),
                 event.getEventName(),
                 event.getDescription(),
-               String.valueOf(event.getVolunteersNeededAmount()),
+                String.valueOf(event.getVolunteersNeededAmount()),
                 String.valueOf(event.getVolunteers().size()),
                 event.getStartDate().toString(),
                 event.getEndDate().toString(),
@@ -454,7 +431,7 @@ public class EventService {
             ));
         }
 
-        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader, csvBody);
         CsvDTO csvDTO = new CsvDTO();
         csvDTO.setFileName("all_event_info.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
@@ -476,7 +453,7 @@ public class EventService {
         for (Event event : events) {
             String eventID = String.valueOf(event.getId());
             String eventName = String.valueOf(event.getEventName());
-            for (User user: event.getVolunteers()) {
+            for (User user : event.getVolunteers()) {
                 csvBody.add(Arrays.asList(
                     eventID,
                     eventName,
@@ -487,15 +464,14 @@ public class EventService {
         }
 
 
-
-        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader,csvBody);
+        ByteArrayInputStream byteArrayOutputStream = createCSVStream(csvHeader, csvBody);
         CsvDTO csvDTO = new CsvDTO();
         csvDTO.setFileName("all_event_volunteers.csv");
         csvDTO.setDataStream(new InputStreamResource(byteArrayOutputStream));
         return csvDTO;
     }
 
-    private ByteArrayInputStream createCSVStream( String[] csvHeader,List<List<String>> csvBody ) throws RuntimeException {
+    private ByteArrayInputStream createCSVStream(String[] csvHeader, List<List<String>> csvBody) throws RuntimeException {
         ByteArrayInputStream byteArrayOutputStream;
 
         try (
