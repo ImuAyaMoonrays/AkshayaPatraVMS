@@ -17,7 +17,7 @@ export class EventService {
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {
   }
 
-  createEvent$(eventCreationPayload: CreateEventInterface, file: File): Observable<any> {
+  createEvent$(eventCreationPayload: CreateEventInterface, file: File): Observable<EventResponseInterface> {
     const formData: FormData = new FormData();
     if (file) {
       formData.append('file', file, file?.name);
@@ -25,7 +25,7 @@ export class EventService {
     formData.append('eventWithoutImage', new Blob([JSON.stringify(eventCreationPayload)], {
       type: "application/json"
     }));
-    return this.http.post(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/createEvent`), formData);
+    return this.http.post<EventResponseInterface>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/createEvent`), formData);
   }
 
   adminAllFutureEvents$(): Observable<EventResponseInterface[]> {

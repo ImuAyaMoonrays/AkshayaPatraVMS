@@ -34,7 +34,9 @@ const routes: Routes = [
         canActivate: [RouteAcccessByRequiredAuthoritiesService],
         children: [
           {path: 'events/upcoming', component: AdminUpcomingEventsComponent},
+          {path: 'events/upcoming/:id', component: EventComponent},
           {path: 'events/past', component: AdminPastEventsComponent},
+          {path: 'events/past/:id', component: EventComponent},
           {path: 'createEvent', component: CreateEventComponent},
           {path: 'promote', component: PromoteToAdminComponent},
         ]
@@ -47,11 +49,13 @@ const routes: Routes = [
         canActivate: [RouteAcccessByRequiredAuthoritiesService],
         children: [
           {path: 'events/upcoming', component: UpcomingUnregisteredEventsComponent},
+          {path: 'events/upcoming/:id', component: EventComponent},
           {path: 'events/completed', component: CompletedEventsComponent},
+          {path: 'events/completed/:id', component: EventComponent},
           {path: 'events/registered', component: RegisteredEventsComponent},
+          {path: 'events/registered/:id', component: EventComponent},
         ]
       },
-      {path: 'events/:id', component: EventComponent},
       {path: 'profile', component: ProfileComponent},
     ],
   },
