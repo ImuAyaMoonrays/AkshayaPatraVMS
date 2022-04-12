@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from '../../constants/error.constants';
 import { Subscription } from "rxjs";
 import { AppConstants } from "../../constants/app.constants";
+import { Registration } from "../../models/register.model";
 
 @Component({
   selector: 'app-register',
@@ -31,6 +32,8 @@ export class RegisterComponent implements OnInit {
     Validators.maxLength(50)];
 
   registerForm = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
     login: [
       '',
       [
@@ -70,10 +73,17 @@ export class RegisterComponent implements OnInit {
     } else if (!this.registerForm.get(['termsAndConditions']).value) {
       this.showTermsAndConditionsNeedsToBeAcceptedMessage = true;
     } else {
-      const login = this.registerForm.get(['login'])!.value;
-      const email = this.registerForm.get(['email'])!.value;
-      const phoneNumber = this.registerForm.get(['phoneNumber'])!.value;
-      this.registerService.save({login, email, password, phoneNumber, langKey: 'en'}).subscribe(
+      this.registerService.save(
+        new Registration(
+          this.registerForm.get('firstName').value,
+          this.registerForm.get('lastName').value,
+          this.registerForm.get('login').value,
+          this.registerForm.get('email').value,
+          password,
+          this.registerForm.get('phoneNumber').value,
+          'en'
+        )
+      ).subscribe(
         () => (this.success = true),
         response => this.processError(response)
       );
