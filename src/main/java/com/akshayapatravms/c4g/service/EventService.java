@@ -21,6 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -333,7 +336,7 @@ public class EventService {
         return csvDTO;
     }
 
-    public CsvDTO createCSVFileOfAllEventDescription() throws RuntimeException {
+    public CsvDTO createCSVFileOfAllEventDescription(LocalDate startDate, LocalDate endDate) throws RuntimeException {
         String[] csvHeader = {
             "id",
             "eventName",
@@ -358,8 +361,11 @@ public class EventService {
             "passcode"
         };
 
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        Instant startDateInstant = startDate.atStartOfDay().atZone(zone).toInstant();
+        Instant endDateInstant = endDate.atStartOfDay().atZone(zone).toInstant();
 
-        List<Event> events = eventRepository.findAllEventInfo();
+        List<Event> events = eventRepository.findAllEventInfoWithDateFilter(startDateInstant,endDateInstant);
         List<List<String>> csvBody = new ArrayList<>(events.size());
 
         for (Event event : events) {
@@ -416,7 +422,7 @@ public class EventService {
         return csvDTO;
     }
 
-    public CsvDTO createCSVFileOfAllEventVolunteers() throws RuntimeException {
+    public CsvDTO createCSVFileOfAllEventVolunteers(LocalDate startDate, LocalDate endDate) throws RuntimeException {
         String[] csvHeader = {
             "eventID",
             "eventName",
@@ -425,7 +431,11 @@ public class EventService {
         };
 
 
-        List<Event> events = eventRepository.findAllEventsAndVolunteers();
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        Instant startDateInstant = startDate.atStartOfDay().atZone(zone).toInstant();
+        Instant endDateInstant = endDate.atStartOfDay().atZone(zone).toInstant();
+
+        List<Event> events = eventRepository.findAllEventsAndVolunteers(startDateInstant,endDateInstant);
         List<List<String>> csvBody = new ArrayList<>(events.size());
 
         for (Event event : events) {
