@@ -14,13 +14,17 @@ public class AdminEventResponseDTO extends AbstractAdminEventDTO {
     @Nullable
     private ImageResponseDTO image;
     private Set<CauseDTO> causes;
+    private Integer currentAmountOfVolunteers;
 
     public AdminEventResponseDTO() {
     }
 
     public AdminEventResponseDTO(Event event) {
         super(event);
-        this.image = new ImageResponseDTO(event.getImage());
+        if (event.getImage() != null) {
+            this.image = new ImageResponseDTO(event.getImage());
+        }
+        this.currentAmountOfVolunteers = event.getVolunteers().size();
         final Set<Cause> causes = event.getCauses();
         if (causes != null && causes.size() > 0) {
             this.causes = event.getCauses().stream()
@@ -44,5 +48,13 @@ public class AdminEventResponseDTO extends AbstractAdminEventDTO {
 
     public void setCauses(Set<CauseDTO> causes) {
         this.causes = causes;
+    }
+
+    public Integer getCurrentAmountOfVolunteers() {
+        return currentAmountOfVolunteers;
+    }
+
+    public void setCurrentAmountOfVolunteers(Integer currentAmountOfVolunteers) {
+        this.currentAmountOfVolunteers = currentAmountOfVolunteers;
     }
 }

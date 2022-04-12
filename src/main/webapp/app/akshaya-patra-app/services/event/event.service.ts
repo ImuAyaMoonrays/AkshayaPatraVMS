@@ -19,7 +19,9 @@ export class EventService {
 
   createEvent$(eventCreationPayload: CreateEventInterface, file: File): Observable<any> {
     const formData: FormData = new FormData();
-    formData.append('file', file, file?.name);
+    if (file) {
+      formData.append('file', file, file?.name);
+    }
     formData.append('eventWithoutImage', new Blob([JSON.stringify(eventCreationPayload)], {
       type: "application/json"
     }));

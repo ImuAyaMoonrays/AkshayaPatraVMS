@@ -65,24 +65,24 @@ public class EventService {
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
-    public Event createEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image) {
+    public Event createEvent(AdminCreateOrUpdateEventDTO createEventDTO, Optional<MultipartFile> imageOptional) {
         Event event = new Event();
         User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
         event.setEventCreator(user);
 
-        setEventDTOAndImageRequestOnEvent(createEventDTO, image, event);
+        setEventDTOAndImageRequestOnEvent(createEventDTO, imageOptional, event);
 
         return eventRepository.save(event);
     }
 
-    public Event updatedEvent(AdminCreateOrUpdateEventDTO adminUpdateEventDTO, MultipartFile image) {
+    public Event updatedEvent(AdminCreateOrUpdateEventDTO adminUpdateEventDTO, Optional<MultipartFile> imageOptional) {
         Optional<Event> existingEventOptional = eventRepository.findOneById(adminUpdateEventDTO.getId());
         if (existingEventOptional.isEmpty()) {
             throw new RuntimeException(String.format("Could not find event with id %d", adminUpdateEventDTO.getId()));
         }
 
         Event existingEvent = existingEventOptional.get();
-        setEventDTOAndImageRequestOnEvent(adminUpdateEventDTO, image, existingEvent);
+        setEventDTOAndImageRequestOnEvent(adminUpdateEventDTO, imageOptional, existingEvent);
         return existingEvent;
     }
 
@@ -111,9 +111,9 @@ public class EventService {
 
     }
 
-    private void setEventDTOAndImageRequestOnEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image, Event event) {
-        if (image != null) {
-            Image persistedImage = this.persistedImage(image);
+    private void setEventDTOAndImageRequestOnEvent(AdminCreateOrUpdateEventDTO createEventDTO, Optional<MultipartFile> imageOptional, Event event) {
+        if (imageOptional.isPresent()) {
+            Image persistedImage = this.persistedImage(imageOptional.get());
             event.setImage(persistedImage);
         }
 

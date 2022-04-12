@@ -5,6 +5,7 @@ import { CauseInterface } from "../cause.interface";
 
 export interface EventResponseInterface extends AbstractEventInterface {
   id: string;
+  currentAmountOfVolunteers: number;
   image?: ImageResponseInterface;
   volunteers?: Account[];
   causes?: CauseInterface[]

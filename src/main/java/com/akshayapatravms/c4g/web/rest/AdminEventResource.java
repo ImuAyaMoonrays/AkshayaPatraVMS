@@ -49,14 +49,14 @@ public class AdminEventResource {
     @PostMapping(value = "/createEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public AdminEventResponseDTO createEvent(
         @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO createEventDTO,
-        @RequestPart("file") @Valid MultipartFile image) throws URISyntaxException {
+        @RequestPart("file") @Valid Optional<MultipartFile> image) throws URISyntaxException {
         return new AdminEventResponseDTO(eventService.createEvent(createEventDTO, image));
     }
 
     @PatchMapping(value = "/updateEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public AdminEventResponseDTO updateEvent(
         @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO adminUpdateDTO,
-        @RequestPart("file") @Valid MultipartFile image) {
+        @RequestPart("file") @Valid Optional<MultipartFile> image) {
         return new AdminEventResponseDTO(eventService.updatedEvent(adminUpdateDTO, image));
     }
 
