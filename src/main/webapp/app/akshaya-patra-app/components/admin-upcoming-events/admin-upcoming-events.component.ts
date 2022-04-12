@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Select } from "@ngxs/store";
+import { Select, Store } from "@ngxs/store";
 import { AppState } from "../../store/states/App.state";
 import { Observable } from "rxjs";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { AppActions } from "../../store/actions/app.actions";
 
 @Component({
   selector: 'jhi-admin-upcoming-events',
@@ -11,11 +12,12 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 })
 export class AdminUpcomingEventsComponent implements OnInit {
 
-  @Select(AppState.allFutureEvents) futureEvents$: Observable<EventResponseInterface[]>
+  @Select(AppState.adminAllFutureEvents) futureEvents$: Observable<EventResponseInterface[]>
 
-  constructor() { }
+  constructor(private store: Store) { }
 
   ngOnInit(): void {
+    this.store.dispatch(new AppActions.UpdateAdminFutureEvents());
   }
 
 }

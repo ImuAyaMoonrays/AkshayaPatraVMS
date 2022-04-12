@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, startWith, tap } from 'rxjs';
 import { Store } from "@ngxs/store";
-import { AppActions } from "../../store/actions/app.actions";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
@@ -105,8 +104,8 @@ export class EventsDashboardComponent implements OnInit {
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
       map(([causeTags, events]: [string[], EventResponseInterface[]]) => {
         return events.filter((event) => {
-          const eventCauseTags = event.causes.map(cause => cause.causeName);
-          return causeTags.every(causeTag => eventCauseTags.includes(causeTag));
+          const eventCauseTags = event.causes?.map(cause => cause.causeName);
+          return causeTags.every(causeTag => eventCauseTags?.includes(causeTag));
         })
       })
     )
@@ -148,8 +147,6 @@ export class EventsDashboardComponent implements OnInit {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
     )
-
-    this.store.dispatch(AppActions.UpdateAllEventsAction);
   }
 
 

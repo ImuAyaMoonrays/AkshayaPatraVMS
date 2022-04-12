@@ -12,12 +12,12 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 })
 export class RegisteredEventsComponent implements OnInit {
 
-  @Select(AppState.upcomingRegisteredEvents) registeredEvents$: Observable<EventResponseInterface[]>
+  @Select(AppState.normalUserRegisteredEvents) registeredEvents$: Observable<EventResponseInterface[]>
 
   constructor(private store: Store) { }
 
   ngOnInit(): void {
-    this.store.dispatch(new AppActions.UpdateAllEventsAction);
+    this.store.dispatch(new AppActions.UpdateNormalUserRegisteredEvents());
   }
 
 }

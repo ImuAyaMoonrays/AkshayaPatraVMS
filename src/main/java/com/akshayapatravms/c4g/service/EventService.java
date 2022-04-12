@@ -4,11 +4,9 @@ import com.akshayapatravms.c4g.domain.*;
 import com.akshayapatravms.c4g.repository.CauseRepository;
 import com.akshayapatravms.c4g.repository.CorporateSubgroupRepository;
 import com.akshayapatravms.c4g.repository.EventRepository;
-import com.akshayapatravms.c4g.security.AuthoritiesConstants;
-import com.akshayapatravms.c4g.security.SecurityUtils;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.event.AbstractEventDTO;
-import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
+import com.akshayapatravms.c4g.service.dto.event.AdminCreateOrUpdateEventDTO;
+import com.akshayapatravms.c4g.service.mapper.EventMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
@@ -43,6 +41,8 @@ public class EventService {
 
     private final UserService userService;
 
+    private final EventMapper eventMapper;
+
     private final ImageService imageService;
 
     private final CacheManager cacheManager;
@@ -53,35 +53,75 @@ public class EventService {
         UserService userService,
         ImageService imageService,
         CauseRepository causeRepository,
-        CorporateSubgroupRepository corporateSubgroupRepository
+        CorporateSubgroupRepository corporateSubgroupRepository,
+        EventMapper eventMapper
     ) {
         this.eventRepository = eventRepository;
         this.cacheManager = cacheManager;
         this.userService = userService;
         this.imageService = imageService;
         this.causeRepository = causeRepository;
+        this.eventMapper = eventMapper;
         this.corporateSubgroupRepository = corporateSubgroupRepository;
     }
 
-    public Event createEvent(CreateEventDTO createEventDTO, MultipartFile image) {
+    public Event createEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image) {
         Event event = new Event();
+        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
+        event.setEventCreator(user);
 
+        setEventDTOAndImageRequestOnEvent(createEventDTO, image, event);
+
+        return eventRepository.save(event);
+    }
+
+    public Event updatedEvent(AdminCreateOrUpdateEventDTO adminUpdateEventDTO, MultipartFile image) {
+        Optional<Event> existingEventOptional = eventRepository.findOneById(adminUpdateEventDTO.getId());
+        if (existingEventOptional.isEmpty()) {
+            throw new RuntimeException(String.format("Could not find event with id %d", adminUpdateEventDTO.getId()));
+        }
+
+        Event existingEvent = existingEventOptional.get();
+        setEventDTOAndImageRequestOnEvent(adminUpdateEventDTO, image, existingEvent);
+        return existingEvent;
+    }
+
+    public void volunteerForEvent(Long eventID) throws RuntimeException {
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
+        }
+
+        final User user = isUser.get();
+
+        Optional<Event> event = eventRepository.findOneById(eventID);
+
+        if (event.isPresent()) {
+            try {
+                checkEligibility(user, event.get());
+                event.get().getVolunteers().add(user);
+                eventRepository.save(event.get());
+            } catch (Exception e) {
+                throw e;
+            }
+
+        } else {
+            throw new RuntimeException("unable to find event");
+        }
+
+    }
+
+    private void setEventDTOAndImageRequestOnEvent(AdminCreateOrUpdateEventDTO createEventDTO, MultipartFile image, Event event) {
         if (image != null) {
             Image persistedImage = this.persistedImage(image);
             event.setImage(persistedImage);
         }
 
 
-        if (createEventDTO.getCauses() != null && createEventDTO.getCauses().size() > 0) {
-            Set<Cause> causes = existingAndNewCauses(createEventDTO);
-            event.setCauses(causes);
-        }
+        addDTOCausesToEvent(createEventDTO, event);
 
 
-        if (createEventDTO.getEmailFilters() != null && createEventDTO.getEmailFilters().size() > 0) {
-            CorporateSubgroup corporateSubgroup = newCorporateSubgroup(createEventDTO.getEmailFilters());
-            event.setCorporateSubgroups(Collections.singleton(corporateSubgroup));
-        }
+        addDTOCorporateSubgroupsToEvent(createEventDTO, event);
 
 
         event.setEventName(createEventDTO.getEventName());
@@ -102,41 +142,59 @@ public class EventService {
         event.setContactPhoneNumber(createEventDTO.getContactPhoneNumber());
         event.setContactEmail(createEventDTO.getContactEmail());
         event.setEmailBody(createEventDTO.getEmailBody());
-
-        User user = userService.getUserWithAuthorities().orElseThrow(() -> new RuntimeException("couldn't find currently logged in user"));
-        event.setEventCreator(user);
-
-        return eventRepository.save(event);
     }
 
-    //saves new causes to db
-    private Set<Cause> existingAndNewCauses(AbstractEventDTO abstractEventDTO) throws RuntimeException {
-        return abstractEventDTO
-            .getCauses()
-            .stream()
-            .map(causeDTO -> {
-                if (causeDTO.getId() != null) {
-                    return causeRepository
-                        .findOneById(causeDTO.getId())
-                        .orElseThrow(() -> new RuntimeException("inexistant " + "cause by id"));
-                } else {
-                    //doesnt have an ID but has a name that matches an existing. Should the behavior be to use the cause with the matching name?
-                    if (causeRepository.findOneByCauseName(causeDTO.getCauseName().toUpperCase()).isPresent()) {
-                        log.error("cause + " + causeDTO.getCauseName() + " already exists");
-                        throw new RuntimeException(
-                            "One of the cause names you requested already exists. Please send its ID or choose a " + "new cause name"
-                        );
+
+    private void addDTOCorporateSubgroupsToEvent(AdminCreateOrUpdateEventDTO createEventDTO, Event event) {
+        if (createEventDTO.getEmailFilters() != null && createEventDTO.getEmailFilters().size() > 0) {
+            CorporateSubgroup corporateSubgroup = newCorporateSubgroup(createEventDTO.getEmailFilters());
+            event.setCorporateSubgroups(Collections.singleton(corporateSubgroup));
+        }
+    }
+
+    private void addDTOCausesToEvent(AdminCreateOrUpdateEventDTO createEventDTO, Event event) {
+        Set<String> newCauseNames = createEventDTO.getNewCauses();
+        Set<Long> existingCauseIDs = createEventDTO.getExistingCauseIDs();
+        if ((newCauseNames != null && newCauseNames.size() > 0) || (existingCauseIDs != null && existingCauseIDs.size() > 0)) {
+            Set<Cause> causes = existingAndNewCauses(newCauseNames, existingCauseIDs);
+            event.setCauses(causes);
+        }
+    }
+    //    saves new causes to the db and retrieves existing causes from the db. Returns a set of them all.
+
+    private Set<Cause> existingAndNewCauses(Set<String> newCauseNames, Set<Long> existingCauseIDs) throws RuntimeException {
+        final Set<Cause> causes = new HashSet<>();
+
+        if (newCauseNames != null && newCauseNames.size() > 0) {
+            final Set<Cause> newCauses = newCauseNames.stream()
+                .map(causeName -> {
+                    if (causeRepository.findOneByCauseName(causeName).isPresent()) {
+                        throw new RuntimeException(String.format("Cause with cause name %s already exists", causeName));
                     } else {
-                        Cause cause = new Cause();
-                        cause.setCauseName(causeDTO.getCauseName().toUpperCase());
-                        return causeRepository.save(cause);
+                        return causeRepository.save(new Cause(causeName));
                     }
-                }
-            })
-            .collect(Collectors.toSet());
-    }
+                })
+                .collect(Collectors.toSet());
 
+            causes.addAll(newCauses);
+        }
+
+
+        if (existingCauseIDs != null && existingCauseIDs.size() > 0) {
+            final Set<Cause> existingCauses = existingCauseIDs.stream()
+                .map(existingCauseID -> {
+                    return causeRepository.findOneById(existingCauseID).orElseThrow(() -> {
+                        return new RuntimeException(String.format("no cause with id %d exists", existingCauseID));
+                    });
+                })
+                .collect(Collectors.toSet());
+            causes.addAll(existingCauses);
+        }
+
+        return causes;
+    }
     //    temporarily only sending events with a list of email filters, ie @google.com, @apple.com
+
     private CorporateSubgroup newCorporateSubgroup(Set<String> emailFilters) {
         CorporateSubgroup corporateSubgroup = new CorporateSubgroup();
         corporateSubgroup.setSubgroupEmailPatterns(emailFilters);
@@ -169,7 +227,7 @@ public class EventService {
         return false;
     }
 
-    public void checkEligibility(User user, Event event) throws RuntimeException {
+    private void checkEligibility(User user, Event event) throws RuntimeException {
 //          Turned off until we have TOS set up
 //        if (user.getAcceptedTOS() != true){
 //            throw new RuntimeException("User has not accepted TOS");
@@ -192,31 +250,6 @@ public class EventService {
     }
 
 
-    public void volunteerForEvent(Long eventID) throws RuntimeException {
-        final Optional<User> isUser = userService.getUserWithAuthorities();
-        if (!isUser.isPresent()) {
-            throw new RuntimeException("unable to find user");
-        }
-
-        final User user = isUser.get();
-
-        Optional<Event> event = eventRepository.findOneById(eventID);
-
-        if (event.isPresent()) {
-            try {
-                checkEligibility(user, event.get());
-                event.get().getVolunteers().add(user);
-                eventRepository.save(event.get());
-            } catch (Exception e) {
-                throw e;
-            }
-
-        } else {
-            throw new RuntimeException("unable to find event");
-        }
-
-    }
-
     public void unRegisterForEvent(Long eventID) throws RuntimeException {
 
         final Optional<User> isUser = userService.getUserWithAuthorities();
@@ -229,17 +262,9 @@ public class EventService {
 
         if (event.isPresent()) {
             try {
-//                log.info("event" + event.get());
-//                log.info("volunteer count before " + event.get().getVolunteers().size());
                 event.get().getVolunteers().remove(isUser.get());
-//                log.info("volunteer count after " + event.get().getVolunteers().size());
-//                log.info("user id " + user.getId() + " event id " + event.get().getId());
                 eventRepository.save(event.get());
 
-//                log.info("num of volunteers " + event.get().getVolunteers().size());
-//                log.info("num of events vol for " + user.getEvents().size());
-//                log.info("volunteers for event " + event.get().getVolunteers());
-//                log.info("events volunteering for " + user.getEvents());
                 //join table is emptied, but user is still showing events.
             } catch (Exception e) {
                 throw new RuntimeException("unable to save event");
@@ -249,16 +274,43 @@ public class EventService {
         }
     }
 
-    public List<Event> getAll() throws RuntimeException {
+
+    public List<Event> allPastEvents() throws RuntimeException {
+        return eventRepository.findAllPastEvents();
+    }
+
+    public List<Event> allFutureEvents() throws RuntimeException {
+        return eventRepository.findAllFutureEvents();
+    }
+
+    public List<Event> allRegisterableEventsForLoggedInUser() throws RuntimeException {
+        final Optional<User> userOptional = userService.getUserWithAuthorities();
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("unable to find user");
+        }
+
+        return eventRepository.allRegisterableEventsForUser(userOptional.get().getId());
+    }
+
+
+    public List<Event> allRegisteredEventsForLoggedInUser() throws RuntimeException {
         final Optional<User> isUser = userService.getUserWithAuthorities();
         if (!isUser.isPresent()) {
             throw new RuntimeException("unable to find user");
         }
-        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
-            return eventRepository.findAllEventInfo();
-        } else {
-            return eventRepository.findAll();
+        return eventRepository.allRegisteredEventsForUser(isUser.get().getId());
+    }
+
+    public List<Event> getAllCompletedEventsForUser() throws RuntimeException {
+        final Optional<User> isUser = userService.getUserWithAuthorities();
+        if (!isUser.isPresent()) {
+            throw new RuntimeException("unable to find user");
         }
+        return eventRepository.allCompletedEventsForUser(isUser.get().getId());
+    }
+
+    public void deleteEvent(Long eventID) throws RuntimeException {
+        eventRepository.deleteById(eventID);
     }
 
 

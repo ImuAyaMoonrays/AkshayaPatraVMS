@@ -9,6 +9,7 @@ import { CsvExportService } from "../../services/csv-export/csv-export.service";
 import { Store } from "@ngxs/store";
 import { AppActions } from "../../store/actions/app.actions";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { AppState } from "../../store/states/App.state";
 
 @Component({
   selector: 'jhi-event',
@@ -42,7 +43,7 @@ export class EventComponent implements OnInit {
     // this is psychotic. Refactor this.
     this.event$ = combineLatest(merge(this.event$, this.forceEvent$), this.accountService.identity()).pipe(
       tap((eventAndAccount: [EventResponseInterface, Account]) => {
-        if (eventAndAccount[0].volunteers?.map(volunteer => volunteer.id).includes(eventAndAccount[1].id)) {
+        if (eventAndAccount[0].registered) {
           this.buttonText = 'Unregister';
           this.buttonFunction = this.unregister;
         } else {
@@ -62,15 +63,20 @@ export class EventComponent implements OnInit {
 
 
   private assignEvent(eventId: string) {
-    this.event$ = this.eventService.eventById$(Number(eventId));
+    const isAdminLoggedIn = this.store.selectSnapshot(AppState.isAdminLoggedIn);
+    if (isAdminLoggedIn) {
+      this.event$ = this.eventService.adminEventById$(Number(eventId));
+    } else {
+      this.event$ = this.eventService.userEventById$(Number(eventId));
+    }
   }
 
   public register(eventId: string): void {
     this.eventService.register$(Number(eventId)).pipe(
       tap(() => {
         // refactor this
-        this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
-        this.store.dispatch(new AppActions.UpdateAllEventsAction)
+        this.eventService.userEventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllNormalUserEvents())
       })
     ).subscribe();
   }
@@ -79,8 +85,8 @@ export class EventComponent implements OnInit {
     this.eventService.unregister$(Number(eventId)).pipe(
       tap(() => {
         // refactor this
-        this.eventService.eventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
-        this.store.dispatch(new AppActions.UpdateAllEventsAction)
+        this.eventService.userEventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
+        this.store.dispatch(new AppActions.UpdateAllNormalUserEvents())
       })
     ).subscribe();
   }

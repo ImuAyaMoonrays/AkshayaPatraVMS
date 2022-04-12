@@ -5,10 +5,12 @@ import com.akshayapatravms.c4g.repository.EventRepository;
 import com.akshayapatravms.c4g.security.AuthoritiesConstants;
 import com.akshayapatravms.c4g.service.EventService;
 import com.akshayapatravms.c4g.service.dto.CsvDTO;
-import com.akshayapatravms.c4g.service.dto.event.CreateEventDTO;
-import com.akshayapatravms.c4g.service.dto.event.EventResponseDTO;
+import com.akshayapatravms.c4g.service.dto.event.AdminCreateOrUpdateEventDTO;
+import com.akshayapatravms.c4g.service.dto.event.AdminEventResponseDTO;
+import com.akshayapatravms.c4g.service.mapper.EventMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,98 +21,88 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-//todo: have controllers return response entities
 @RestController
-@RequestMapping("/api/events")
-public class EventResource {
+@RequestMapping("/api/admin/events")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+public class AdminEventResource {
 
-    private final Logger log = LoggerFactory.getLogger(AccountResource.class);
+    private final Logger log = LoggerFactory.getLogger(AdminEventResource.class);
 
     private final EventService eventService;
 
     private final EventRepository eventRepository;
 
-    public EventResource(EventService eventService,
-                         EventRepository eventRepository) {
+    private final EventMapper eventMapper;
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    public AdminEventResource(EventService eventService, EventRepository eventRepository, EventMapper eventMapper) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
+        this.eventMapper = eventMapper;
     }
 
-    @PostMapping(value = "/createEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public Event createEvent(
-        @RequestPart("eventWithoutImage") @Valid CreateEventDTO createEventDTO,
+    @PostMapping(value = "/createEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AdminEventResponseDTO createEvent(
+        @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO createEventDTO,
         @RequestPart("file") @Valid MultipartFile image) throws URISyntaxException {
-        return eventService.createEvent(createEventDTO, image);
+        return new AdminEventResponseDTO(eventService.createEvent(createEventDTO, image));
     }
 
-    //todo: remove /event in pahth
-    @GetMapping("/event/{id}")
-    public EventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
-        Optional<Event> event = eventRepository.findAllEventInfoForEvent(id);
+    @PatchMapping(value = "/updateEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AdminEventResponseDTO updateEvent(
+        @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO adminUpdateDTO,
+        @RequestPart("file") @Valid MultipartFile image) {
+        return new AdminEventResponseDTO(eventService.updatedEvent(adminUpdateDTO, image));
+    }
+
+    @DeleteMapping()
+    public ResponseEntity deleteEvent(@RequestParam Long id) {
+        try {
+            log.debug("REST request to delete Event: {}", id);
+            eventService.deleteEvent(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public AdminEventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
+        Optional<Event> event = eventRepository.findOneById(id);
         if (event.isPresent()) {
-            return new EventResponseDTO(event.get());
-        } else  {
+            return new AdminEventResponseDTO(event.get());
+        } else {
             throw new RuntimeException("could not find an event by this id");
         }
     }
 
-    //    need one for admins which contains all registered users and one for normal user which doesn't
-    @GetMapping("/all")
-    public List<Event> allEvents() throws URISyntaxException {
-        return this.eventRepository.findAllEventInfo();
+    @GetMapping("/allPast")
+    public List<AdminEventResponseDTO> getAllPastEvents() {
+        return eventMapper.eventsToAdminEventResponseDTOS(eventService.allPastEvents());
     }
 
-    //eventually might want to change this to register to match unregister. my bad for having them separate names at the start.
-    //update request body to be a request parameter?
-    @PostMapping("/volunteer")
-    public ResponseEntity volunteerForEvent(@RequestBody Long eventID) throws URISyntaxException {
-        try {
-            eventService.volunteerForEvent(eventID);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-
-    }
-
-    //should this be a delete? and change @pathVariable to RequestParam?
-    @GetMapping("/unregister/{id}")
-    public ResponseEntity unregisterForEvent(@PathVariable Long id) {
-        try {
-            eventService.unRegisterForEvent(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getAll")
-    public ResponseEntity getAllEvents() {
-        try {
-            return ResponseEntity.ok().body(eventService.getAll());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+    @GetMapping("/allFuture")
+    public List<AdminEventResponseDTO> getAllFutureEvents() {
+        return eventMapper.eventsToAdminEventResponseDTOS(eventService.allFutureEvents());
     }
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getEventVolunteersCSV(@RequestParam Long eventID) {
-        try {
+        try{
             CsvDTO csvDTO = eventService.createCSVFileOfEventVolunteers(eventID);
             HttpHeaders headers = new HttpHeaders();
             headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvDTO.getFileName());
             headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
-            return ResponseEntity
+            return  ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(csvDTO.getDataStream());
-        } catch (Exception e) {
+        } catch (Exception e){
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -118,7 +110,6 @@ public class EventResource {
 
     //input date is YYYY-MM-DD. leading zeros must be included
     @GetMapping(value = "/exportAll", produces = "text/csv")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventInfoEventVolunteersCSV(
         @RequestParam(value = "startDate",
             required = false,
@@ -144,7 +135,6 @@ public class EventResource {
     }
 
     @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventVolunteersCSV(
         @RequestParam(value = "startDate",
             required = false,
