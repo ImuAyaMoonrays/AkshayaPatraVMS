@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,14 +53,11 @@ public class AdminEventResource {
         return new AdminEventResponseDTO(eventService.createEvent(createEventDTO, image));
     }
 
-    @GetMapping("/{id}")
-    public AdminEventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
-        Optional<Event> event = eventRepository.findOneById(id);
-        if (event.isPresent()) {
-            return new AdminEventResponseDTO(event.get());
-        } else {
-            throw new RuntimeException("could not find an event by this id");
-        }
+    @PatchMapping(value = "/updateEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public AdminEventResponseDTO updateEvent(
+        @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO adminUpdateDTO,
+        @RequestPart("file") @Valid MultipartFile image) {
+        return new AdminEventResponseDTO(eventService.updatedEvent(adminUpdateDTO, image));
     }
 
     @DeleteMapping()
@@ -75,6 +71,16 @@ public class AdminEventResource {
         }
     }
 
+    @GetMapping("/{id}")
+    public AdminEventResponseDTO eventById(@PathVariable Long id) throws URISyntaxException {
+        Optional<Event> event = eventRepository.findOneById(id);
+        if (event.isPresent()) {
+            return new AdminEventResponseDTO(event.get());
+        } else {
+            throw new RuntimeException("could not find an event by this id");
+        }
+    }
+
     @GetMapping("/allPast")
     public List<AdminEventResponseDTO> getAllPastEvents() {
         return eventMapper.eventsToAdminEventResponseDTOS(eventService.allPastEvents());
@@ -83,13 +89,6 @@ public class AdminEventResource {
     @GetMapping("/allFuture")
     public List<AdminEventResponseDTO> getAllFutureEvents() {
         return eventMapper.eventsToAdminEventResponseDTOS(eventService.allFutureEvents());
-    }
-
-    @PatchMapping(value = "/updateEvent", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public AdminEventResponseDTO updateEvent(
-        @RequestPart("eventWithoutImage") @Valid AdminCreateOrUpdateEventDTO adminUpdateDTO,
-        @RequestPart("file") @Valid MultipartFile image) {
-        return new AdminEventResponseDTO(eventService.updatedEvent(adminUpdateDTO, image));
     }
 
     @GetMapping(value = "/exportCSV", produces = "text/csv")
@@ -111,7 +110,6 @@ public class AdminEventResource {
 
     //input date is YYYY-MM-DD. leading zeros must be included
     @GetMapping(value = "/exportAll", produces = "text/csv")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventInfoEventVolunteersCSV(
         @RequestParam(value = "startDate",
             required = false,
@@ -137,7 +135,6 @@ public class AdminEventResource {
     }
 
     @GetMapping(value = "/exportAllVolunteers", produces = "text/csv")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity getAllEventVolunteersCSV(
         @RequestParam(value = "startDate",
             required = false,
