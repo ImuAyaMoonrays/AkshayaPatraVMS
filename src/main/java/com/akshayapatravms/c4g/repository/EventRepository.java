@@ -32,14 +32,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         "WHERE ue.user_id =:userId and e.end_date > CURRENT_TIMESTAMP", nativeQuery = true)
     List<Event> allRegisteredEventsForUser(@Param("userId") long userId);
 
-    @Query(value = "SELECT * " +
-        "FROM Event e " +
+    @Query(value = "SELECT DISTINCT e.* " +
+        "FROM EVENT e " +
         "LEFT JOIN JHI_USER u ON u.id = :userId " +
         "LEFT JOIN USER_EVENT ue ON e.id = ue.event_id " +
         "LEFT JOIN EVENT_CORPORATE_SUBGROUP ecs ON ecs.event_id = e.id " +
         "LEFT JOIN CORPORATE_SUBGROUP cs ON ecs.corporate_subgroup_id = cs.id " +
         "LEFT JOIN SUBGROUP_EMAIL_PATTERN sep ON sep.corporate_subgroup_id = cs.id " +
-        "WHERE ue.user_id IS DISTINCT FROM :userId and e.end_date > CURRENT_TIMESTAMP and u.email LIKE '%' || sep.subgroup_email_patterns || '%'",
+        "WHERE ue.user_id IS DISTINCT FROM :userId " +
+        "and e.end_date > CURRENT_TIMESTAMP " +
+        "and (u.email LIKE '%' || sep.subgroup_email_patterns || '%' OR sep.subgroup_email_patterns IS NULL)",
         nativeQuery = true)
     List<Event> allRegisterableEventsForUser(@Param("userId") long userId);
 

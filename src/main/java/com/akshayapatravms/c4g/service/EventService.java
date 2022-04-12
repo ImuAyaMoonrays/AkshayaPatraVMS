@@ -152,7 +152,7 @@ public class EventService {
     private void addDTOCausesToEvent(AdminCreateOrUpdateEventDTO createEventDTO, Event event) {
         Set<String> newCauseNames = createEventDTO.getNewCauses();
         Set<Long> existingCauseIDs = createEventDTO.getExistingCauseIDs();
-        if (( newCauseNames != null && newCauseNames.size() > 0 ) || ( existingCauseIDs != null && existingCauseIDs.size() > 0 ) ) {
+        if ((newCauseNames != null && newCauseNames.size() > 0) || (existingCauseIDs != null && existingCauseIDs.size() > 0)) {
             Set<Cause> causes = existingAndNewCauses(newCauseNames, existingCauseIDs);
             event.setCauses(causes);
         }
@@ -277,8 +277,7 @@ public class EventService {
     }
 
     public List<Event> allFutureEvents() throws RuntimeException {
-        final List<Event> test =  eventRepository.findAllFutureEvents();
-        return test;
+        return eventRepository.findAllFutureEvents();
     }
 
     public List<Event> allRegisterableEventsForLoggedInUser() throws RuntimeException {
@@ -289,8 +288,6 @@ public class EventService {
 
         return eventRepository.allRegisterableEventsForUser(userOptional.get().getId());
     }
-
-
 
 
     public List<Event> allRegisteredEventsForLoggedInUser() throws RuntimeException {
@@ -312,9 +309,6 @@ public class EventService {
     public void deleteEvent(Long eventID) throws RuntimeException {
         eventRepository.deleteById(eventID);
     }
-
-
-
 
 
     //code from https://codeburst.io/returning-csv-content-from-an-api-in-spring-boot-63ea82bbcf0f
