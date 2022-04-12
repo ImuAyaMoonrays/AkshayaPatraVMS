@@ -10,6 +10,7 @@ import { Store } from "@ngxs/store";
 import { AppActions } from "../../store/actions/app.actions";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 import { AppState } from "../../store/states/App.state";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'jhi-event',
@@ -78,7 +79,15 @@ export class EventComponent implements OnInit {
         this.eventService.userEventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
         this.store.dispatch(new AppActions.UpdateAllNormalUserEvents())
       })
-    ).subscribe();
+    ).subscribe(() => {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'You have successfully registered for this event',
+        showConfirmButton: false,
+        timer: 2000
+      }).then();
+    });
   }
 
   public unregister(eventId: string): void {
@@ -88,7 +97,16 @@ export class EventComponent implements OnInit {
         this.eventService.userEventById$(Number(eventId)).subscribe((event) => this.forceEvent$.next(event))
         this.store.dispatch(new AppActions.UpdateAllNormalUserEvents())
       })
-    ).subscribe();
+    ).subscribe(() => {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'You are no longer registered for this event',
+        showConfirmButton: false,
+        timer: 2000
+      }).then();
+
+    });
   }
 
 
