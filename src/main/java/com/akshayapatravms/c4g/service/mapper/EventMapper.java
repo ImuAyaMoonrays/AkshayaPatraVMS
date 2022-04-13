@@ -29,14 +29,11 @@ public class EventMapper {
     }
 
     public UserEventResponseDTO eventToUserEventResponseDTO(Event event) {
-        UserEventResponseDTO userEventResponseDTO = new UserEventResponseDTO(event);
-
         final Optional<User> loggedInUserOptional = userService.getUserWithAuthorities();
         if (loggedInUserOptional.isPresent()) {
             final boolean isRegistered = event.getVolunteers().stream()
                 .anyMatch(volunteer -> volunteer.getId().equals(loggedInUserOptional.get().getId()));
-            userEventResponseDTO.setRegistered(isRegistered);
-            return userEventResponseDTO;
+            return new UserEventResponseDTO(event, isRegistered);
         } else {
             throw new RuntimeException("Could not find logged in user");
         }

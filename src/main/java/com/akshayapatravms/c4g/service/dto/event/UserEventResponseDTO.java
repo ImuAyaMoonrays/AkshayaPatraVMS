@@ -16,13 +16,18 @@ public class UserEventResponseDTO extends AbstractEventDTO {
     private ImageResponseDTO image;
     private boolean isRegistered;
     private Set<CauseDTO> causes;
+    private Integer currentAmountOfVolunteers;
 
     public UserEventResponseDTO() {
     }
 
-    public UserEventResponseDTO(Event event) {
+    public UserEventResponseDTO(Event event, boolean isRegistered) {
         super(event);
-        this.image = new ImageResponseDTO(event.getImage());
+        if (this.image != null) {
+            this.image = new ImageResponseDTO(event.getImage());
+        }
+        this.isRegistered = isRegistered;
+        this.currentAmountOfVolunteers = event.getVolunteers().size();
 
         final Set<Cause> causes = event.getCauses();
         if (causes != null && causes.size() > 0) {
@@ -31,6 +36,14 @@ public class UserEventResponseDTO extends AbstractEventDTO {
                 .collect(Collectors.toSet());
         }
 
+    }
+
+    public Integer getCurrentAmountOfVolunteers() {
+        return currentAmountOfVolunteers;
+    }
+
+    public void setCurrentAmountOfVolunteers(Integer currentAmountOfVolunteers) {
+        this.currentAmountOfVolunteers = currentAmountOfVolunteers;
     }
 
     public boolean isRegistered() {

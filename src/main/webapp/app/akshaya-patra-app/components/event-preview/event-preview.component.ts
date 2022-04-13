@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { NavigationService } from "../../services/navigation/navigation.service";
 
 @Component({
   selector: 'jhi-event-preview',
@@ -11,13 +11,13 @@ export class EventPreviewComponent implements OnInit {
 
   @Input() event: EventResponseInterface
 
-  constructor(private router: Router) { }
+  constructor(private navigationService: NavigationService) { }
 
   ngOnInit(): void {
   }
 
   navigateToEventExpandedView(eventId: string): void {
-    this.router.navigate([`/home/events/${eventId}`]);
+    this.navigationService.navigateToSingleEventView(eventId);
   }
 
 }

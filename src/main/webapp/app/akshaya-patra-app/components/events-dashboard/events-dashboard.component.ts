@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatestWith, debounceTime, distinctUntilChanged, filter, Observable, startWith, tap } from 'rxjs';
-import { Store } from "@ngxs/store";
 import { map } from "rxjs/operators";
 import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
@@ -29,7 +28,7 @@ export class EventsDashboardComponent implements OnInit {
 
   private locations = [];
 
-  constructor(private store: Store) {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -146,6 +145,11 @@ export class EventsDashboardComponent implements OnInit {
       map(([eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$]: [EventResponseInterface[], EventResponseInterface[]]) => {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
+      map((filteredEvents: EventResponseInterface[]) => {
+        return filteredEvents.sort((eventA, eventB) => {
+          return new Date(eventA.startDate).getTime() - new Date(eventB.startDate).getTime();
+        })
+      })
     )
   }
 

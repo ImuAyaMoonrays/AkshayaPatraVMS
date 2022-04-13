@@ -10,6 +10,7 @@ import { CauseService } from "../../services/cause/cause.service";
 import { AccountService } from "../../services/auth/account.service";
 import { TemporalUtil } from "../../utils/temporal.util";
 import { CreateEventInterface } from "../../interfaces/event/create-event.interface";
+import { NavigationService } from "../../services/navigation/navigation.service";
 
 @Component({
   selector: 'jhi-create-event',
@@ -73,6 +74,7 @@ export class CreateEventComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder,
+              private navigationService: NavigationService,
               private accountService: AccountService,
               private router: Router,
               private eventService: EventService,
@@ -145,7 +147,7 @@ export class CreateEventComponent implements OnInit {
         )
       }
 
-      this.eventService.createEvent$(event, this.uploadFile).subscribe((event) => this.router.navigate([`/home/events/${event.id}`]));
+      this.eventService.createEvent$(event, this.uploadFile).subscribe((event) => this.navigationService.navigateToSingleEventView(event.id));
 
     } else {
       this.markAllFormFieldsAsDirty(createEventForm);
