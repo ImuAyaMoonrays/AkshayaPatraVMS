@@ -1,37 +1,86 @@
-<div (click)="navigateToEventExpandedView(event.id)" class="col-md-12 stretch-card grid-margin">
-  <div class="card bg-gradient-danger card-img-holder text-white">
-    <div class="card-body">
-      <div class="row">
-        <div class="text-center align-self-center col-md-4">
-          <h1 class="font-weight-normal mb-0">{{event.eventName}}</h1>
-          <div *ngIf="event.causes?.length > 0">
-            <span class="card-test" class="card-text">Tags: </span>
-            <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
-          </div>
-        </div>
-        <div class="text-center align-self-center col-md-4">
-          <h4 class="font-weight-normal mb-3">{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
-          <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
-          <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
-
-        </div>
-
-        <div class="text-center align-self-center col-md-4">
-          <div *ngIf="event.physicalLocation as physicalLocation">
-            <h4 class="font-weight-normal">Location</h4>
-            <h6 class="card-text">{{physicalLocation.address}}</h6>
-            <h6 class="card-text">{{physicalLocation.state}}</h6>
-            <h6 class="card-text">{{physicalLocation.city}}</h6>
-            <h6 class="card-text">{{physicalLocation.locality}}</h6>
-            <h6 class="card-text">{{physicalLocation.region}}</h6>
-            <h6 class="card-text">{{physicalLocation.country}}</h6>
-          </div>
-
-          <div *ngIf="event.virtualLocation">
-            <h3 class="font-weight-normal mb-0">Virtual Event</h3>
-          </div>
-        </div>
-      </div>
+<div class="card" (click)="navigateToEventExpandedView(event.id)" style="cursor: pointer">
+  <img *ngIf="event.image && (event.image.id | secureImageSrc | async) as imageSrc" class="card-img-top"
+       style="height: 225px; width: 100%; display: block;"
+       [attr.src]="imageSrc || 'content/images/purple-template-images/images/faces/face1.jpg'" alt="Card image cap">
+  <div class="card-body" style="padding: 1.25rem 1.25rem">
+    <h4 class="card-title mt-3">{{event.eventName}}</h4>
+    <p class="card-text"><i
+      class="mdi mdi-account-multiple"></i>&nbsp;{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}
+    </p>
+    <div *ngIf="event.physicalLocation as physicalLocation">
+      <p class="card-text" style="margin-bottom: 1rem"><i
+        class="mdi mdi-map-marker "></i>&nbsp;{{physicalLocation.city + ', ' + physicalLocation.country}}</p>
     </div>
+    <div *ngIf="event.virtualLocation">
+      <p class="card-text" style="margin-bottom: 1rem"><i class=" mdi mdi-laptop-chromebook"></i>&nbsp;Virtual</p>
+    </div>
+    <p class="card-text"><i class="mdi mdi-calendar"></i>&nbsp;{{event.startDate | date }}</p>
+    <p class="card-text"><i class="mdi mdi-clock"></i>&nbsp;{{(event.startTime | time) + '-' + (event.endTime | time)}}</p>
   </div>
 </div>
+
+<!--<div class="card-deck">-->
+<!--  <div class="card">-->
+<!--    <img class="card-img-top" src="..." alt="Card image cap">-->
+<!--    <div class="card-body">-->
+<!--      <h5 class="card-title">Card title</h5>-->
+<!--      <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
+<!--      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="card">-->
+<!--    <img class="card-img-top" src="..." alt="Card image cap">-->
+<!--    <div class="card-body">-->
+<!--      <h5 class="card-title">Card title</h5>-->
+<!--      <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>-->
+<!--      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="card">-->
+<!--    <img class="card-img-top" src="..." alt="Card image cap">-->
+<!--    <div class="card-body">-->
+<!--      <h5 class="card-title">Card title</h5>-->
+<!--      <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>-->
+<!--      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<div (click)="navigateToEventExpandedView(event.id)" class="col-md-12 stretch-card grid-margin">-->
+<!--  <div class="card bg-gradient-danger card-img-holder text-white">-->
+<!--    <div class="card-body">-->
+<!--      <div class="row">-->
+<!--        <div class="text-center align-self-center col-md-4">-->
+<!--          <h1 class="font-weight-normal mb-0">{{event.eventName}}</h1>-->
+<!--          <div *ngIf="event.causes?.length > 0">-->
+<!--            <span class="card-test" class="card-text">Tags: </span>-->
+<!--            <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="text-center align-self-center col-md-4">-->
+<!--          <h4 class="font-weight-normal mb-3">{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>-->
+<!--          <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>-->
+<!--          <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>-->
+<!--          &lt;!&ndash;&ndash;&gt;-->
+<!--        </div>-->
+<!--        &lt;!&ndash;&ndash;&gt;-->
+<!--        <div class="text-center align-self-center col-md-4">-->
+<!--          <div *ngIf="event.physicalLocation as physicalLocation">-->
+<!--            <h4 class="font-weight-normal">Location</h4>-->
+<!--            <h6 class="card-text">{{physicalLocation.address}}</h6>-->
+<!--            <h6 class="card-text">{{physicalLocation.state}}</h6>-->
+<!--            <h6 class="card-text">{{physicalLocation.city}}</h6>-->
+<!--            <h6 class="card-text">{{physicalLocation.locality}}</h6>-->
+<!--            <h6 class="card-text">{{physicalLocation.region}}</h6>-->
+<!--            <h6 class="card-text">{{physicalLocation.country}}</h6>-->
+<!--          </div>-->
+<!--          &lt;!&ndash;&ndash;&gt;-->
+<!--          <div *ngIf="event.virtualLocation">-->
+<!--            <h3 class="font-weight-normal mb-0">Virtual Event</h3>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<!---->

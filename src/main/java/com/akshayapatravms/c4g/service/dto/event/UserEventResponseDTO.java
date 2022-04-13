@@ -23,7 +23,7 @@ public class UserEventResponseDTO extends AbstractEventDTO {
 
     public UserEventResponseDTO(Event event, boolean isRegistered) {
         super(event);
-        if (this.image != null) {
+        if (event.getImage() != null) {
             this.image = new ImageResponseDTO(event.getImage());
         }
         this.isRegistered = isRegistered;

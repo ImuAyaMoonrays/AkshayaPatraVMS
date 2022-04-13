@@ -146,10 +146,12 @@ export class EventsDashboardComponent implements OnInit {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
       map((filteredEvents: EventResponseInterface[]) => {
-        return filteredEvents.sort((eventA, eventB) => {
+        const test = filteredEvents.sort((eventA, eventB) => {
           return new Date(eventA.startDate).getTime() - new Date(eventB.startDate).getTime();
         })
-      })
+        console.log(test);
+        return test;
+      }),
     )
   }
 
