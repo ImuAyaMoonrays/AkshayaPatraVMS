@@ -59,7 +59,22 @@ export class EventComponent implements OnInit {
 
   saveCsv(eventId: number): void {
     this.csvExportService.csvOfCurrentlyRegisteredVolunteers$(eventId)
+  }
 
+  deleteEvent(eventId: string): void {
+    this.eventService.adminDeleteEvent$(eventId).subscribe(() => {
+      this.event$ = null;
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'You have successfully deleted this event',
+        showConfirmButton: false,
+        timer: 2000
+      }).then();
+      this.store.dispatch(new AppActions.UpdateAllAdminEvents()).subscribe(() => {
+        this.router.navigate(['/home/admin/events/upcoming']);
+      });
+    })
   }
 
 

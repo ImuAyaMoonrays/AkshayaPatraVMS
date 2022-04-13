@@ -365,7 +365,7 @@ public class EventService {
         Instant startDateInstant = startDate.atStartOfDay().atZone(zone).toInstant();
         Instant endDateInstant = endDate.atStartOfDay().atZone(zone).toInstant();
 
-        List<Event> events = eventRepository.findAllEventInfoWithDateFilter(startDateInstant,endDateInstant);
+        List<Event> events = eventRepository.findAllEventInfoWithDateFilter(startDateInstant, endDateInstant);
         List<List<String>> csvBody = new ArrayList<>(events.size());
 
         for (Event event : events) {
@@ -435,7 +435,7 @@ public class EventService {
         Instant startDateInstant = startDate.atStartOfDay().atZone(zone).toInstant();
         Instant endDateInstant = endDate.atStartOfDay().atZone(zone).toInstant();
 
-        List<Event> events = eventRepository.findAllEventsAndVolunteers(startDateInstant,endDateInstant);
+        List<Event> events = eventRepository.findAllEventsAndVolunteers(startDateInstant, endDateInstant);
         List<List<String>> csvBody = new ArrayList<>(events.size());
 
         for (Event event : events) {

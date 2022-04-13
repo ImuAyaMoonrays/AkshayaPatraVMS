@@ -60,8 +60,8 @@ public class AdminEventResource {
         return new AdminEventResponseDTO(eventService.updatedEvent(adminUpdateDTO, image));
     }
 
-    @DeleteMapping()
-    public ResponseEntity deleteEvent(@RequestParam Long id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteEvent(@PathVariable Long id) {
         try {
             log.debug("REST request to delete Event: {}", id);
             eventService.deleteEvent(id);

@@ -50,6 +50,7 @@ import { BrowserAnimationsModule, NoopAnimationsModule } from "@angular/platform
 import { DropzoneModule } from "ngx-dropzone-wrapper";
 import { SecureImageSrcPipe } from './akshaya-patra-app/pipes/secure-image-src/secure-image-src.pipe';
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
+import { EventCardRowsComponent } from './akshaya-patra-app/components/card-row/event-card-rows.component';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
     PromoteToAdminComponent,
     ProfileComponent,
     SecureImageSrcPipe,
+    EventCardRowsComponent,
   ],
   bootstrap: [AppComponent],
 })

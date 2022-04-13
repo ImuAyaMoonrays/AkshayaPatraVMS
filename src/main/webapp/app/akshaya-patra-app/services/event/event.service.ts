@@ -28,6 +28,10 @@ export class EventService {
     return this.http.post<EventResponseInterface>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/createEvent`), formData);
   }
 
+  adminDeleteEvent$(eventId: String): Observable<any> {
+    return this.http.delete<any>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/${eventId}`));
+  }
+
   adminAllFutureEvents$(): Observable<EventResponseInterface[]> {
     return this.http.get<EventResponseInterface[]>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/allFuture`));
   }

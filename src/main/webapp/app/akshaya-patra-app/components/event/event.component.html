@@ -18,7 +18,12 @@
             <a showOnlyIfAdmin
                (click)="saveCsv(event.id)"
                role="button"
-               class="btn btn-gradient-light btn-fw">Volunteers CSV</a>
+               class="btn btn-gradient-light btn-fw mb-2">Volunteers CSV</a>
+
+            <a showOnlyIfAdmin
+               (click)="deleteEvent(event.id)"
+               role="button"
+               class="btn btn-gradient-light btn-fw">Delete This Event</a>
 
             <div *ngIf="event.causes?.length > 0">
               <span class="card-test" class="card-text">Tags: </span>
