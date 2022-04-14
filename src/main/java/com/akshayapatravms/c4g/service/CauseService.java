@@ -39,8 +39,12 @@ public class CauseService {
         }
         return causeList;
     }
+
+    public void deleteCause(Long causeID) throws RuntimeException {
+        causeRepository.deleteById(causeID);
+    }
+
     //add cause
-    //delete cause
     //get all causes
     //check if cause exists
 
