@@ -1,6 +1,7 @@
 package com.akshayapatravms.c4g.domain;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -19,7 +20,7 @@ public class Image {
 
     private Long size;
 
-    @Lob
+    @Type(type="org.hibernate.type.BinaryType")
     private byte[] data;
 
     public String getId() {

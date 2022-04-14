@@ -10,7 +10,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="imagePK"/>
             </column>
             <column name="content_type" type="VARCHAR(255)"/>
-            <column name="data" type="BLOB"/>
+            <column name="data" type="bytea"/>
             <column name="name" type="VARCHAR(255)"/>
             <column name="size" type="BIGINT"/>
         </createTable>
