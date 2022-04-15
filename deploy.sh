@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# echo "Building container image using jib\n"
-# ./mvnw package -Pprod -DskipTests verify jib:dockerBuild
+echo "Building container image using jib\n"
+./mvnw package -Pprod -DskipTests verify jib:dockerBuild
 
 echo "Starting the containers\n"
 if [ -x "$(command -v docker-compose)" ]; then
