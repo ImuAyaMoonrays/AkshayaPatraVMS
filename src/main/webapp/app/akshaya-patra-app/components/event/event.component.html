@@ -1,7 +1,9 @@
 <div *ngIf="event$ | async as event" class="row justify-content-center">
-  <div *ngIf="event.image && (event.image.id | secureImageSrc | async) as imageSrc" class="card col-8" style="padding: 0">
+  <div
+    *ngIf="(event.image && ((event.image.id | secureImageSrc | async) || 'content/images/akshaya-patra-images/spinning-loading.gif' )) || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg' as imageSrc"
+    class="card col-8" style="padding: 0">
     <img class="card-img-top"
-         [attr.src]="imageSrc || 'content/images/purple-template-images/images/faces/face1.jpg'" alt="Card image cap">
+         [attr.src]="imageSrc" alt="Card image cap">
     <div class="card-body" style="padding: 1.25rem 1.25rem">
       <h1 class="text-center">{{event.eventName}}</h1>
       <div class="row">

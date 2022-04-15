@@ -14,6 +14,7 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 export class EventsDashboardComponent implements OnInit {
 
   @Input() events$: Observable<EventResponseInterface[]>
+  @Input() emptyText: string;
 
   eventsAfterFilters$: Observable<EventResponseInterface[]>;
   physicalLocationSearchEntryFormControl = new FormControl('');

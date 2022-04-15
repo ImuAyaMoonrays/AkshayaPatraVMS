@@ -9,6 +9,7 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 export class EventCardRowsComponent implements OnInit {
 
   @Input() events: EventResponseInterface[];
+  @Input() emptyText: string;
 
 
   rows: EventResponseInterface[];
@@ -24,8 +25,6 @@ export class EventCardRowsComponent implements OnInit {
     }
 
     this.rows = rows;
-    console.log(this.rows);
-
   }
 
 }
