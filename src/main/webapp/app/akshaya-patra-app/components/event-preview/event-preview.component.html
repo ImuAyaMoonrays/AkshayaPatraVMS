@@ -1,5 +1,6 @@
-<div class="card" (click)="navigateToEventExpandedView(event.id)" style="cursor: pointer">
-  <img *ngIf="event.image && (event.image.id | secureImageSrc | async) as imageSrc" class="card-img-top"
+<div *ngIf="event.image && (event.image.id | secureImageSrc | async) as imageSrc" class="card"
+     (click)="navigateToEventExpandedView(event.id)" style="cursor: pointer">
+  <img class="card-img-top"
        style="height: 225px; width: 100%; display: block; object-fit: cover"
        [attr.src]="imageSrc || 'content/images/purple-template-images/images/faces/face1.jpg'" alt="Card image cap">
   <div class="card-body" style="padding: 1.25rem 1.25rem">
