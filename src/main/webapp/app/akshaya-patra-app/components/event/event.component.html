@@ -1,6 +1,6 @@
 <div *ngIf="event$ | async as event" class="row justify-content-center">
   <div
-    *ngIf="(event.image && ((event.image.id | secureImageSrc | async) || 'content/images/akshaya-patra-images/spinning-loading.gif' )) || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg' as imageSrc"
+    *ngIf="(event.image && (event.image.id | secureImageSrc | async) ) || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg' as imageSrc"
     class="card col-8" style="padding: 0">
     <img class="card-img-top"
          [attr.src]="imageSrc" alt="Card image cap">

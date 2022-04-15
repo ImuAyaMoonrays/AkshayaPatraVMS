@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ApplicationConfigService } from "../application-config/application-config.service";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
 import { CreateEventInterface } from "../../interfaces/event/create-event.interface";
+import { ImageService } from "../image/image.service";
+import { map, mergeMap } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class EventService {
   private readonly ADMIN_PREFIX = `${this.API_PREFIX}/admin/events`
   private readonly USER_PREFIX = `${this.API_PREFIX}/user/events`
 
-  constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {
+  constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService, private imageService: ImageService) {
   }
 
   createEvent$(eventCreationPayload: CreateEventInterface, file: File): Observable<EventResponseInterface> {
@@ -33,7 +35,13 @@ export class EventService {
   }
 
   adminAllFutureEvents$(): Observable<EventResponseInterface[]> {
-    return this.http.get<EventResponseInterface[]>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/allFuture`));
+    return this.http.get<EventResponseInterface[]>(this.applicationConfigService.getEndpointFor(`${this.ADMIN_PREFIX}/allFuture`)).pipe(
+      mergeMap((events) => {
+        return forkJoin(events.filter(event => event.image).map(event => this.imageService.imageById$(event.image.id))).pipe(
+          map(() => events)
+        );
+      })
+    );
   }
 
   adminAllPastEvents$(): Observable<EventResponseInterface[]> {
