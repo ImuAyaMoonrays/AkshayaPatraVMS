@@ -25,6 +25,7 @@ export class EventComponent implements OnInit {
   @Input() isExpandedView: boolean = true;
   isCompleted: boolean;
   buttonText: 'Register' | 'Unregister';
+  buttonColor: 'success' | 'danger';
   buttonFunction: Function;
   forceEvent$: Subject<EventResponseInterface> = new Subject<EventResponseInterface>();
 
@@ -46,9 +47,11 @@ export class EventComponent implements OnInit {
       tap((eventAndAccount: [EventResponseInterface, Account]) => {
         if (eventAndAccount[0].registered) {
           this.buttonText = 'Unregister';
+          this.buttonColor = "danger"
           this.buttonFunction = this.unregister;
         } else {
           this.buttonText = 'Register';
+          this.buttonColor = "success"
           this.buttonFunction = this.register;
         }
       }),
