@@ -1,9 +1,6 @@
 #!/bin/bash
 
-echo "Building container image using jib\n"
-./mvnw package -Pprod -DskipTests verify jib:dockerBuild
-
-echo "Starting the containers\n"
+echo "Starting the containers"
 if [ -x "$(command -v docker-compose)" ]; then
     docker-compose -f src/main/docker/app.yml up
 elif [ -x "$(command -v docker compose)" ]; then
