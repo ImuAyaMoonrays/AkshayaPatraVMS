@@ -3,7 +3,7 @@
   <div *ngIf="isEmptyFromStart" class="text-center">{{emptyFromStartText}}</div>
 
   <div *ngIf="!isEmptyFromStart">
-    <div *ngIf="rows.length === 0" class="text-center">No events match these filters</div>
+    <div *ngIf="rows.length === 0" class="text-center"></div>
     <div *ngFor="let row of rows" class="row">
       <div *ngFor="let event of row" class="col-sm-4 mb-4">
         <jhi-event-preview [event]="event"></jhi-event-preview>

@@ -5,6 +5,7 @@ import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
 import { TemporalUtil } from "../../utils/temporal.util";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { DatePickerDateInterface } from "../../interfaces/date-picker-date.interface";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -47,12 +48,12 @@ export class EventsDashboardComponent implements OnInit {
 
     const eventsFilteredByMinimumDate$ = this.minimumDateFormControl.valueChanges.pipe(
       startWith(null),
-      map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventResponseInterface[]]) => {
+      map(([date, events]: [DatePickerDateInterface, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
-            return (new Date(event.startDate)) >= date;
+            const datePickerStyleEventDate = TemporalUtil.datePickerDateFromEventDateString(event.startDate as string)
+            return !TemporalUtil.isSecondDateLarger(datePickerStyleEventDate, date)
           });
         } else {
           return events;
@@ -62,12 +63,12 @@ export class EventsDashboardComponent implements OnInit {
 
     const eventsFilteredByMaximumDate$ = this.maximumDateFormControl.valueChanges.pipe(
       startWith(null),
-      map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventResponseInterface[]]) => {
+      map(([date, events]: [DatePickerDateInterface, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
-            return (new Date(event.endDate)) <= date;
+            const datePickerStyleEventDate = TemporalUtil.datePickerDateFromEventDateString(event.endDate as string)
+            return TemporalUtil.areDatesEqual(datePickerStyleEventDate, date) || TemporalUtil.isSecondDateLarger(datePickerStyleEventDate, date)
           });
         } else {
           return events;
