@@ -31,7 +31,12 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(final String login) {
+    //login can be username or phone number
+    public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
+        return loadUserByUsernameOrPhoneNumber(login);
+
+
+    private UserDetails loadUserByUsernameOnly(final String login)  throws UsernameNotFoundException{
         log.debug("Authenticating {}", login);
 
         if (new EmailValidator().isValid(login, null)) {
@@ -46,6 +51,28 @@ public class DomainUserDetailsService implements UserDetailsService {
             .findOneWithAuthoritiesByLogin(lowercaseLogin)
             .map(user -> createSpringSecurityUser(lowercaseLogin, user))
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
+
+    }
+
+
+    private UserDetails loadUserByPhoneNumber(final String login) throws UsernameNotFoundException {
+        log.debug("Authenticating by phone number {}", login);
+        return userRepository
+            .findOneWithAuthoritiesByPhoneNumber(login)
+            .map(user -> createSpringSecurityUser(login, user))
+            .orElseThrow(() -> new UsernameNotFoundException("User phone number " + login + " was not found in the database"));
+    }
+
+    private UserDetails loadUserByUsernameOrPhoneNumber(final String login){
+        try {
+            return loadUserByUsernameOnly(login);
+        } catch (UsernameNotFoundException e){
+            try {
+                return loadUserByPhoneNumber(login);
+            } catch(UsernameNotFoundException e2){
+                throw e2;
+            }
+        }
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
