@@ -32,12 +32,14 @@ public class DomainUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     //login can be username or phone number
+    //can't rename function
     public UserDetails loadUserByUsername(final String login) throws UsernameNotFoundException {
         return loadUserByUsernameOrPhoneNumber(login);
 
+    }
 
     private UserDetails loadUserByUsernameOnly(final String login)  throws UsernameNotFoundException{
-        log.debug("Authenticating {}", login);
+        log.debug("Authenticating  by username {}", login);
 
         if (new EmailValidator().isValid(login, null)) {
             return userRepository
@@ -53,7 +55,6 @@ public class DomainUserDetailsService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database"));
 
     }
-
 
     private UserDetails loadUserByPhoneNumber(final String login) throws UsernameNotFoundException {
         log.debug("Authenticating by phone number {}", login);
