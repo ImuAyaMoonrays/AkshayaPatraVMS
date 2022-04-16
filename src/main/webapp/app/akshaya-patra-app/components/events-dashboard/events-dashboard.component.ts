@@ -14,9 +14,9 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 export class EventsDashboardComponent implements OnInit {
 
   @Input() events$: Observable<EventResponseInterface[]>
-  @Input() emptyText: string;
+  @Input() emptyFromStartText: string;
 
-  eventsAfterFilters$: Observable<EventResponseInterface[]>;
+  eventsAfterFilters$: Observable<any>;
   physicalLocationSearchEntryFormControl = new FormControl('');
   selectedCauseTagsFormControl = new FormControl([]);
   locationTypeFormControl = new FormControl(null);
@@ -25,6 +25,7 @@ export class EventsDashboardComponent implements OnInit {
   disablePhysicalLocationEntry = false;
   causeTags = [];
   locationTypes = [LocationTypeEnum.PHYSICAL, LocationTypeEnum.VIRTUAL]
+  isEventsEmptyFromStart: boolean;
 
 
   private locations = [];
@@ -38,6 +39,7 @@ export class EventsDashboardComponent implements OnInit {
     const eventsAfterUpdatingFilterOptions$ = this.events$.pipe(
       filter(events => !!events),
       tap((events) => {
+        this.isEventsEmptyFromStart = events.length === 0;
         this.addEventPhysicalLocations(events);
         this.addCauseTags(events);
       })
@@ -147,12 +149,11 @@ export class EventsDashboardComponent implements OnInit {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
       map((filteredEvents: EventResponseInterface[]) => {
-        const test = filteredEvents.sort((eventA, eventB) => {
+        return filteredEvents.sort((eventA, eventB) => {
           return new Date(eventA.startDate).getTime() - new Date(eventB.startDate).getTime();
         })
-        console.log(test);
-        return test;
       }),
+      tap(console.log)
     )
   }
 

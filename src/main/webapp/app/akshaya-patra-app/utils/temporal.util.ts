@@ -10,4 +10,13 @@ export class TemporalUtil {
     return {hours: timePickerValue.hour, minutes: timePickerValue.minute};
   }
 
+  static serverDateToClientDate(serverDate: string): Date {
+    return new Date(serverDate);
+  }
+
+  // static clientDateToServerDate(clientDate: string): string {
+  //
+  // }
+
+
 }

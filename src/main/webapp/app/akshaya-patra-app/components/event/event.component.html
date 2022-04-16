@@ -1,6 +1,6 @@
 <div *ngIf="event$ | async as event" class="row justify-content-center">
   <div
-    *ngIf="(event.image && (event.image.id | secureImageSrc | async) ) || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg' as imageSrc"
+    *ngIf="(event.image && (event.image.id | secureImageSrc | async)  || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg') as imageSrc"
     class="card col-8" style="padding: 0">
     <img class="card-img-top"
          [attr.src]="imageSrc" alt="Card image cap">
@@ -11,16 +11,14 @@
           class="mdi mdi-account-multiple"></i>&nbsp;{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}
         </p>
         <p class="card-text col-sm-3"><i class="mdi mdi-clock"></i>&nbsp;{{(event.startTime | time) + '-' + (event.endTime | time)}}</p>
-        <div class="col-sm-3">
-          <p *ngIf="event.physicalLocation as physicalLocation" class="card-text">
-            <i class="mdi mdi-map-marker"></i>
-            &nbsp;{{physicalLocation.address + ', '
-          + physicalLocation.state + ', '
-          + physicalLocation.city + ', '
-          + physicalLocation.locality + ', '
-          + physicalLocation.region + ', '
-          + physicalLocation.country}}</p>
-        </div>
+        <p *ngIf="event.physicalLocation as physicalLocation" class="card-text col-sm-3">
+          <i class="mdi mdi-map-marker"></i>
+          &nbsp;{{physicalLocation.address + ', '
+        + physicalLocation.state + ', '
+        + physicalLocation.city + ', '
+        + physicalLocation.locality + ', '
+        + physicalLocation.region + ', '
+        + physicalLocation.country}}</p>
 
         <p *ngIf="event.virtualLocation" class="card-text col-sm-3" style="margin-bottom: 1rem"><i
           class=" mdi mdi-laptop-chromebook"></i>&nbsp;{{event.virtualLocation.url + ', password: ' + event.virtualLocation.passcode}}</p>

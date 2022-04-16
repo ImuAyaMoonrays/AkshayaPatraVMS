@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: 'jhi-event-card-rows',
@@ -8,8 +10,10 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 })
 export class EventCardRowsComponent implements OnInit {
 
-  @Input() events: EventResponseInterface[];
-  @Input() emptyText: string;
+  @Input() events$: Observable<EventResponseInterface[]>;
+  @Input() emptyFromStartText: string;
+  @Input() isEmptyFromStart: boolean;
+  eventRows$: Observable<EventResponseInterface[]>;
 
 
   rows: EventResponseInterface[];
@@ -18,13 +22,16 @@ export class EventCardRowsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.eventRows$ = this.events$.pipe(
+      map((events) => {
+        let rows = [];
+        for (let i = 0; i < events.length; i += 3) {
+          rows.push(events.slice(i, i + 3));
+        }
+        return rows;
+      })
+    )
 
-    var rows = [];
-    for (let i = 0; i < this.events.length; i += 3) {
-      rows.push(this.events.slice(i, i + 3));
-    }
-
-    this.rows = rows;
   }
 
 }

@@ -1,7 +1,7 @@
-<div *ngIf="(event.image && (event.image.id | secureImageSrc | async) ) || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg'
- as
-imageSrc" class="card"
-     (click)="navigateToEventExpandedView(event.id)" style="cursor: pointer">
+<div
+  *ngIf="(event.image && (event.image.id | secureImageSrc | async)  || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg') as imageSrc"
+  class="card"
+  (click)="navigateToEventExpandedView(event.id)" style="cursor: pointer">
   <img class="card-img-top"
        style="height: 225px; width: 100%; display: block; object-fit: cover"
        [attr.src]="imageSrc || 'content/images/purple-template-images/images/faces/face1.jpg'" alt="Card image cap">
