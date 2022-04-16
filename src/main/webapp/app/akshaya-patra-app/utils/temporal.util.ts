@@ -4,7 +4,7 @@ import { DatePickerDateInterface } from "../interfaces/date-picker-date.interfac
 export class TemporalUtil {
 
   static dateFromDatePicker(datePickerValue: DatePickerDateInterface): Date {
-    return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day - 1);
+    return new Date(datePickerValue.year, datePickerValue.month - 1, datePickerValue.day + 1);
   }
 
   static timeFromTimePicker(timePickerValue: { hour: number, minute: number, second: number }): Time {
