@@ -1,6 +1,8 @@
 package com.akshayapatravms.c4g.config;
 
 import java.time.Duration;
+
+import com.akshayapatravms.c4g.repository.UserRepository;
 import org.ehcache.config.builders.*;
 import org.ehcache.jsr107.Eh107Configuration;
 import org.hibernate.cache.jcache.ConfigSettings;
@@ -45,6 +47,7 @@ public class CacheConfiguration {
         return cm -> {
             createCache(cm, com.akshayapatravms.c4g.repository.UserRepository.USERS_BY_LOGIN_CACHE);
             createCache(cm, com.akshayapatravms.c4g.repository.UserRepository.USERS_BY_EMAIL_CACHE);
+            createCache(cm, com.akshayapatravms.c4g.repository.UserRepository.USERS_BY_PHONE_CACHE);
             createCache(cm, com.akshayapatravms.c4g.domain.User.class.getName());
             createCache(cm, com.akshayapatravms.c4g.domain.Authority.class.getName());
             createCache(cm, com.akshayapatravms.c4g.domain.User.class.getName() + ".authorities");
