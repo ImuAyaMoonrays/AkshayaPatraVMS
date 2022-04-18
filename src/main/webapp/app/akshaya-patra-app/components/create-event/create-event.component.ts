@@ -123,7 +123,7 @@ export class CreateEventComponent implements OnInit {
           endTime: TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
           eventName: createEventForm.get('eventName').value,
           existingCauseIDs: this.causes.filter(cause => cause.id).map(cause => cause.id),
-          newCauses: this.causes.filter(cause => !!cause.id).map(cause => cause.causeName),
+          newCauses: this.causes.filter(cause => !cause.id).map(cause => cause.causeName),
           startDate: TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
           startTime: TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
           volunteersNeededAmount: Number(createEventForm.get('volunteersNeededAmount').value),

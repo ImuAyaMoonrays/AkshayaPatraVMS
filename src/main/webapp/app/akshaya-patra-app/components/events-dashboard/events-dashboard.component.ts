@@ -5,6 +5,7 @@ import { FormControl } from "@angular/forms";
 import { LocationTypeEnum } from "../../enums/location-type.enum";
 import { TemporalUtil } from "../../utils/temporal.util";
 import { EventResponseInterface } from "../../interfaces/event/event-response.interface";
+import { DatePickerDateInterface } from "../../interfaces/date-picker-date.interface";
 
 @Component({
   selector: 'jhi-events-dashboard',
@@ -14,8 +15,9 @@ import { EventResponseInterface } from "../../interfaces/event/event-response.in
 export class EventsDashboardComponent implements OnInit {
 
   @Input() events$: Observable<EventResponseInterface[]>
+  @Input() emptyFromStartText: string;
 
-  eventsAfterFilters$: Observable<EventResponseInterface[]>;
+  eventsAfterFilters$: Observable<any>;
   physicalLocationSearchEntryFormControl = new FormControl('');
   selectedCauseTagsFormControl = new FormControl([]);
   locationTypeFormControl = new FormControl(null);
@@ -24,6 +26,7 @@ export class EventsDashboardComponent implements OnInit {
   disablePhysicalLocationEntry = false;
   causeTags = [];
   locationTypes = [LocationTypeEnum.PHYSICAL, LocationTypeEnum.VIRTUAL]
+  isEventsEmptyFromStart: boolean;
 
 
   private locations = [];
@@ -37,6 +40,7 @@ export class EventsDashboardComponent implements OnInit {
     const eventsAfterUpdatingFilterOptions$ = this.events$.pipe(
       filter(events => !!events),
       tap((events) => {
+        this.isEventsEmptyFromStart = events.length === 0;
         this.addEventPhysicalLocations(events);
         this.addCauseTags(events);
       })
@@ -44,12 +48,12 @@ export class EventsDashboardComponent implements OnInit {
 
     const eventsFilteredByMinimumDate$ = this.minimumDateFormControl.valueChanges.pipe(
       startWith(null),
-      map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventResponseInterface[]]) => {
+      map(([date, events]: [DatePickerDateInterface, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
-            return (new Date(event.startDate)) >= date;
+            const datePickerStyleEventDate = TemporalUtil.datePickerDateFromEventDateString(event.startDate as string)
+            return !TemporalUtil.isSecondDateLarger(datePickerStyleEventDate, date)
           });
         } else {
           return events;
@@ -59,12 +63,12 @@ export class EventsDashboardComponent implements OnInit {
 
     const eventsFilteredByMaximumDate$ = this.maximumDateFormControl.valueChanges.pipe(
       startWith(null),
-      map(date => date && TemporalUtil.dateFromDatePicker(date)),
       combineLatestWith(eventsAfterUpdatingFilterOptions$),
-      map(([date, events]: [Date, EventResponseInterface[]]) => {
+      map(([date, events]: [DatePickerDateInterface, EventResponseInterface[]]) => {
         if (date) {
           return events.filter((event) => {
-            return (new Date(event.endDate)) <= date;
+            const datePickerStyleEventDate = TemporalUtil.datePickerDateFromEventDateString(event.endDate as string)
+            return TemporalUtil.areDatesEqual(datePickerStyleEventDate, date) || TemporalUtil.isSecondDateLarger(datePickerStyleEventDate, date)
           });
         } else {
           return events;
@@ -146,12 +150,11 @@ export class EventsDashboardComponent implements OnInit {
         return this.intersection(eventsFilteredByTagAndLocationTypeAndPhysicalLocationAndMaximumDate, eventsFilteredByMaximumDate$)
       }),
       map((filteredEvents: EventResponseInterface[]) => {
-        const test = filteredEvents.sort((eventA, eventB) => {
+        return filteredEvents.sort((eventA, eventB) => {
           return new Date(eventA.startDate).getTime() - new Date(eventB.startDate).getTime();
         })
-        console.log(test);
-        return test;
       }),
+      tap(console.log)
     )
   }
 

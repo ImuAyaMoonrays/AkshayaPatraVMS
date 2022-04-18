@@ -61,9 +61,9 @@
   </div>
 </div>
 
-<div *ngIf="eventsAfterFilters$ | async as eventsAfterFilter">
-  <jhi-event-card-rows [events]="eventsAfterFilter"></jhi-event-card-rows>
-</div>
+<jhi-event-card-rows [events$]="eventsAfterFilters$"
+                     [isEmptyFromStart]="isEventsEmptyFromStart"
+                     [emptyFromStartText]="emptyFromStartText"></jhi-event-card-rows>
 <!--    <jhi-event-preview-->
 <!--      style="cursor: pointer"-->
 <!--      *ngFor="let event of (eventsAfterFilters$ | async)"-->

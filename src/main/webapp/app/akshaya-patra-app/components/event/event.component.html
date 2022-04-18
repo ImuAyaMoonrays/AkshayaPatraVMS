@@ -1,88 +1,82 @@
-<div *ngIf="event$ | async as event">
-  <div class="col-md-12 stretch-card grid-margin">
-    <div class="card bg-gradient-danger card-img-holder text-white">
-      <div class="card-body">
+<div *ngIf="event$ | async as event" class="row justify-content-center">
+  <div
+    *ngIf="(event.image && (event.image.id | secureImageSrc | async)  || 'content/images/akshaya-patra-images/Akshaya-Patra-Foundation.jpeg') as imageSrc"
+    class="card col-8" style="padding: 0">
+    <img class="card-img-top"
+         [attr.src]="imageSrc" alt="Card image cap">
+    <div class="card-body" style="padding: 1.25rem 1.25rem">
+      <h1 class="text-center">{{event.eventName}}</h1>
+      <div class="row">
+        <p class="card-text col-sm-3"><i
+          class="mdi mdi-account-multiple"></i>&nbsp;{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}
+        </p>
+        <p class="card-text col-sm-3"><i class="mdi mdi-clock"></i>&nbsp;{{(event.startTime | time) + '-' + (event.endTime | time)}}</p>
+        <p *ngIf="event.physicalLocation as physicalLocation" class="card-text col-sm-3">
+          <i class="mdi mdi-map-marker"></i>
+          &nbsp;{{physicalLocation.address + ', '
+        + physicalLocation.state + ', '
+        + physicalLocation.city + ', '
+        + physicalLocation.locality + ', '
+        + physicalLocation.region + ', '
+        + physicalLocation.country}}</p>
+
+        <p *ngIf="event.virtualLocation" class="card-text col-sm-3" style="margin-bottom: 1rem"><i
+          class=" mdi mdi-laptop-chromebook"></i>&nbsp;{{event.virtualLocation.url + ', password: ' + event.virtualLocation.passcode}}</p>
+        <p class="card-text col-sm-3"><i class="mdi mdi-calendar"></i>&nbsp;{{event.startDate | date }} to {{event.endDate | date }} </p>
+      </div>
+
+      <hr/>
+      <div class="row">
+        <div class="text-center col-sm-6">
+          <p class="card-text"><i class="mdi mdi mdi-note-text"></i>&nbsp;{{event.description}}</p>
+        </div>
+        <div class="text-center col-sm-6">
+          <p class="card-text"><i class="mdi mdi-phone"></i>&nbsp;{{event.contactName + ', ' + event.contactEmail + ', ' +
+          event.contactPhoneNumber}} </p>
+        </div>
+      </div>
+
+      <hr/>
+      <div class="row justify-content-around">
+        <a *ngIf="!isPastEvent"
+           showIfIsNormalUser
+           (click)="buttonFunction(event.id)"
+           role="button"
+           class="col-4 btn btn-inverse-{{buttonColor}} btn-fw">{{ buttonText }}</a>
+        <a showOnlyIfAdmin
+           (click)="saveCsv(event.id)"
+           role="button"
+           class="col-4 btn btn-inverse-info btn-fw">Volunteers CSV</a>
+        <a showOnlyIfAdmin
+           (click)="deleteEvent(event.id)"
+           role="button"
+           class="col-4 btn btn-inverse-danger btn-fw">Delete This Event</a>
+      </div>
+
+
+      <div showOnlyIfAdmin>
+        <hr/>
+        <h3 class="text-center">Admin Info</h3>
         <div class="row">
-          <div class="text-center align-self-center col-md-3">
-            <h1 class="font-weight-normal mb-3">{{event.eventName}}</h1>
-            <h4 class="font-weight-normal mb-3">{{event.currentAmountOfVolunteers + '/' + event.volunteersNeededAmount + ' volunteers'}}</h4>
-            <h6 class="card-text">{{event.startDate | date }} to {{event.endDate | date }} </h6>
-            <h6 class="card-text">({{event.startTime | time}} - {{event.endTime | time}}) </h6>
-
-            <a *ngIf="!isPastEvent"
-               showIfIsNormalUser
-               (click)="buttonFunction(event.id)"
-               role="button"
-               class="btn btn-gradient-light btn-fw">{{ buttonText }}</a>
-
-            <a showOnlyIfAdmin
-               (click)="saveCsv(event.id)"
-               role="button"
-               class="btn btn-gradient-light btn-fw mb-2">Volunteers CSV</a>
-
-            <a showOnlyIfAdmin
-               (click)="deleteEvent(event.id)"
-               role="button"
-               class="btn btn-gradient-light btn-fw">Delete This Event</a>
-
-            <div *ngIf="event.causes?.length > 0">
-              <span class="card-test" class="card-text">Tags: </span>
-              <span *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</span>
+          <div class="text-center col-sm-6">
+            <span class="card-test" class="card-text">Tags: </span>
+            <div *ngIf="event.causes?.length > 0; then causes else nocauses">
             </div>
+            <ng-template #causes *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</ng-template>
+            <ng-template #nocauses class="card-text">None</ng-template>
           </div>
-          <div class="col-md-6 text-center">
-
-            <h4 class="font-weight-normal mt-2">Description</h4>
-            <h6 class="card-text mb-3">{{event.description}}</h6>
-            <h4 class="font-weight-normal mt-2">Contact</h4>
-            <h6 class="card-text">Name: {{event.contactName}} </h6>
-            <h6 class="card-text">Phone Number: {{event.contactPhoneNumber}} </h6>
-            <h6 class="card-text">Email: {{event.contactEmail}} </h6>
-          </div>
-
-          <div class="col-md-3 text-center">
-            <h4 class="font-weight-normal mt-3">Location</h4>
-            <div *ngIf="event.physicalLocation as physicalLocation">
-              <h6 class="card-text">{{physicalLocation.address}}</h6>
-              <h6 class="card-text">{{physicalLocation.state}}</h6>
-              <h6 class="card-text">{{physicalLocation.city}}</h6>
-              <h6 class="card-text">{{physicalLocation.locality}}</h6>
-              <h6 class="card-text">{{physicalLocation.region}}</h6>
-              <h6 class="card-text">{{physicalLocation.country}}</h6>
+          <div class="text-center col-sm-6">
+            <span class="card-test" class="card-text">Email Filters: </span>
+            <div *ngIf="event.emailFilters && event.emailFilters.length > 0; then emailfilters else noemailfilters">
             </div>
-
-            <div *ngIf="event.virtualLocation as virtualLocation">
-              <h6 class="card-text">Url: {{virtualLocation.url}}</h6>
-              <h6 class="card-text">Passcode: {{virtualLocation.passcode}}</h6>
-            </div>
-
-            <div *ngIf="event.emailFilters && event.emailFilters.length > 0"
-                 showOnlyIfAdmin>
-              <h4 class="font-weight-normal mt-3">Email Filters</h4>
-              {{event.emailFilters}}
-            </div>
-
-            <!--          for later-->
-            <h6 *ngIf="false" class="card-text">Corporate Subgroup Ids: {{event.corporateSubgroupIds}} </h6>
-
+            <ng-template #emailfilters class="card-text" #nocauses>{{event.emailFilters}} </ng-template>
+            <ng-template #noemailfilters class="card-text">None</ng-template>
           </div>
         </div>
+
       </div>
     </div>
   </div>
-
-
-  <div *ngIf="event.image && (event.image.id | secureImageSrc | async) as imageSrc"
-       class="col-md-12 stretch-card grid-margin">
-    <div class="card card-img-holder">
-      <div class="card-body">
-        <div class="row">
-          <img class="block-display-centered" style="height: 100%; width: 100%; object-fit: contain; max-width: 800px; max-height: 800px"
-               [attr.src]="imageSrc" alt="logo"/>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
 </div>
+
+
