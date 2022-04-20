@@ -20,7 +20,7 @@ import { NavigationService } from "../../services/navigation/navigation.service"
 export class CreateEventComponent implements OnInit {
 
   causes: { causeName: string, id: number }[] = [];
-  selectedCauses: { causeName: string, id: number }[] = [];
+  selectedCauses: string[] = [];
   newCause: FormControl = new FormControl('');
   emailFilters: { display: string, value: string }[] = [];
   uploadFile: File | null;
@@ -101,7 +101,7 @@ export class CreateEventComponent implements OnInit {
       const newCause = {causeName: newCauseValue, id: null};
 
       this.causes = this.causes.concat(newCause);
-      this.selectedCauses = this.selectedCauses.concat({causeName: newCauseValue, id: null});
+      this.selectedCauses = this.selectedCauses.concat(newCauseValue);
     }
     this.newCause.setValue('');
   }
@@ -112,7 +112,6 @@ export class CreateEventComponent implements OnInit {
     const virtualLocationForm = this.virtualLocationForm;
 
     if (createEventForm.valid && this.physicalLocationSelectedAndFormValid(physicalLocationForm) || this.virtualLocationSelectedAndFormValid(virtualLocationForm)) {
-      console.log("selected causes", this.selectedCauses )
       const event: CreateEventInterface = {
           contactEmail: createEventForm.get('contactEmail').value,
           contactName: createEventForm.get('contactName').value,
@@ -123,7 +122,7 @@ export class CreateEventComponent implements OnInit {
           endDate: TemporalUtil.dateFromDatePicker(createEventForm.get('endDate').value),
           endTime: TemporalUtil.timeFromTimePicker(createEventForm.get('endTime').value),
           eventName: createEventForm.get('eventName').value,
-          existingCauseIDs: this.selectedCauses.filter(cause => cause.id).map(cause => cause.id),
+          existingCauseIDs: this.causes.filter(cause => cause.id).map(cause => cause.id),
           newCauses: this.causes.filter(cause => !cause.id).map(cause => cause.causeName),
           startDate: TemporalUtil.dateFromDatePicker(createEventForm.get('startDate').value),
           startTime: TemporalUtil.timeFromTimePicker(createEventForm.get('startTime').value),
