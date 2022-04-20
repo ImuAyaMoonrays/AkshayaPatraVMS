@@ -23,14 +23,16 @@
       <hr/>
       <div class="row">
         <div class="text-center col-sm-6">
-          <p class="card-text"><i class="mdi mdi mdi-note-text"></i>&nbsp;{{event.description}}</p>
+          <p class="card-text"><i class="mdi mdi mdi-note-text"></i>&nbsp;{{event.description ? event.description : 'None'}}</p>
         </div>
         <div class="text-center col-sm-6">
           <p class="card-text"><i class="mdi mdi-phone"></i>&nbsp;
             {{
-            event.contactName ? event.contactName + ', ' : '' +
-            event.contactEmail ? event.contactEmail + ', ' : '' +
-            event.contactPhoneNumber ? event.contactPhoneNumber : ''
+            !event.contactName && !event.contactEmail && !event.contactPhoneNumber ?
+              'No Contact Details' :
+              (event.contactName ? event.contactName + ', ' : '' +
+              event.contactEmail ? event.contactEmail + ', ' : '' +
+              event.contactPhoneNumber ? event.contactPhoneNumber : '')
             }} </p>
         </div>
       </div>

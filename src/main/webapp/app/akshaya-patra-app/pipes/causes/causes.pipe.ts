@@ -8,7 +8,7 @@ export class CausesPipe implements PipeTransform {
 
   transform(causes: CauseInterface[], ...args: unknown[]): string {
     console.log(causes)
-    if (causes.length === 0 || !causes) {
+    if (!causes || causes.length === 0) {
       return 'None';
     } else {
       let causeString = '';
