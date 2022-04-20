@@ -12,7 +12,7 @@
     </p>
     <div *ngIf="event.physicalLocation as physicalLocation">
       <p class="card-text" style="margin-bottom: 1rem"><i
-        class="mdi mdi-map-marker "></i>&nbsp;{{physicalLocation.city + ', ' + physicalLocation.country}}</p>
+        class="mdi mdi-map-marker "></i>&nbsp;{{physicalLocation.city ? physicalLocation.city + ', ' : '' + physicalLocation.country}}</p>
     </div>
     <div *ngIf="event.virtualLocation">
       <p class="card-text" style="margin-bottom: 1rem"><i class=" mdi mdi-laptop-chromebook"></i>&nbsp;Virtual</p>
