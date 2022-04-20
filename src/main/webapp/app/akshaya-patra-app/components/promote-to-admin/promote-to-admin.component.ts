@@ -4,6 +4,7 @@ import { AdminPromotionService } from "../../services/admin-promotion/admin-prom
 import { Observable } from "rxjs";
 import { Account } from "../../services/auth/account.model";
 import { UsersService } from "../../services/users/users.service";
+import {CsvExportService} from "../../services/csv-export/csv-export.service";
 
 @Component({
   selector: 'jhi-promote-to-admin',
@@ -21,10 +22,19 @@ export class PromoteToAdminComponent implements OnInit {
   showDemotionFailureMessage: boolean;
 
   constructor(private adminPromotionService: AdminPromotionService,
+              private csvExportService: CsvExportService,
               private usersService: UsersService) { }
 
   ngOnInit(): void {
     this.normalUsers$ = this.usersService.allNormalUsers$();
+  }
+
+  downloadAllVolunteers(): void {
+    this.csvExportService.csvOfAllVolunteers$()
+  }
+
+  downloadAllEvents(): void {
+    this.csvExportService.csvOfAllEventInfo$()
   }
 
   promoteUser(): void {

@@ -17,5 +17,21 @@ export class CsvExportService {
       });
   }
 
+  csvOfAllVolunteers$() {
+    this.http.get(this.applicationConfigService.getEndpointFor('/api/admin/events/exportAllVolunteers'),
+      { responseType: 'blob' })
+      .subscribe((resp: any) => {
+        FileSaver.saveAs(resp, `All Volunteers.csv`)
+      });
+  }
+
+  csvOfAllEventInfo$() {
+    this.http.get(this.applicationConfigService.getEndpointFor('/api/admin/events/exportAll'),
+      { responseType: 'blob' })
+      .subscribe((resp: any) => {
+        FileSaver.saveAs(resp, `All Events.csv`)
+      });
+  }
+
 
 }
