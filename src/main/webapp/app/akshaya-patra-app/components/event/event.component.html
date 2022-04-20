@@ -13,12 +13,7 @@
         <p class="card-text col-sm-3"><i class="mdi mdi-clock"></i>&nbsp;{{(event.startTime | time) + '-' + (event.endTime | time)}}</p>
         <p *ngIf="event.physicalLocation as physicalLocation" class="card-text col-sm-3">
           <i class="mdi mdi-map-marker"></i>
-          &nbsp;{{physicalLocation.address + ', '
-        + physicalLocation.state + ', '
-        + physicalLocation.city + ', '
-        + physicalLocation.locality + ', '
-        + physicalLocation.region + ', '
-        + physicalLocation.country}}</p>
+          &nbsp;{{physicalLocation | address}}</p>
 
         <p *ngIf="event.virtualLocation" class="card-text col-sm-3" style="margin-bottom: 1rem"><i
           class=" mdi mdi-laptop-chromebook"></i>&nbsp;{{event.virtualLocation.url + ', password: ' + event.virtualLocation.passcode}}</p>
@@ -31,8 +26,12 @@
           <p class="card-text"><i class="mdi mdi mdi-note-text"></i>&nbsp;{{event.description}}</p>
         </div>
         <div class="text-center col-sm-6">
-          <p class="card-text"><i class="mdi mdi-phone"></i>&nbsp;{{event.contactName + ', ' + event.contactEmail + ', ' +
-          event.contactPhoneNumber}} </p>
+          <p class="card-text"><i class="mdi mdi-phone"></i>&nbsp;
+            {{
+            event.contactName ? event.contactName + ', ' : '' +
+            event.contactEmail ? event.contactEmail + ', ' : '' +
+            event.contactPhoneNumber ? event.contactPhoneNumber : ''
+            }} </p>
         </div>
       </div>
 
@@ -53,23 +52,19 @@
            class="col-4 btn btn-inverse-danger btn-fw">Delete This Event</a>
       </div>
 
-
       <div showOnlyIfAdmin>
         <hr/>
         <h3 class="text-center">Admin Info</h3>
         <div class="row">
           <div class="text-center col-sm-6">
             <span class="card-test" class="card-text">Tags: </span>
-            <div *ngIf="event.causes?.length > 0; then causes else nocauses">
-            </div>
-            <ng-template #causes *ngFor="let cause of event.causes" class="card-text">{{cause.causeName + ' ' }}</ng-template>
-            <ng-template #nocauses class="card-text">None</ng-template>
+            <div class="card-text">{{event.causes | causes }}</div>
           </div>
           <div class="text-center col-sm-6">
             <span class="card-test" class="card-text">Email Filters: </span>
             <div *ngIf="event.emailFilters && event.emailFilters.length > 0; then emailfilters else noemailfilters">
             </div>
-            <ng-template #emailfilters class="card-text" #nocauses>{{event.emailFilters}} </ng-template>
+            <ng-template #emailfilters class="card-text">{{event.emailFilters}} </ng-template>
             <ng-template #noemailfilters class="card-text">None</ng-template>
           </div>
         </div>

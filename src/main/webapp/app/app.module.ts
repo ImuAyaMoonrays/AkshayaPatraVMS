@@ -51,6 +51,8 @@ import { DropzoneModule } from "ngx-dropzone-wrapper";
 import { SecureImageSrcPipe } from './akshaya-patra-app/pipes/secure-image-src/secure-image-src.pipe';
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import { EventCardRowsComponent } from './akshaya-patra-app/components/card-row/event-card-rows.component';
+import { AddressPipe } from './akshaya-patra-app/pipes/address/address.pipe';
+import { CausesPipe } from './akshaya-patra-app/pipes/causes/causes.pipe';
 
 @NgModule({
   imports: [
@@ -101,6 +103,8 @@ import { EventCardRowsComponent } from './akshaya-patra-app/components/card-row/
     ProfileComponent,
     SecureImageSrcPipe,
     EventCardRowsComponent,
+    AddressPipe,
+    CausesPipe,
   ],
   bootstrap: [AppComponent],
 })
