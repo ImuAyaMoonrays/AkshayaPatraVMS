@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AuthServerProvider } from 'app/core/auth/auth-jwt.service';
 import { LocalStorageService, NgxWebstorageModule, SessionStorageService } from 'ngx-webstorage';
+import { AuthServerProvider } from './auth-jwt.service';
 
 describe('Auth JWT', () => {
   let service: AuthServerProvider;
