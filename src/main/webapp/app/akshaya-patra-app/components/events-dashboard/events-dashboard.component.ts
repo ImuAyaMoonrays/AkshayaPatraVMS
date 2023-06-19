@@ -153,8 +153,7 @@ export class EventsDashboardComponent implements OnInit {
         return filteredEvents.sort((eventA, eventB) => {
           return new Date(eventA.startDate).getTime() - new Date(eventB.startDate).getTime();
         })
-      }),
-      tap(console.log)
+      })
     )
   }
 

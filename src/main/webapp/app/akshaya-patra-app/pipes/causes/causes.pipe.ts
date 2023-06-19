@@ -7,7 +7,6 @@ import { CauseInterface } from "../../interfaces/cause.interface";
 export class CausesPipe implements PipeTransform {
 
   transform(causes: CauseInterface[], ...args: unknown[]): string {
-    console.log(causes)
     if (!causes || causes.length === 0) {
       return 'None';
     } else {

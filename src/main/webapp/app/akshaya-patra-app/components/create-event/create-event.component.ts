@@ -112,7 +112,6 @@ export class CreateEventComponent implements OnInit {
     const virtualLocationForm = this.virtualLocationForm;
 
     if (createEventForm.valid && this.physicalLocationSelectedAndFormValid(physicalLocationForm) || this.virtualLocationSelectedAndFormValid(virtualLocationForm)) {
-      console.log("selected causes", this.selectedCauses )
       const event: CreateEventInterface = {
           contactEmail: createEventForm.get('contactEmail').value,
           contactName: createEventForm.get('contactName').value,
